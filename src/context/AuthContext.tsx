@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -15,6 +16,7 @@ const STORAGE_KEY = 'clearmint-user-id'
 
 type AuthContextValue = {
   user: User | null
+  ready: boolean
   login: (email: string, password: string) => boolean
   logout: () => void
 }
@@ -22,23 +24,20 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 function loadStoredUser(): User | null {
-  if (typeof window === 'undefined') {
-    if (process.env.NODE_ENV === 'development') return users[0] ?? null
-    return null
-  }
-
   const raw = sessionStorage.getItem(STORAGE_KEY)
-  if (raw) {
-    const id = Number(raw)
-    const stored = users.find((u) => u.id === id)
-    if (stored) return stored
-  }
-  if (process.env.NODE_ENV === 'development') return users[0] ?? null
-  return null
+  if (!raw) return null
+  const id = Number(raw)
+  return users.find((u) => u.id === id) ?? null
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => loadStoredUser())
+  const [user, setUser] = useState<User | null>(null)
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    setUser(loadStoredUser())
+    setReady(true)
+  }, [])
 
   const login = useCallback((email: string, password: string) => {
     const match = users.find(
@@ -58,8 +57,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const value = useMemo(
-    () => ({ user, login, logout }),
-    [user, login, logout],
+    () => ({ user, ready, login, logout }),
+    [user, ready, login, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

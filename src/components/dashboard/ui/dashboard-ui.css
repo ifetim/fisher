@@ -1,20 +1,74 @@
-/* Placeholder dashboard UI — teammate replaces `ui/` components + this file */
-
 .dash-ui__greeting {
   margin: 0 0 1.25rem;
-  font-size: 1.35rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 1.85rem);
   font-weight: 600;
-  color: var(--color-text);
-  text-align: left;
+  color: var(--navy);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  animation: card-in 0.35s ease-out both;
 }
 
 .dash-ui__block {
-  margin-bottom: 1.25rem;
-  padding: 1rem;
-  border: 1px dashed var(--color-border);
-  border-radius: 0.75rem;
-  background: var(--color-surface);
-  text-align: left;
+  margin-bottom: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  animation: card-in 0.4s ease-out both;
+}
+
+.dashboard-page .dash-ui__block:nth-child(2) { animation-delay: 0.07s; }
+.dashboard-page .dash-ui__block:nth-child(3) { animation-delay: 0.14s; }
+.dashboard-page .dash-ui__block:nth-child(4) { animation-delay: 0.21s; }
+.dashboard-page .dash-ui__block:nth-child(5) { animation-delay: 0.28s; }
+
+.dash-ui__block--hero {
+  background: linear-gradient(145deg, var(--navy-deep) 0%, var(--navy) 100%);
+  border: none;
+  color: var(--white);
+  overflow: hidden;
+  position: relative;
+}
+
+.dash-ui__block--hero::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -15%;
+  width: 55%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(42, 157, 143, 0.22) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.dash-ui__block--hero::after {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  left: 5%;
+  width: 40%;
+  height: 70%;
+  background: radial-gradient(circle, rgba(212, 146, 42, 0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.dash-ui__block--hero .dash-ui__label {
+  color: rgba(255, 255, 255, 0.55);
+  position: relative;
+  z-index: 1;
+}
+
+.dash-ui__block--hero .dash-ui__amount {
+  color: var(--white);
+  position: relative;
+  z-index: 1;
+}
+
+.dash-ui__block--hero .dash-ui__block-head {
+  position: relative;
+  z-index: 1;
 }
 
 .dash-ui__block-head {
@@ -22,27 +76,31 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
 }
 
 .dash-ui__label {
   margin: 0;
-  font-size: 0.8rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
   font-weight: 600;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
   color: var(--color-muted);
 }
 
 .dash-ui__amount {
   margin: 0;
-  font-size: 1.75rem;
+  font-family: var(--font-display);
+  font-size: 2rem;
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--navy);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
 }
 
 .dash-ui__amount--hero {
-  font-size: 2rem;
+  font-size: 2.5rem;
 }
 
 .dash-ui__amount--spend {
@@ -50,12 +108,27 @@
 }
 
 .dash-ui__eye {
-  border: none;
-  background: transparent;
-  font-size: 1.1rem;
+  border: 1px solid var(--color-border);
+  background: var(--white);
+  border-radius: var(--radius-full);
+  width: 2.1rem;
+  height: 2.1rem;
+  font-size: 0.95rem;
   cursor: pointer;
-  padding: 0.25rem;
   line-height: 1;
+  display: grid;
+  place-items: center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dash-ui__block--hero .dash-ui__eye {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dash-ui__eye:hover {
+  border-color: var(--mint);
+  box-shadow: 0 0 0 3px var(--mint-soft);
 }
 
 .dash-ui__accounts {
@@ -65,36 +138,58 @@
   display: flex;
   gap: 0.75rem;
   overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 0.25rem;
 }
 
 .dash-ui__account-card {
   flex: 0 0 auto;
-  min-width: 7.5rem;
-  padding: 0.75rem;
+  min-width: 9rem;
+  padding: 1rem;
   border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  background: var(--color-bg);
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+  border-radius: var(--radius-md);
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.dash-ui__account-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.dash-ui__account-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--mint), var(--orange));
 }
 
 .dash-ui__account-name {
-  font-weight: 600;
+  font-family: var(--font-body);
   font-size: 0.9rem;
-  color: var(--color-text);
+  font-weight: 600;
+  color: var(--navy);
 }
 
 .dash-ui__account-bank {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--color-muted);
+  margin-top: 0.1rem;
 }
 
 .dash-ui__account-balance {
-  margin-top: 0.35rem;
+  margin-top: 0.65rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
   font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--color-text);
+  color: var(--navy);
+  letter-spacing: -0.02em;
 }
 
 .dash-ui__account-balance--spend {
@@ -103,17 +198,36 @@
 
 .dash-ui__insights {
   margin: 0;
-  padding-left: 1.1rem;
-  color: var(--color-text);
-  line-height: 1.5;
+  padding: 0;
+  list-style: none;
+  color: var(--navy);
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+.dash-ui__insights li {
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.dash-ui__insights li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mint);
 }
 
 .dash-ui__insights li + li {
-  margin-top: 0.5rem;
+  margin-top: 0.65rem;
 }
 
 .dash-ui__insights-note {
-  margin: 0.75rem 0 0;
+  margin: 0.85rem 0 0;
   font-size: 0.75rem;
   color: var(--color-muted);
+  line-height: 1.45;
 }

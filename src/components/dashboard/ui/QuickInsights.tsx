@@ -10,7 +10,7 @@ export function QuickInsights({ insights }: QuickInsightsProps) {
           <li key={text}>{text}</li>
         ))}
       </ul>
-      <p className="dash-ui__insights-note">Static tips from your JSON data.</p>
+      <p className="dash-ui__insights-note">Based on your recent transactions.</p>
     </section>
   )
 }

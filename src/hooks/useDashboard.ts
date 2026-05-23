@@ -1,9 +1,7 @@
 import { useMemo } from 'react'
 import { useAuth } from '../context/AuthContext'
-import {
-  getAccountsForUser,
-  getTransactionsForUser,
-} from '../data'
+import { useFinance } from '../context/FinanceContext'
+import { getAccountsForUser } from '../data'
 import {
   buildQuickInsights,
   computeMonthSpending,
@@ -14,13 +12,13 @@ import { useBalanceVisibility } from './useBalanceVisibility'
 
 export function useDashboard() {
   const { user } = useAuth()
+  const { transactions } = useFinance()
   const visibility = useBalanceVisibility(false)
 
   const data = useMemo(() => {
     if (!user) return null
 
     const accounts = getAccountsForUser(user.id)
-    const transactions = getTransactionsForUser(user.id)
     const now = new Date()
     const year = now.getFullYear()
     const month = now.getMonth() + 1
@@ -33,7 +31,7 @@ export function useDashboard() {
       spendingThisMonth: computeMonthSpending(transactions, year, month),
       quickInsights: buildQuickInsights(transactions),
     }
-  }, [user])
+  }, [user, transactions])
 
   return { ...visibility, ...data }
 }

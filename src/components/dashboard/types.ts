@@ -32,6 +32,8 @@ export type AccountsRowProps = {
 export type SpendingThisMonthProps = {
   amount: number
   displayAmount: (amount: number) => string
+  balancesVisible: boolean
+  onToggleBalances: () => void
 }
 
 export type QuickInsightsProps = {

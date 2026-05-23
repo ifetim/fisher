@@ -8,3 +8,8 @@ const currency = new Intl.NumberFormat('en-CA', {
 export function formatCurrency(amount: number): string {
   return currency.format(amount)
 }
+
+export function formatTooltipValue(value: unknown): string {
+  const n = typeof value === 'number' ? value : Number(value)
+  return Number.isFinite(n) ? formatCurrency(n) : ''
+}
