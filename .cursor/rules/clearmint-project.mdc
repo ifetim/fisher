@@ -1,0 +1,33 @@
+---
+description: ClearMint product scope, stack, and build conventions
+alwaysApply: true
+---
+
+# ClearMint project
+
+**Source of truth:** `PLAN.md` (scope, screens, JSON schemas, design, build order).
+
+## Stack
+
+- **Next.js** App Router + React + TypeScript + CSS
+- API routes in `src/app/api/` (Plaid, Gemini)
+- Screen components in `src/views/` (not `src/pages` — reserved by Next.js)
+- Recharts; Gemini on user action only
+- Demo JSON in `src/data/`; Plaid via API routes
+- Secrets in `.env.local` at repo root — never commit
+
+## Build approach
+
+1. One screen at a time per PLAN build order.
+2. Each screen on its own feature branch; merge when that slice works.
+3. `npm run dev` — single dev server (no separate Express server).
+
+## Data conventions
+
+- Transaction amounts: **negative = spending**, **positive = income**
+- Balances **hidden by default**; eye icon to reveal
+
+## Design
+
+- White bg, navy text; green income, red spending, blue savings
+- Mobile-first, minimal; calm coach tone

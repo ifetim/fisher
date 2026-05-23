@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "userId": 1,
+    "goal": "Italy Trip",
+    "targetAmount": 3000,
+    "savedAmount": 850,
+    "deadline": "2026-12-01",
+    "monthlyContribution": 250
+  }
+]

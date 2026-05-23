@@ -1,0 +1,73 @@
+.plaid-test {
+  min-height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2rem;
+}
+
+.plaid-test__header h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.5rem;
+}
+
+.plaid-test__header p {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.plaid-test__steps {
+  margin: 1.25rem 0;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.plaid-test__steps code {
+  font-size: 0.8rem;
+}
+
+.plaid-test__badge {
+  margin-bottom: 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: #f1f5f9;
+  color: var(--color-text);
+}
+
+.plaid-test__badge--ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.plaid-test__badge--bad {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.plaid-test__cred-fix {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.plaid-test__cred-fix p {
+  margin: 0.5rem 0;
+}
+
+.plaid-test__cred-fix ol {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.plaid-test__back {
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--color-accent);
+}

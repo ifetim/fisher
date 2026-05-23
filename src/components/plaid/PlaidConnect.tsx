@@ -1,0 +1,168 @@
+'use client'
+
+import { useCallback, useEffect, useState } from 'react'
+import { usePlaidLink } from 'react-plaid-link'
+import { useAuth } from '../../context/AuthContext'
+import {
+  createLinkToken,
+  exchangePublicToken,
+  fetchPlaidStatus,
+  fetchPlaidTransactions,
+  type NormalizedTransaction,
+} from '@/lib/plaidApi'
+import './PlaidConnect.css'
+
+const TEST_USER_ID = 'plaid-test-user'
+
+type PlaidConnectProps = {
+  /** Override auth user — used on /plaid-test */
+  userId?: string
+  maxRows?: number
+  onTransactions?: (transactions: NormalizedTransaction[]) => void
+}
+
+export function PlaidConnect({
+  userId: userIdOverride,
+  maxRows = 10,
+  onTransactions,
+}: PlaidConnectProps) {
+  const { user } = useAuth()
+  const [linkToken, setLinkToken] = useState<string | null>(null)
+  const [connected, setConnected] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [transactions, setTransactions] = useState<NormalizedTransaction[]>([])
+
+  const userId = userIdOverride ?? (user ? String(user.id) : '')
+
+  const loadTransactions = useCallback(async () => {
+    if (!userId) return
+    setLoading(true)
+    setError('')
+    try {
+      const txs = await fetchPlaidTransactions(userId)
+      setTransactions(txs)
+      onTransactions?.(txs)
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Could not load Plaid transactions.',
+      )
+    } finally {
+      setLoading(false)
+    }
+  }, [userId, onTransactions])
+
+  useEffect(() => {
+    if (!userId) return
+
+    void (async () => {
+      try {
+        const isConnected = await fetchPlaidStatus(userId)
+        setConnected(isConnected)
+        if (isConnected) await loadTransactions()
+      } catch {
+        /* server may be offline */
+      }
+    })()
+  }, [userId, loadTransactions])
+
+  useEffect(() => {
+    if (!userId || connected) return
+
+    void (async () => {
+      try {
+        const token = await createLinkToken(userId)
+        setLinkToken(token)
+        setError('')
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : 'Plaid API not reachable. Run: npm run dev',
+        )
+      }
+    })()
+  }, [userId, connected])
+
+  const onSuccess = useCallback(
+    async (publicToken: string) => {
+      if (!userId) return
+      setLoading(true)
+      setError('')
+      try {
+        await exchangePublicToken(userId, publicToken)
+        setConnected(true)
+        await loadTransactions()
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'Bank connected but token exchange failed.',
+        )
+      } finally {
+        setLoading(false)
+      }
+    },
+    [userId, loadTransactions],
+  )
+
+  const { open, ready } = usePlaidLink({
+    token: linkToken,
+    onSuccess,
+  })
+
+  if (!userId) return null
+
+  const visible =
+    maxRows === undefined
+      ? transactions.slice(0, 10)
+      : maxRows <= 0
+        ? transactions
+        : transactions.slice(0, maxRows)
+
+  return (
+    <section className="plaid-connect">
+      <h2 className="plaid-connect__title">Bank (Plaid Sandbox)</h2>
+      <p className="plaid-connect__hint">
+        Demo: First Platypus Bank · user_good / pass_good
+      </p>
+
+      {!connected ? (
+        <button
+          type="button"
+          className="plaid-connect__button"
+          disabled={!ready || loading || !linkToken}
+          onClick={() => open()}
+        >
+          {loading ? 'Connecting…' : 'Connect bank'}
+        </button>
+      ) : (
+        <p className="plaid-connect__status">
+          Connected · {transactions.length} transactions
+        </p>
+      )}
+
+      {linkToken && !connected ? (
+        <p className="plaid-connect__ready">Link token ready</p>
+      ) : null}
+
+      {error ? <p className="plaid-connect__error">{error}</p> : null}
+
+      {visible.length > 0 ? (
+        <ul className="plaid-connect__list">
+          {visible.map((tx) => (
+            <li key={tx.id} className="plaid-connect__row">
+              <span>
+                {tx.merchant}
+                <small className="plaid-connect__date">{tx.date}</small>
+              </span>
+              <span className={tx.type === 'credit' ? 'income' : 'spend'}>
+                {tx.amount < 0 ? '' : '+'}${Math.abs(tx.amount).toFixed(2)}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </section>
+  )
+}
+
+export { TEST_USER_ID }

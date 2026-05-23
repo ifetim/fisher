@@ -1,0 +1,119 @@
+/* Placeholder dashboard UI — teammate replaces `ui/` components + this file */
+
+.dash-ui__greeting {
+  margin: 0 0 1.25rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: left;
+}
+
+.dash-ui__block {
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-surface);
+  text-align: left;
+}
+
+.dash-ui__block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.dash-ui__label {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+}
+
+.dash-ui__amount {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.dash-ui__amount--hero {
+  font-size: 2rem;
+}
+
+.dash-ui__amount--spend {
+  color: var(--color-spend);
+}
+
+.dash-ui__eye {
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+}
+
+.dash-ui__accounts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+}
+
+.dash-ui__account-card {
+  flex: 0 0 auto;
+  min-width: 7.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.dash-ui__account-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.dash-ui__account-bank {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.dash-ui__account-balance {
+  margin-top: 0.35rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.dash-ui__account-balance--spend {
+  color: var(--color-spend);
+}
+
+.dash-ui__insights {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.dash-ui__insights li + li {
+  margin-top: 0.5rem;
+}
+
+.dash-ui__insights-note {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}

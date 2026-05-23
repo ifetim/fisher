@@ -22,13 +22,20 @@ A simple, clean personal finance dashboard that helps everyday people understand
 
 | Layer | Choice |
 |--------|--------|
-| Frontend | **Vite + React + TypeScript** |
+| App | **Next.js** (App Router) + **React + TypeScript** + CSS |
+| API | **Next.js Route Handlers** (`src/app/api/...`) — Plaid, Gemini |
 | Styling | **CSS** (keep it simple) |
 | Charts | **Recharts** |
 | AI | **Gemini API** (insights on user action only) |
-| Data | **Local JSON files** (no backend for v1) |
+| Data | **Local JSON** in `src/data/`; **Plaid** for live bank data |
 
-**Not in v1:** Plaid, real auth, database, backend API.
+**Layout:** routes in `src/app/` · screen UI in `src/views/` · shared components in `src/components/`.
+
+**Dev:** `npm run dev` (single server on port 3000).
+
+**Secrets:** `.env.local` at repo root (`PLAID_*`, `GEMINI_API_KEY`).
+
+**Not in v1:** Real auth, production database, hosted deploy polish.
 
 ---
 
@@ -206,12 +213,13 @@ Dashboard quick insights: use a **button** or prewritten fallbacks until the use
 
 ## Build order
 
-1. Scaffold Vite + React + TS; add JSON files and types
+1. **Next.js** app + JSON data/types (`src/app/`, `src/views/`, `src/data/`)
 2. **Login** + routing
 3. **Dashboard** (no AI yet)
 4. **Spending** (charts + filters + list)
 5. **Savings**
-6. **Advice** + wire Gemini
+6. **Advice** + wire Gemini (server-side if using secrets)
+7. **Plaid** via `src/app/api/plaid/...`
 
 After each screen works on its branch, merge to `main`.
 
@@ -219,7 +227,7 @@ After each screen works on its branch, merge to `main`.
 
 ## Cursor kickoff (copy when starting code)
 
-> We are building ClearMint, a personal finance dashboard web app using Vite + React + TypeScript + CSS. No backend — all data comes from local JSON files (users.json, accounts.json, transactions.json, savingsPlans.json). We use the Gemini API for AI insights. The app has 5 screens: Login, Dashboard, Spending, Savings, and Advice. Balances are hidden by default like Wealthsimple with an eye icon to reveal. The design is clean, minimal, calm — no clutter. Build one screen at a time starting with Login.
+> We are building ClearMint with **Next.js + React + TypeScript + CSS**. API routes in Next handle Plaid and Gemini (no secrets in the browser). Demo data: users.json, accounts.json, transactions.json, savingsPlans.json. Five screens: Login, Dashboard, Spending, Savings, Advice. Balances hidden by default (eye icon). Clean, minimal, calm. Build one screen at a time starting with Login.
 
 Then: **“Screen 1 is done. Now build Screen 2.”**
 
@@ -230,5 +238,5 @@ Then: **“Screen 1 is done. Now build Screen 2.”**
 - Target: **24 hours**, **~3 people**
 - One person: JSON + types + analytics helpers
 - One person: UI / screens / CSS
-- One person: Recharts + Gemini integration
+- One person: Next API routes (Plaid, Gemini) + Recharts
 - Agree on transaction schema and categories in the first 30 minutes

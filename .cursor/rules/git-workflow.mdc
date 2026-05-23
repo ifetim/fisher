@@ -1,0 +1,20 @@
+---
+description: Use a new git branch for every new feature
+alwaysApply: true
+---
+
+# Git workflow
+
+When starting work on a **new feature**, always use a **new branch**. Do not implement features directly on `main`.
+
+## Before coding
+
+1. Confirm you are not on `main` (or switch/create a branch).
+2. Create a branch from an up-to-date `main`, e.g. `feature/login`, `feature/dashboard`, `feature/spending`.
+3. Keep the branch focused on one slice of work.
+
+## When done
+
+Merge to `main` only when that slice works and is ready to integrate.
+
+This matches `PLAN.md` — feature branches are the default workflow for this repo.
