@@ -10,11 +10,20 @@ import {
 } from '../../lib/plaidApi'
 import './PlaidConnect.css'
 
+const TEST_USER_ID = 'plaid-test-user'
+
 type PlaidConnectProps = {
+  /** Override auth user — used on /plaid-test */
+  userId?: string
+  maxRows?: number
   onTransactions?: (transactions: NormalizedTransaction[]) => void
 }
 
-export function PlaidConnect({ onTransactions }: PlaidConnectProps) {
+export function PlaidConnect({
+  userId: userIdOverride,
+  maxRows = 10,
+  onTransactions,
+}: PlaidConnectProps) {
   const { user } = useAuth()
   const [linkToken, setLinkToken] = useState<string | null>(null)
   const [connected, setConnected] = useState(false)
@@ -22,7 +31,7 @@ export function PlaidConnect({ onTransactions }: PlaidConnectProps) {
   const [error, setError] = useState('')
   const [transactions, setTransactions] = useState<NormalizedTransaction[]>([])
 
-  const userId = user ? String(user.id) : ''
+  const userId = userIdOverride ?? (user ? String(user.id) : '')
 
   const loadTransactions = useCallback(async () => {
     if (!userId) return
@@ -32,8 +41,10 @@ export function PlaidConnect({ onTransactions }: PlaidConnectProps) {
       const txs = await fetchPlaidTransactions(userId)
       setTransactions(txs)
       onTransactions?.(txs)
-    } catch {
-      setError('Could not load Plaid transactions. Is the server running?')
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Could not load Plaid transactions.',
+      )
     } finally {
       setLoading(false)
     }
@@ -60,8 +71,13 @@ export function PlaidConnect({ onTransactions }: PlaidConnectProps) {
       try {
         const token = await createLinkToken(userId)
         setLinkToken(token)
-      } catch {
-        setError('Plaid server not reachable. Run: npm run dev:server')
+        setError('')
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : 'Plaid server not reachable. Run: npm run dev:server',
+        )
       }
     })()
   }, [userId, connected])
@@ -75,8 +91,10 @@ export function PlaidConnect({ onTransactions }: PlaidConnectProps) {
         await exchangePublicToken(userId, publicToken)
         setConnected(true)
         await loadTransactions()
-      } catch {
-        setError('Bank connected but token exchange failed.')
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'Bank connected but token exchange failed.',
+        )
       } finally {
         setLoading(false)
       }
@@ -89,7 +107,14 @@ export function PlaidConnect({ onTransactions }: PlaidConnectProps) {
     onSuccess,
   })
 
-  if (!user) return null
+  if (!userId) return null
+
+  const visible =
+    maxRows === undefined
+      ? transactions.slice(0, 10)
+      : maxRows <= 0
+        ? transactions
+        : transactions.slice(0, maxRows)
 
   return (
     <section className="plaid-connect">
@@ -108,16 +133,25 @@ export function PlaidConnect({ onTransactions }: PlaidConnectProps) {
           {loading ? 'Connecting…' : 'Connect bank'}
         </button>
       ) : (
-        <p className="plaid-connect__status">Connected · {transactions.length} transactions</p>
+        <p className="plaid-connect__status">
+          Connected · {transactions.length} transactions
+        </p>
       )}
+
+      {linkToken && !connected ? (
+        <p className="plaid-connect__ready">Link token ready</p>
+      ) : null}
 
       {error ? <p className="plaid-connect__error">{error}</p> : null}
 
-      {transactions.length > 0 ? (
+      {visible.length > 0 ? (
         <ul className="plaid-connect__list">
-          {transactions.slice(0, 10).map((tx) => (
+          {visible.map((tx) => (
             <li key={tx.id} className="plaid-connect__row">
-              <span>{tx.merchant}</span>
+              <span>
+                {tx.merchant}
+                <small className="plaid-connect__date">{tx.date}</small>
+              </span>
               <span className={tx.type === 'credit' ? 'income' : 'spend'}>
                 {tx.amount < 0 ? '' : '+'}${Math.abs(tx.amount).toFixed(2)}
               </span>
@@ -128,3 +162,5 @@ export function PlaidConnect({ onTransactions }: PlaidConnectProps) {
     </section>
   )
 }
+
+export { TEST_USER_ID }

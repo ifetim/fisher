@@ -67,3 +67,15 @@
 .plaid-connect__row .spend {
   color: var(--color-spend);
 }
+
+.plaid-connect__ready {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-income);
+}
+
+.plaid-connect__date {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
