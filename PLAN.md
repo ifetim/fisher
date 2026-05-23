@@ -7,6 +7,8 @@
 - Work in **feature branches**; merge to `main` only when that slice works.
 - Suggested branch names: `feature/login`, `feature/dashboard`, `feature/spending`, etc.
 - This document lives on `main` (or `docs/plan`) as the source of truth for scope and design.
+- **README.md** — setup commands and team workflow summary.
+- **`.cursor/rules/`** — same conventions for Cursor agents (git + project scope).
 
 ---
 
