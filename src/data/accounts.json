@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "userId": 1,
+    "name": "Chequing",
+    "bank": "RBC",
+    "balance": 2847.5,
+    "type": "chequing"
+  },
+  {
+    "id": 2,
+    "userId": 1,
+    "name": "Savings",
+    "bank": "RBC",
+    "balance": 5200,
+    "type": "savings"
+  },
+  {
+    "id": 3,
+    "userId": 1,
+    "name": "Credit Card",
+    "bank": "TD",
+    "balance": -843.2,
+    "type": "credit"
+  }
+]

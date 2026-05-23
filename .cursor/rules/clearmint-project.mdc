@@ -1,0 +1,42 @@
+---
+description: ClearMint product scope, stack, and build conventions
+alwaysApply: true
+---
+
+# ClearMint project
+
+**Source of truth:** `PLAN.md` (scope, screens, JSON schemas, design, build order).
+
+## Stack (v1)
+
+- Vite + React + TypeScript + plain CSS
+- Recharts for charts; Gemini for AI
+- **No backend** — data from local JSON: `users.json`, `accounts.json`, `transactions.json`, `savingsPlans.json`
+- **Not in v1:** Plaid, real auth, database, backend API
+
+## Build approach
+
+1. One screen at a time, in PLAN build order (Login → Dashboard → Spending → Savings → Advice).
+2. Each screen on its own feature branch; merge when that slice works.
+3. Agree on transaction schema and categories before diverging (see PLAN).
+
+## Gemini API
+
+Call Gemini **only** on user action — never on every page load:
+
+1. Upload statement (image/PDF → transactions JSON)
+2. Spending alerts
+3. Savings suggestions
+
+Dashboard quick insights: button or static fallbacks until the user asks.
+
+## Data conventions
+
+- Transaction amounts: **negative = spending**, **positive = income**
+- Balances **hidden by default**; eye icon to reveal (Wealthsimple-style)
+
+## Design
+
+- White bg, navy text; green income, red spending, blue savings
+- Mobile-first, minimal (max 3–4 elements per section)
+- Calm coach tone — no guilt or scary alerts

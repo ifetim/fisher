@@ -1,0 +1,497 @@
+[
+  {
+    "id": 41,
+    "accountId": 3,
+    "date": "2026-05-22",
+    "merchant": "Gym Membership",
+    "category": "Health",
+    "amount": -25.06,
+    "type": "debit"
+  },
+  {
+    "id": 40,
+    "accountId": 1,
+    "date": "2026-05-21",
+    "merchant": "Pharmacy",
+    "category": "Health",
+    "amount": -87.32,
+    "type": "debit"
+  },
+  {
+    "id": 39,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "Pharmacy",
+    "category": "Health",
+    "amount": -86.56,
+    "type": "debit"
+  },
+  {
+    "id": 42,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "Air Canada",
+    "category": "Travel",
+    "amount": -71,
+    "type": "debit"
+  },
+  {
+    "id": 43,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "DoorDash",
+    "category": "Food & Dining",
+    "amount": -72,
+    "type": "debit"
+  },
+  {
+    "id": 44,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "Shell Gas Station",
+    "category": "Transport",
+    "amount": -73,
+    "type": "debit"
+  },
+  {
+    "id": 45,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "Amazon",
+    "category": "Shopping",
+    "amount": -74,
+    "type": "debit"
+  },
+  {
+    "id": 46,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "Netflix",
+    "category": "Entertainment",
+    "amount": -75,
+    "type": "debit"
+  },
+  {
+    "id": 47,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "Hydro One",
+    "category": "Bills & Utilities",
+    "amount": -76,
+    "type": "debit"
+  },
+  {
+    "id": 48,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "Pharmacy",
+    "category": "Health",
+    "amount": -77,
+    "type": "debit"
+  },
+  {
+    "id": 49,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "Air Canada",
+    "category": "Travel",
+    "amount": -78,
+    "type": "debit"
+  },
+  {
+    "id": 50,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "DoorDash",
+    "category": "Food & Dining",
+    "amount": -79,
+    "type": "debit"
+  },
+  {
+    "id": 51,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "Shell Gas Station",
+    "category": "Transport",
+    "amount": -80,
+    "type": "debit"
+  },
+  {
+    "id": 52,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "Amazon",
+    "category": "Shopping",
+    "amount": -81,
+    "type": "debit"
+  },
+  {
+    "id": 53,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "Netflix",
+    "category": "Entertainment",
+    "amount": -82,
+    "type": "debit"
+  },
+  {
+    "id": 54,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "Hydro One",
+    "category": "Bills & Utilities",
+    "amount": -83,
+    "type": "debit"
+  },
+  {
+    "id": 55,
+    "accountId": 1,
+    "date": "2026-05-20",
+    "merchant": "Pharmacy",
+    "category": "Health",
+    "amount": -84,
+    "type": "debit"
+  },
+  {
+    "id": 38,
+    "accountId": 1,
+    "date": "2026-05-16",
+    "merchant": "ParkMobile",
+    "category": "Transport",
+    "amount": -87.01,
+    "type": "debit"
+  },
+  {
+    "id": 37,
+    "accountId": 1,
+    "date": "2026-05-15",
+    "merchant": "Employer Inc",
+    "category": "Income",
+    "amount": 2100,
+    "type": "credit"
+  },
+  {
+    "id": 36,
+    "accountId": 1,
+    "date": "2026-05-14",
+    "merchant": "Shoppers Drug Mart",
+    "category": "Shopping",
+    "amount": -28.76,
+    "type": "debit"
+  },
+  {
+    "id": 35,
+    "accountId": 1,
+    "date": "2026-05-13",
+    "merchant": "Spotify",
+    "category": "Entertainment",
+    "amount": -57.98,
+    "type": "debit"
+  },
+  {
+    "id": 34,
+    "accountId": 1,
+    "date": "2026-05-10",
+    "merchant": "Air Canada",
+    "category": "Travel",
+    "amount": -126.39,
+    "type": "debit"
+  },
+  {
+    "id": 33,
+    "accountId": 1,
+    "date": "2026-05-07",
+    "merchant": "Winners",
+    "category": "Shopping",
+    "amount": -85.56,
+    "type": "debit"
+  },
+  {
+    "id": 32,
+    "accountId": 1,
+    "date": "2026-05-06",
+    "merchant": "Rogers",
+    "category": "Bills & Utilities",
+    "amount": -55.49,
+    "type": "debit"
+  },
+  {
+    "id": 31,
+    "accountId": 1,
+    "date": "2026-05-04",
+    "merchant": "Transit Pass",
+    "category": "Transport",
+    "amount": -114.92,
+    "type": "debit"
+  },
+  {
+    "id": 30,
+    "accountId": 1,
+    "date": "2026-05-03",
+    "merchant": "Amazon",
+    "category": "Shopping",
+    "amount": -107.35,
+    "type": "debit"
+  },
+  {
+    "id": 29,
+    "accountId": 1,
+    "date": "2026-05-02",
+    "merchant": "Whole Foods",
+    "category": "Food & Dining",
+    "amount": -8.83,
+    "type": "debit"
+  },
+  {
+    "id": 28,
+    "accountId": 1,
+    "date": "2026-05-01",
+    "merchant": "Employer Inc",
+    "category": "Income",
+    "amount": 2100,
+    "type": "credit"
+  },
+  {
+    "id": 27,
+    "accountId": 2,
+    "date": "2026-04-30",
+    "merchant": "Starbucks",
+    "category": "Food & Dining",
+    "amount": -34.96,
+    "type": "debit"
+  },
+  {
+    "id": 26,
+    "accountId": 2,
+    "date": "2026-04-25",
+    "merchant": "DoorDash",
+    "category": "Food & Dining",
+    "amount": -57.36,
+    "type": "debit"
+  },
+  {
+    "id": 25,
+    "accountId": 3,
+    "date": "2026-04-24",
+    "merchant": "Hydro One",
+    "category": "Bills & Utilities",
+    "amount": -94.33,
+    "type": "debit"
+  },
+  {
+    "id": 24,
+    "accountId": 1,
+    "date": "2026-04-22",
+    "merchant": "Uber Eats",
+    "category": "Food & Dining",
+    "amount": -113.78,
+    "type": "debit"
+  },
+  {
+    "id": 23,
+    "accountId": 2,
+    "date": "2026-04-20",
+    "merchant": "Airbnb",
+    "category": "Travel",
+    "amount": -110.1,
+    "type": "debit"
+  },
+  {
+    "id": 22,
+    "accountId": 1,
+    "date": "2026-04-19",
+    "merchant": "DoorDash",
+    "category": "Food & Dining",
+    "amount": -112.07,
+    "type": "debit"
+  },
+  {
+    "id": 21,
+    "accountId": 3,
+    "date": "2026-04-17",
+    "merchant": "Rent Payment",
+    "category": "Bills & Utilities",
+    "amount": -104.23,
+    "type": "debit"
+  },
+  {
+    "id": 20,
+    "accountId": 1,
+    "date": "2026-04-16",
+    "merchant": "Transit Pass",
+    "category": "Transport",
+    "amount": -55.24,
+    "type": "debit"
+  },
+  {
+    "id": 19,
+    "accountId": 1,
+    "date": "2026-04-15",
+    "merchant": "Employer Inc",
+    "category": "Income",
+    "amount": 2100,
+    "type": "credit"
+  },
+  {
+    "id": 18,
+    "accountId": 2,
+    "date": "2026-04-14",
+    "merchant": "Shell Gas Station",
+    "category": "Transport",
+    "amount": -110.17,
+    "type": "debit"
+  },
+  {
+    "id": 17,
+    "accountId": 1,
+    "date": "2026-04-10",
+    "merchant": "Chipotle",
+    "category": "Food & Dining",
+    "amount": -16.33,
+    "type": "debit"
+  },
+  {
+    "id": 16,
+    "accountId": 1,
+    "date": "2026-04-08",
+    "merchant": "DoorDash",
+    "category": "Food & Dining",
+    "amount": -122.29,
+    "type": "debit"
+  },
+  {
+    "id": 15,
+    "accountId": 1,
+    "date": "2026-04-06",
+    "merchant": "Whole Foods",
+    "category": "Food & Dining",
+    "amount": -113.57,
+    "type": "debit"
+  },
+  {
+    "id": 14,
+    "accountId": 2,
+    "date": "2026-04-05",
+    "merchant": "Uber Eats",
+    "category": "Food & Dining",
+    "amount": -73,
+    "type": "debit"
+  },
+  {
+    "id": 13,
+    "accountId": 1,
+    "date": "2026-04-04",
+    "merchant": "Gym Membership",
+    "category": "Health",
+    "amount": -87.99,
+    "type": "debit"
+  },
+  {
+    "id": 11,
+    "accountId": 1,
+    "date": "2026-04-01",
+    "merchant": "Employer Inc",
+    "category": "Income",
+    "amount": 2100,
+    "type": "credit"
+  },
+  {
+    "id": 12,
+    "accountId": 3,
+    "date": "2026-04-01",
+    "merchant": "Pharmacy",
+    "category": "Health",
+    "amount": -12.54,
+    "type": "debit"
+  },
+  {
+    "id": 10,
+    "accountId": 1,
+    "date": "2026-03-31",
+    "merchant": "Disney+",
+    "category": "Entertainment",
+    "amount": -15,
+    "type": "debit"
+  },
+  {
+    "id": 9,
+    "accountId": 3,
+    "date": "2026-03-25",
+    "merchant": "Air Canada",
+    "category": "Travel",
+    "amount": -96.53,
+    "type": "debit"
+  },
+  {
+    "id": 8,
+    "accountId": 3,
+    "date": "2026-03-20",
+    "merchant": "Starbucks",
+    "category": "Food & Dining",
+    "amount": -85.22,
+    "type": "debit"
+  },
+  {
+    "id": 7,
+    "accountId": 1,
+    "date": "2026-03-15",
+    "merchant": "Employer Inc",
+    "category": "Income",
+    "amount": 2100,
+    "type": "credit"
+  },
+  {
+    "id": 6,
+    "accountId": 1,
+    "date": "2026-03-14",
+    "merchant": "Starbucks",
+    "category": "Food & Dining",
+    "amount": -74.89,
+    "type": "debit"
+  },
+  {
+    "id": 5,
+    "accountId": 2,
+    "date": "2026-03-09",
+    "merchant": "Gym Membership",
+    "category": "Health",
+    "amount": -85.55,
+    "type": "debit"
+  },
+  {
+    "id": 4,
+    "accountId": 1,
+    "date": "2026-03-04",
+    "merchant": "Shoppers Drug Mart",
+    "category": "Shopping",
+    "amount": -97.94,
+    "type": "debit"
+  },
+  {
+    "id": 2,
+    "accountId": 1,
+    "date": "2026-03-02",
+    "merchant": "Employer Inc",
+    "category": "Income",
+    "amount": 2100,
+    "type": "credit"
+  },
+  {
+    "id": 3,
+    "accountId": 1,
+    "date": "2026-03-02",
+    "merchant": "ParkMobile",
+    "category": "Transport",
+    "amount": -61.18,
+    "type": "debit"
+  },
+  {
+    "id": 1,
+    "accountId": 1,
+    "date": "2026-03-01",
+    "merchant": "Dentist",
+    "category": "Health",
+    "amount": -52.96,
+    "type": "debit"
+  }
+]
