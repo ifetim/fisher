@@ -46,6 +46,25 @@
   color: #991b1b;
 }
 
+.plaid-test__cred-fix {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.plaid-test__cred-fix p {
+  margin: 0.5rem 0;
+}
+
+.plaid-test__cred-fix ol {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
+
 .plaid-test__back {
   display: inline-block;
   margin-top: 1.5rem;

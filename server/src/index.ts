@@ -13,6 +13,7 @@ import {
   saveSession,
   updateCursor,
 } from './sessionStore.js'
+import { logPlaidEnvOnStartup, validatePlaidClientId } from './validateEnv.js'
 
 const app = express()
 const port = Number(process.env.PORT ?? 3001)
@@ -24,9 +25,48 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true })
 })
 
+app.get('/api/plaid/check', async (_req, res) => {
+  const clientId = process.env.PLAID_CLIENT_ID ?? ''
+  const format = validatePlaidClientId(clientId)
+  if (!format.ok) {
+    res.json({ credentialsOk: false, issue: format.message })
+    return
+  }
+
+  try {
+    await plaidClient.linkTokenCreate({
+      user: { client_user_id: 'config-check' },
+      client_name: 'ClearMint',
+      products: plaidProducts,
+      country_codes: plaidCountryCodes,
+      language: 'en',
+    })
+    res.json({ credentialsOk: true })
+  } catch (error: unknown) {
+    const plaidMessage =
+      error &&
+      typeof error === 'object' &&
+      'response' in error &&
+      error.response &&
+      typeof error.response === 'object' &&
+      'data' in error.response &&
+      error.response.data &&
+      typeof error.response.data === 'object' &&
+      'error_message' in error.response.data
+        ? String(error.response.data.error_message)
+        : 'Plaid rejected your sandbox keys'
+    res.json({ credentialsOk: false, issue: plaidMessage })
+  }
+})
+
 app.post('/api/plaid/link-token', async (req, res) => {
   try {
     const userId = String(req.body?.userId ?? 'demo-user')
+    const format = validatePlaidClientId(process.env.PLAID_CLIENT_ID ?? '')
+    if (!format.ok) {
+      res.status(500).json({ error: format.message })
+      return
+    }
     const response = await plaidClient.linkTokenCreate({
       user: { client_user_id: userId },
       client_name: 'ClearMint',
@@ -130,5 +170,6 @@ app.get('/api/plaid/transactions', async (req, res) => {
 })
 
 app.listen(port, () => {
+  logPlaidEnvOnStartup()
   console.log(`ClearMint Plaid server listening on http://localhost:${port}`)
 })

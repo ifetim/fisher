@@ -1,14 +1,22 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PlaidConnect, TEST_USER_ID } from '../components/plaid/PlaidConnect'
-import { checkServerHealth } from '../lib/plaidApi'
+import { checkPlaidCredentials, checkServerHealth } from '../lib/plaidApi'
 import './PlaidTestPage.css'
 
 export function PlaidTestPage() {
   const [serverOk, setServerOk] = useState<boolean | null>(null)
+  const [credIssue, setCredIssue] = useState<string | null>(null)
 
   useEffect(() => {
-    void checkServerHealth().then(setServerOk)
+    void (async () => {
+      const ok = await checkServerHealth()
+      setServerOk(ok)
+      if (ok) {
+        const cred = await checkPlaidCredentials()
+        if (!cred.credentialsOk) setCredIssue(cred.issue ?? 'Invalid Plaid keys')
+      }
+    })()
   }, [])
 
   const badgeClass =
@@ -25,27 +33,32 @@ export function PlaidTestPage() {
         <p>Quick check — no login required.</p>
       </header>
 
-      <ol className="plaid-test__steps">
-        <li>
-          Terminal 1: <code>cd server && npm run dev</code>
-        </li>
-        <li>
-          Terminal 2: <code>npm run dev</code>
-        </li>
-        <li>
-          Fix keys in <code>server/.env</code> if link token fails
-        </li>
-        <li>Click Connect bank → sandbox login</li>
-      </ol>
-
       <div className={badgeClass}>
         Server:{' '}
         {serverOk === null
           ? 'checking…'
           : serverOk
             ? 'online ✓'
-            : 'offline — start server on port 3001'}
+            : 'offline — run: cd server && npm run dev'}
       </div>
+
+      {credIssue ? (
+        <div className="plaid-test__cred-fix">
+          <strong>Keys problem — Connect bank stays disabled until fixed:</strong>
+          <p>{credIssue}</p>
+          <ol>
+            <li>
+              Open{' '}
+              <a href="https://dashboard.plaid.com/developers/keys" target="_blank" rel="noreferrer">
+                Plaid Dashboard → Keys
+              </a>
+            </li>
+            <li>Copy <strong>Sandbox</strong> Client ID + Secret</li>
+            <li>Paste into <code>server/.env</code></li>
+            <li>Restart server, refresh this page</li>
+          </ol>
+        </div>
+      ) : null}
 
       <PlaidConnect userId={TEST_USER_ID} maxRows={0} />
 

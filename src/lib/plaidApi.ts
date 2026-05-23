@@ -17,6 +17,15 @@ async function readApiError(res: Response, fallback: string): Promise<string> {
   }
 }
 
+export async function checkPlaidCredentials(): Promise<{
+  credentialsOk: boolean
+  issue?: string
+}> {
+  const res = await fetch('/api/plaid/check')
+  if (!res.ok) return { credentialsOk: false, issue: 'Could not reach Plaid server' }
+  return (await res.json()) as { credentialsOk: boolean; issue?: string }
+}
+
 export async function checkServerHealth(): Promise<boolean> {
   try {
     const res = await fetch('/api/health')
