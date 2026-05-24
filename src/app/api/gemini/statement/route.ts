@@ -95,7 +95,7 @@ Rules for message:
         { inlineData: { mimeType, data: base64 } },
       ])
 
-      const raw = result.response.text()
+      const raw = result.response.text().replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim()
       const parsed = JSON.parse(raw) as {
         transactions: Omit<ParsedTx, 'accountId'>[]
         topCategory: string
@@ -117,7 +117,9 @@ Rules for message:
       transactions: STUB_TRANSACTIONS,
       message: 'Parsed 2 transactions from your statement (demo mode).',
     })
-  } catch {
-    return NextResponse.json({ error: 'Failed to parse statement' }, { status: 500 })
+  } catch (err) {
+    console.error('[statement route]', err)
+    const message = err instanceof Error ? err.message : String(err)
+    return NextResponse.json({ error: `Failed to parse statement: ${message}` }, { status: 500 })
   }
 }
