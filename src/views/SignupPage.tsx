@@ -37,7 +37,7 @@ export function SignupPage() {
       return
     }
 
-    const ok = login('fe@email.com', 'password123')
+    const ok = login('test@gmail.com', 'password123')
     if (ok) {
       router.replace('/onboarding')
     } else {
@@ -90,7 +90,7 @@ export function SignupPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@email.com"
+                placeholder="you@gmail.com"
               />
             </div>
             <div className="field-pair">

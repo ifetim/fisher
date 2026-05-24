@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       public_token: publicToken,
     })
 
-    saveSession(userId, exchange.data.access_token, exchange.data.item_id)
+    await saveSession(userId, exchange.data.access_token, exchange.data.item_id)
 
     // Custom sandbox users often return 0 txs until refresh runs.
     await refreshTransactionsIfEmpty(exchange.data.access_token, 0)

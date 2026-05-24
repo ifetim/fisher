@@ -6,5 +6,5 @@ export async function GET(request: Request) {
   if (!userId) {
     return NextResponse.json({ error: 'userId is required' }, { status: 400 })
   }
-  return NextResponse.json({ connected: hasSession(userId) })
+  return NextResponse.json({ connected: await hasSession(userId) })
 }

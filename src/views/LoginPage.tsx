@@ -12,7 +12,7 @@ export function LoginPage() {
   const searchParams = useSearchParams()
   const fromSignup = searchParams.get('from') === 'signup'
 
-  const [email, setEmail] = useState('fe@email.com')
+  const [email, setEmail] = useState('test@gmail.com')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [showPw, setShowPw] = useState(false)
@@ -85,7 +85,7 @@ export function LoginPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@email.com"
+                placeholder="you@gmail.com"
               />
             </div>
             <div className="field" style={{ position: 'relative' }}>
@@ -119,7 +119,7 @@ export function LoginPage() {
             {error ? <p className="auth-error">{error}</p> : null}
 
             <div className="auth-hint">
-              Demo: <code>fe@email.com</code> / <code>password123</code>
+              Demo: <code>test@gmail.com</code> / <code>password123</code>
             </div>
 
             <button type="submit" className="btn block">

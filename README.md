@@ -32,7 +32,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) for the landing page, or jump straight to `/login`.
 
-**Demo login:** `fe@email.com` / `password123`
+**Demo login:** `test@gmail.com`, `alex@gmail.com`, or `jordan@gmail.com` — password `password123`
 
 The app runs **without any API keys** — it falls back to bundled JSON + prewritten advice cards and short chat replies. Add a Plaid sandbox key to demo the live bank flow; add an OpenAI key to demo real AI chat and advice.
 

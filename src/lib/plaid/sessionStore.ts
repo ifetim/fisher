@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { Redis } from '@upstash/redis'
 import type { NormalizedTransaction } from '@/lib/plaid/normalizeTransaction'
 import { mergePlaidTransactions } from '@/lib/plaid/mergeTransactions'
 
@@ -13,6 +14,17 @@ type PlaidSession = {
 type SessionMap = Record<string, PlaidSession>
 
 const SESSION_FILE = path.resolve(process.cwd(), '.plaid-sessions.json')
+
+function sessionKey(userId: string): string {
+  return `plaid:session:${userId}`
+}
+
+function getRedis(): Redis | null {
+  const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL
+  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN
+  if (!url || !token) return null
+  return new Redis({ url, token })
+}
 
 function readFile(): SessionMap {
   try {
@@ -31,49 +43,79 @@ function writeFile(sessions: SessionMap) {
   }
 }
 
-export function saveSession(userId: string, accessToken: string, itemId: string) {
-  const sessions = readFile()
-  sessions[userId] = { accessToken, itemId, cursor: null, transactions: [] }
-  writeFile(sessions)
-}
-
-export function getSession(userId: string): PlaidSession | undefined {
+async function readSession(userId: string): Promise<PlaidSession | undefined> {
+  const redis = getRedis()
+  if (redis) {
+    const session = await redis.get<PlaidSession>(sessionKey(userId))
+    return session ?? undefined
+  }
   return readFile()[userId]
 }
 
-export function updateCursor(userId: string, cursor: string | null) {
-  const sessions = readFile()
-  if (sessions[userId]) {
-    sessions[userId]!.cursor = cursor
-    writeFile(sessions)
+async function writeSession(userId: string, session: PlaidSession): Promise<void> {
+  const redis = getRedis()
+  if (redis) {
+    await redis.set(sessionKey(userId), session)
+    return
   }
-}
-
-export function mergeSessionTransactions(
-  userId: string,
-  incoming: NormalizedTransaction[],
-  removedIds: string[] = [],
-): NormalizedTransaction[] {
   const sessions = readFile()
-  const session = sessions[userId]
-  if (!session) return []
-
-  const merged = mergePlaidTransactions(session.transactions ?? [], incoming, removedIds)
-  session.transactions = merged
+  sessions[userId] = session
   writeFile(sessions)
-  return merged
 }
 
-export function getSessionTransactions(userId: string): NormalizedTransaction[] {
-  return readFile()[userId]?.transactions ?? []
-}
-
-export function hasSession(userId: string): boolean {
-  return Boolean(readFile()[userId])
-}
-
-export function deleteSession(userId: string) {
+async function removeSession(userId: string): Promise<void> {
+  const redis = getRedis()
+  if (redis) {
+    await redis.del(sessionKey(userId))
+    return
+  }
   const sessions = readFile()
   delete sessions[userId]
   writeFile(sessions)
+}
+
+export async function saveSession(
+  userId: string,
+  accessToken: string,
+  itemId: string,
+): Promise<void> {
+  await writeSession(userId, { accessToken, itemId, cursor: null, transactions: [] })
+}
+
+export async function getSession(userId: string): Promise<PlaidSession | undefined> {
+  return readSession(userId)
+}
+
+export async function updateCursor(userId: string, cursor: string | null): Promise<void> {
+  const session = await readSession(userId)
+  if (!session) return
+  await writeSession(userId, { ...session, cursor })
+}
+
+export async function mergeSessionTransactions(
+  userId: string,
+  incoming: NormalizedTransaction[],
+  removedIds: string[] = [],
+): Promise<NormalizedTransaction[]> {
+  const session = await readSession(userId)
+  if (!session) return []
+
+  const merged = mergePlaidTransactions(session.transactions ?? [], incoming, removedIds)
+  await writeSession(userId, { ...session, transactions: merged })
+  return merged
+}
+
+export async function getSessionTransactions(
+  userId: string,
+): Promise<NormalizedTransaction[]> {
+  const session = await readSession(userId)
+  return session?.transactions ?? []
+}
+
+export async function hasSession(userId: string): Promise<boolean> {
+  return Boolean(await readSession(userId))
+}
+
+export async function deleteSession(userId: string): Promise<void> {
+  await removeSession(userId)
 }

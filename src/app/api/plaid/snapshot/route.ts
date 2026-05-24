@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'userId is required' }, { status: 400 })
   }
 
-  const session = getSession(userId)
+  const session = await getSession(userId)
   if (!session) {
     return NextResponse.json(
       { error: 'No Plaid connection for this user' },

@@ -48,7 +48,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'userId is required' }, { status: 400 })
     }
 
-    const session = getSession(userId)
+    const session = await getSession(userId)
     if (!session) {
       return NextResponse.json(
         { error: 'No Plaid connection for this user' },
@@ -61,28 +61,28 @@ export async function GET(request: Request) {
       session.cursor ?? undefined,
     )
 
-    updateCursor(userId, nextCursor)
+    await updateCursor(userId, nextCursor)
 
-    let transactions = mergeSessionTransactions(userId, incoming, removed)
+    let transactions = await mergeSessionTransactions(userId, incoming, removed)
 
     // Existing sessions may have a cursor but no cached txs yet — bootstrap once.
     if (transactions.length === 0 && incoming.length === 0 && session.cursor) {
-      updateCursor(userId, null)
+      await updateCursor(userId, null)
       const bootstrap = await syncPlaidTransactions(session.accessToken, undefined)
-      updateCursor(userId, bootstrap.nextCursor)
-      transactions = mergeSessionTransactions(userId, bootstrap.incoming, bootstrap.removed)
+      await updateCursor(userId, bootstrap.nextCursor)
+      transactions = await mergeSessionTransactions(userId, bootstrap.incoming, bootstrap.removed)
     }
 
     // Prefer cached history if incremental sync returned nothing new.
     if (transactions.length === 0) {
       await refreshTransactionsIfEmpty(session.accessToken, 0)
       const retry = await syncPlaidTransactions(session.accessToken, session.cursor ?? undefined)
-      updateCursor(userId, retry.nextCursor)
-      transactions = mergeSessionTransactions(userId, retry.incoming, retry.removed)
+      await updateCursor(userId, retry.nextCursor)
+      transactions = await mergeSessionTransactions(userId, retry.incoming, retry.removed)
     }
 
     if (transactions.length === 0) {
-      transactions = getSessionTransactions(userId)
+      transactions = await getSessionTransactions(userId)
     }
 
     // Re-apply the merchant heuristic so cached transactions (normalized with

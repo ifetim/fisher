@@ -21,7 +21,7 @@ export default function SignupSection() {
           <label className="form-label" htmlFor="email">
             Email
           </label>
-          <input className="form-input" id="email" type="email" placeholder="you@email.com" />
+          <input className="form-input" id="email" type="email" placeholder="you@gmail.com" />
         </div>
         <div className="form-group">
           <label className="form-label" htmlFor="uni">

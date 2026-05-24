@@ -48,7 +48,7 @@ A simple, clean personal finance dashboard that helps everyday people understand
   {
     "id": 1,
     "name": "Fe Martinez",
-    "email": "fe@email.com",
+    "email": "test@gmail.com",
     "password": "password123",
     "avatar": "FM"
   }

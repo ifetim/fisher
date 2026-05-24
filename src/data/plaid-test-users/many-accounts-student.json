@@ -14,7 +14,7 @@
         ],
         "emails": [
           {
-            "data": "sam@email.com",
+            "data": "sam@gmail.com",
             "primary": true,
             "type": "primary"
           }

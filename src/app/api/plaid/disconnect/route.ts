@@ -9,6 +9,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'userId is required' }, { status: 400 })
   }
 
-  deleteSession(userId)
+  await deleteSession(userId)
   return NextResponse.json({ disconnected: true })
 }
