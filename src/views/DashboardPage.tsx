@@ -140,7 +140,7 @@ export function DashboardPage() {
           <div>
             <div className="sec">
               <span className="lbl">Accounts</span>
-              <span className="act">See all</span>
+              <span className="act" onClick={() => router.push('/spending')} role="button" tabIndex={0}>See all</span>
             </div>
             <div className="card">
               {accounts.map((a) => {

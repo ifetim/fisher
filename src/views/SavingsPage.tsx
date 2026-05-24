@@ -130,7 +130,7 @@ export function SavingsPage() {
 
       <div className="sec">
         <span className="lbl">Your goals</span>
-        <span className="act">Reorder</span>
+        <span className="act" onClick={() => setShowForm(true)} role="button" tabIndex={0}>+ Add goal</span>
       </div>
       <div className="goal-grid">
         {resolvedPlans.map((plan, i) => {

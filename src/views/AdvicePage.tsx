@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { useFinance } from '@/context/FinanceContext'
 import { getAccountsForUser } from '@/data'
@@ -46,7 +47,16 @@ const STATIC_ADVICE: AdviceCard[] = [
   },
 ]
 
+const CTA_ROUTES: Record<string, string> = {
+  'See breakdown':        '/spending',
+  'Set a cap':            '/spending',
+  'Transfer now':         '/savings',
+  'Review subscriptions': '/spending',
+  'Learn more':           '/spending',
+}
+
 export function AdvicePage() {
+  const router = useRouter()
   const { user } = useAuth()
   const { transactions } = useFinance()
   const [aiCards, setAiCards] = useState<AdviceCard[]>([])
@@ -160,7 +170,11 @@ export function AdvicePage() {
             </div>
             <p className="title">{c.title}</p>
             <p className="body">{c.body}</p>
-            <button type="button" className="cta">
+            <button
+              type="button"
+              className="cta"
+              onClick={() => router.push(CTA_ROUTES[c.cta] ?? '/advice')}
+            >
               {c.cta} {V3Icons.arrow}
             </button>
           </div>
