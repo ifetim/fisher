@@ -1,8 +1,4 @@
 {
-  "_username": "tight_month",
-  "_password": "any_password",
-  "_story": "Second-year student. Part-time job covers rent but barely. Credit card almost maxed after a rough month. Trying to save but it's hard.",
-
   "override_accounts": [
     {
       "type": "depository",

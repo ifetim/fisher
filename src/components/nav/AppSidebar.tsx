@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { navLinks } from './navLinks'
 import { NavIcons } from './NavIcons'
 import { V3Icons } from '@/components/v3/V3Icons'
+import { DemoSwitcher } from './DemoSwitcher'
 
 export function AppSidebar({ active }: { active: string }) {
   const { user, logout } = useAuth()
@@ -39,6 +40,8 @@ export function AppSidebar({ active }: { active: string }) {
           </Link>
         )
       })}
+
+      <DemoSwitcher />
 
       <div className="sidebar-foot">
         <div className="avatar">{initials}</div>

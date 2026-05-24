@@ -1,0 +1,1490 @@
+{
+  "override_accounts": [
+    {
+      "type": "depository",
+      "subtype": "checking",
+      "starting_balance": 2847.5,
+      "meta": {
+        "name": "Chequing",
+        "official_name": "RBC Day to Day Banking"
+      },
+      "identity": {
+        "names": [
+          "Fe Martinez"
+        ],
+        "emails": [
+          {
+            "data": "fe@email.com",
+            "primary": true,
+            "type": "primary"
+          }
+        ]
+      },
+      "transactions": [
+        {
+          "date_transacted": "2025-06-01",
+          "date_posted": "2025-06-01",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-02",
+          "date_posted": "2025-06-02",
+          "amount": 89.85,
+          "description": "Hydro One",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-04",
+          "date_posted": "2025-06-04",
+          "amount": 85,
+          "description": "Rogers Wireless",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-05",
+          "date_posted": "2025-06-05",
+          "amount": 6.74,
+          "description": "Starbucks",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-07",
+          "date_posted": "2025-06-07",
+          "amount": 250,
+          "description": "Transfer to Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-08",
+          "date_posted": "2025-06-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-09",
+          "date_posted": "2025-06-09",
+          "amount": 150,
+          "description": "Presto Auto-Load",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-11",
+          "date_posted": "2025-06-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-12",
+          "date_posted": "2025-06-12",
+          "amount": 120.14,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-14",
+          "date_posted": "2025-06-14",
+          "amount": 42.01,
+          "description": "Shell Gas Station",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-15",
+          "date_posted": "2025-06-15",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-16",
+          "date_posted": "2025-06-16",
+          "amount": 283.91,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-19",
+          "date_posted": "2025-06-19",
+          "amount": 37.61,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-22",
+          "date_posted": "2025-06-22",
+          "amount": 24.54,
+          "description": "Uber",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-01",
+          "date_posted": "2025-07-01",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-02",
+          "date_posted": "2025-07-02",
+          "amount": 92.64,
+          "description": "Hydro One",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-04",
+          "date_posted": "2025-07-04",
+          "amount": 85,
+          "description": "Rogers Wireless",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-05",
+          "date_posted": "2025-07-05",
+          "amount": 37.22,
+          "description": "SkipTheDishes",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-07",
+          "date_posted": "2025-07-07",
+          "amount": 250,
+          "description": "Transfer to Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-08",
+          "date_posted": "2025-07-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-09",
+          "date_posted": "2025-07-09",
+          "amount": 150,
+          "description": "Presto Auto-Load",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-11",
+          "date_posted": "2025-07-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-12",
+          "date_posted": "2025-07-12",
+          "amount": 123.23,
+          "description": "Costco",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-14",
+          "date_posted": "2025-07-14",
+          "amount": 50.04,
+          "description": "Shell Gas Station",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-15",
+          "date_posted": "2025-07-15",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-16",
+          "date_posted": "2025-07-16",
+          "amount": 417.95,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-19",
+          "date_posted": "2025-07-19",
+          "amount": 6.73,
+          "description": "Tim Hortons",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-22",
+          "date_posted": "2025-07-22",
+          "amount": 19.14,
+          "description": "Uber",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-01",
+          "date_posted": "2025-08-01",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-02",
+          "date_posted": "2025-08-02",
+          "amount": 107.75,
+          "description": "Hydro One",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-04",
+          "date_posted": "2025-08-04",
+          "amount": 85,
+          "description": "Rogers Wireless",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-05",
+          "date_posted": "2025-08-05",
+          "amount": 32.05,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-07",
+          "date_posted": "2025-08-07",
+          "amount": 250,
+          "description": "Transfer to Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-08",
+          "date_posted": "2025-08-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-09",
+          "date_posted": "2025-08-09",
+          "amount": 150,
+          "description": "Presto Auto-Load",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-11",
+          "date_posted": "2025-08-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-12",
+          "date_posted": "2025-08-12",
+          "amount": 81.9,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-14",
+          "date_posted": "2025-08-14",
+          "amount": 45.6,
+          "description": "Shell Gas Station",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-15",
+          "date_posted": "2025-08-15",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-16",
+          "date_posted": "2025-08-16",
+          "amount": 300.59,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-19",
+          "date_posted": "2025-08-19",
+          "amount": 8.06,
+          "description": "Starbucks",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-22",
+          "date_posted": "2025-08-22",
+          "amount": 19.28,
+          "description": "Uber",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-01",
+          "date_posted": "2025-09-01",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-02",
+          "date_posted": "2025-09-02",
+          "amount": 81.55,
+          "description": "Hydro One",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-04",
+          "date_posted": "2025-09-04",
+          "amount": 85,
+          "description": "Rogers Wireless",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-05",
+          "date_posted": "2025-09-05",
+          "amount": 6.43,
+          "description": "Tim Hortons",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-07",
+          "date_posted": "2025-09-07",
+          "amount": 250,
+          "description": "Transfer to Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-08",
+          "date_posted": "2025-09-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-09",
+          "date_posted": "2025-09-09",
+          "amount": 150,
+          "description": "Presto Auto-Load",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-11",
+          "date_posted": "2025-09-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-12",
+          "date_posted": "2025-09-12",
+          "amount": 88.59,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-14",
+          "date_posted": "2025-09-14",
+          "amount": 50.74,
+          "description": "Shell Gas Station",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-15",
+          "date_posted": "2025-09-15",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-16",
+          "date_posted": "2025-09-16",
+          "amount": 380.84,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-19",
+          "date_posted": "2025-09-19",
+          "amount": 18.74,
+          "description": "SkipTheDishes",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-22",
+          "date_posted": "2025-09-22",
+          "amount": 20.24,
+          "description": "Uber",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-01",
+          "date_posted": "2025-10-01",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-02",
+          "date_posted": "2025-10-02",
+          "amount": 110.42,
+          "description": "Hydro One",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-04",
+          "date_posted": "2025-10-04",
+          "amount": 85,
+          "description": "Rogers Wireless",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-05",
+          "date_posted": "2025-10-05",
+          "amount": 5.14,
+          "description": "Starbucks",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-07",
+          "date_posted": "2025-10-07",
+          "amount": 250,
+          "description": "Transfer to Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-08",
+          "date_posted": "2025-10-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-09",
+          "date_posted": "2025-10-09",
+          "amount": 150,
+          "description": "Presto Auto-Load",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-11",
+          "date_posted": "2025-10-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-12",
+          "date_posted": "2025-10-12",
+          "amount": 120.43,
+          "description": "Costco",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-14",
+          "date_posted": "2025-10-14",
+          "amount": 62.25,
+          "description": "Shell Gas Station",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-15",
+          "date_posted": "2025-10-15",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-16",
+          "date_posted": "2025-10-16",
+          "amount": 364.68,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-19",
+          "date_posted": "2025-10-19",
+          "amount": 19,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-22",
+          "date_posted": "2025-10-22",
+          "amount": 23.42,
+          "description": "Uber",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-01",
+          "date_posted": "2025-11-01",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-02",
+          "date_posted": "2025-11-02",
+          "amount": 109.56,
+          "description": "Hydro One",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-04",
+          "date_posted": "2025-11-04",
+          "amount": 85,
+          "description": "Rogers Wireless",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-05",
+          "date_posted": "2025-11-05",
+          "amount": 14.45,
+          "description": "SkipTheDishes",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-07",
+          "date_posted": "2025-11-07",
+          "amount": 250,
+          "description": "Transfer to Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-08",
+          "date_posted": "2025-11-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-09",
+          "date_posted": "2025-11-09",
+          "amount": 150,
+          "description": "Presto Auto-Load",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-11",
+          "date_posted": "2025-11-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-12",
+          "date_posted": "2025-11-12",
+          "amount": 123.69,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-14",
+          "date_posted": "2025-11-14",
+          "amount": 63.48,
+          "description": "Shell Gas Station",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-15",
+          "date_posted": "2025-11-15",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-16",
+          "date_posted": "2025-11-16",
+          "amount": 346.57,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-19",
+          "date_posted": "2025-11-19",
+          "amount": 11.31,
+          "description": "Tim Hortons",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-22",
+          "date_posted": "2025-11-22",
+          "amount": 26.96,
+          "description": "Uber",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-01",
+          "date_posted": "2025-12-01",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-02",
+          "date_posted": "2025-12-02",
+          "amount": 99.61,
+          "description": "Hydro One",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-04",
+          "date_posted": "2025-12-04",
+          "amount": 85,
+          "description": "Rogers Wireless",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-05",
+          "date_posted": "2025-12-05",
+          "amount": 36.14,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-07",
+          "date_posted": "2025-12-07",
+          "amount": 250,
+          "description": "Transfer to Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-08",
+          "date_posted": "2025-12-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-09",
+          "date_posted": "2025-12-09",
+          "amount": 150,
+          "description": "Presto Auto-Load",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-11",
+          "date_posted": "2025-12-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-12",
+          "date_posted": "2025-12-12",
+          "amount": 102.69,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-14",
+          "date_posted": "2025-12-14",
+          "amount": 56.74,
+          "description": "Shell Gas Station",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-15",
+          "date_posted": "2025-12-15",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-16",
+          "date_posted": "2025-12-16",
+          "amount": 329.92,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-19",
+          "date_posted": "2025-12-19",
+          "amount": 6.49,
+          "description": "Starbucks",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-22",
+          "date_posted": "2025-12-22",
+          "amount": 15.07,
+          "description": "Uber",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-01",
+          "date_posted": "2026-01-01",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-02",
+          "date_posted": "2026-01-02",
+          "amount": 101.25,
+          "description": "Hydro One",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-04",
+          "date_posted": "2026-01-04",
+          "amount": 85,
+          "description": "Rogers Wireless",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-05",
+          "date_posted": "2026-01-05",
+          "amount": 10.02,
+          "description": "Tim Hortons",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-07",
+          "date_posted": "2026-01-07",
+          "amount": 250,
+          "description": "Transfer to Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-08",
+          "date_posted": "2026-01-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-09",
+          "date_posted": "2026-01-09",
+          "amount": 150,
+          "description": "Presto Auto-Load",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-11",
+          "date_posted": "2026-01-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-12",
+          "date_posted": "2026-01-12",
+          "amount": 103.56,
+          "description": "Costco",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-14",
+          "date_posted": "2026-01-14",
+          "amount": 46.05,
+          "description": "Shell Gas Station",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-15",
+          "date_posted": "2026-01-15",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-16",
+          "date_posted": "2026-01-16",
+          "amount": 180.87,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-19",
+          "date_posted": "2026-01-19",
+          "amount": 10.85,
+          "description": "SkipTheDishes",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-22",
+          "date_posted": "2026-01-22",
+          "amount": 23.86,
+          "description": "Uber",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-01",
+          "date_posted": "2026-02-01",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-02",
+          "date_posted": "2026-02-02",
+          "amount": 110.5,
+          "description": "Hydro One",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-04",
+          "date_posted": "2026-02-04",
+          "amount": 85,
+          "description": "Rogers Wireless",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-05",
+          "date_posted": "2026-02-05",
+          "amount": 9.21,
+          "description": "Starbucks",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-07",
+          "date_posted": "2026-02-07",
+          "amount": 250,
+          "description": "Transfer to Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-08",
+          "date_posted": "2026-02-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-09",
+          "date_posted": "2026-02-09",
+          "amount": 150,
+          "description": "Presto Auto-Load",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-11",
+          "date_posted": "2026-02-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-12",
+          "date_posted": "2026-02-12",
+          "amount": 83.43,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-14",
+          "date_posted": "2026-02-14",
+          "amount": 47.45,
+          "description": "Shell Gas Station",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-15",
+          "date_posted": "2026-02-15",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-16",
+          "date_posted": "2026-02-16",
+          "amount": 382.13,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-19",
+          "date_posted": "2026-02-19",
+          "amount": 32.59,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-22",
+          "date_posted": "2026-02-22",
+          "amount": 17.94,
+          "description": "Uber",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-01",
+          "date_posted": "2026-03-01",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-02",
+          "date_posted": "2026-03-02",
+          "amount": 81.06,
+          "description": "Hydro One",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-04",
+          "date_posted": "2026-03-04",
+          "amount": 85,
+          "description": "Rogers Wireless",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-05",
+          "date_posted": "2026-03-05",
+          "amount": 35.45,
+          "description": "SkipTheDishes",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-07",
+          "date_posted": "2026-03-07",
+          "amount": 250,
+          "description": "Transfer to Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-08",
+          "date_posted": "2026-03-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-09",
+          "date_posted": "2026-03-09",
+          "amount": 150,
+          "description": "Presto Auto-Load",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-11",
+          "date_posted": "2026-03-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-12",
+          "date_posted": "2026-03-12",
+          "amount": 94.77,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-14",
+          "date_posted": "2026-03-14",
+          "amount": 47.61,
+          "description": "Shell Gas Station",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-15",
+          "date_posted": "2026-03-15",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-16",
+          "date_posted": "2026-03-16",
+          "amount": 194.66,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-19",
+          "date_posted": "2026-03-19",
+          "amount": 9.33,
+          "description": "Tim Hortons",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-22",
+          "date_posted": "2026-03-22",
+          "amount": 26.34,
+          "description": "Uber",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-01",
+          "date_posted": "2026-04-01",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-02",
+          "date_posted": "2026-04-02",
+          "amount": 90.17,
+          "description": "Hydro One",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-04",
+          "date_posted": "2026-04-04",
+          "amount": 85,
+          "description": "Rogers Wireless",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-05",
+          "date_posted": "2026-04-05",
+          "amount": 24.58,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-07",
+          "date_posted": "2026-04-07",
+          "amount": 250,
+          "description": "Transfer to Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-08",
+          "date_posted": "2026-04-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-09",
+          "date_posted": "2026-04-09",
+          "amount": 150,
+          "description": "Presto Auto-Load",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-11",
+          "date_posted": "2026-04-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-12",
+          "date_posted": "2026-04-12",
+          "amount": 128.1,
+          "description": "Costco",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-14",
+          "date_posted": "2026-04-14",
+          "amount": 48.59,
+          "description": "Shell Gas Station",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-15",
+          "date_posted": "2026-04-15",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-16",
+          "date_posted": "2026-04-16",
+          "amount": 244.94,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-19",
+          "date_posted": "2026-04-19",
+          "amount": 7,
+          "description": "Starbucks",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-22",
+          "date_posted": "2026-04-22",
+          "amount": 12.87,
+          "description": "Uber",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-01",
+          "date_posted": "2026-05-01",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-02",
+          "date_posted": "2026-05-02",
+          "amount": 102.48,
+          "description": "Hydro One",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-04",
+          "date_posted": "2026-05-04",
+          "amount": 85,
+          "description": "Rogers Wireless",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-05",
+          "date_posted": "2026-05-05",
+          "amount": 6.71,
+          "description": "Tim Hortons",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-07",
+          "date_posted": "2026-05-07",
+          "amount": 250,
+          "description": "Transfer to Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-08",
+          "date_posted": "2026-05-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-09",
+          "date_posted": "2026-05-09",
+          "amount": 150,
+          "description": "Presto Auto-Load",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-11",
+          "date_posted": "2026-05-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-12",
+          "date_posted": "2026-05-12",
+          "amount": 90.14,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-14",
+          "date_posted": "2026-05-14",
+          "amount": 62.51,
+          "description": "Shell Gas Station",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-15",
+          "date_posted": "2026-05-15",
+          "amount": -2100,
+          "description": "Employer Inc - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-16",
+          "date_posted": "2026-05-16",
+          "amount": 347.64,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-19",
+          "date_posted": "2026-05-19",
+          "amount": 37.54,
+          "description": "SkipTheDishes",
+          "currency": "CAD"
+        }
+      ]
+    },
+    {
+      "type": "depository",
+      "subtype": "savings",
+      "starting_balance": 5200,
+      "meta": {
+        "name": "Savings",
+        "official_name": "RBC High Interest eSavings"
+      },
+      "transactions": [
+        {
+          "date_transacted": "2025-06-07",
+          "date_posted": "2025-06-07",
+          "amount": -250,
+          "description": "Transfer from Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-07",
+          "date_posted": "2025-07-07",
+          "amount": -250,
+          "description": "Transfer from Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-07",
+          "date_posted": "2025-08-07",
+          "amount": -250,
+          "description": "Transfer from Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-07",
+          "date_posted": "2025-09-07",
+          "amount": -250,
+          "description": "Transfer from Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-07",
+          "date_posted": "2025-10-07",
+          "amount": -250,
+          "description": "Transfer from Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-07",
+          "date_posted": "2025-11-07",
+          "amount": -250,
+          "description": "Transfer from Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-07",
+          "date_posted": "2025-12-07",
+          "amount": -250,
+          "description": "Transfer from Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-07",
+          "date_posted": "2026-01-07",
+          "amount": -250,
+          "description": "Transfer from Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-07",
+          "date_posted": "2026-02-07",
+          "amount": -250,
+          "description": "Transfer from Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-07",
+          "date_posted": "2026-03-07",
+          "amount": -250,
+          "description": "Transfer from Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-07",
+          "date_posted": "2026-04-07",
+          "amount": -250,
+          "description": "Transfer from Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-07",
+          "date_posted": "2026-05-07",
+          "amount": -250,
+          "description": "Transfer from Chequing",
+          "currency": "CAD"
+        }
+      ]
+    },
+    {
+      "type": "credit",
+      "subtype": "credit card",
+      "starting_balance": 843.2,
+      "meta": {
+        "name": "Credit Card",
+        "official_name": "TD Cash Back Visa"
+      },
+      "liability": {
+        "type": "credit",
+        "purchase_apr": 20.99,
+        "minimum_payment_amount": 25,
+        "last_payment_amount": 320
+      },
+      "transactions": [
+        {
+          "date_transacted": "2025-06-06",
+          "date_posted": "2025-06-06",
+          "amount": 78.05,
+          "description": "Zara",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-20",
+          "date_posted": "2025-06-20",
+          "amount": 116.27,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-06",
+          "date_posted": "2025-07-06",
+          "amount": 18.11,
+          "description": "Shoppers Drug Mart",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-20",
+          "date_posted": "2025-07-20",
+          "amount": 85.05,
+          "description": "Zara",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-06",
+          "date_posted": "2025-08-06",
+          "amount": 33.08,
+          "description": "LCBO",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-20",
+          "date_posted": "2025-08-20",
+          "amount": 21.55,
+          "description": "Shoppers Drug Mart",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-06",
+          "date_posted": "2025-09-06",
+          "amount": 275.17,
+          "description": "Best Buy",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-20",
+          "date_posted": "2025-09-20",
+          "amount": 40.57,
+          "description": "LCBO",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-06",
+          "date_posted": "2025-10-06",
+          "amount": 36.58,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-20",
+          "date_posted": "2025-10-20",
+          "amount": 229.23,
+          "description": "Best Buy",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-06",
+          "date_posted": "2025-11-06",
+          "amount": 78.9,
+          "description": "Zara",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-20",
+          "date_posted": "2025-11-20",
+          "amount": 50.89,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-28",
+          "date_posted": "2025-11-28",
+          "amount": 172.12,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-06",
+          "date_posted": "2025-12-06",
+          "amount": 49.82,
+          "description": "Shoppers Drug Mart",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-20",
+          "date_posted": "2025-12-20",
+          "amount": 103.23,
+          "description": "Zara",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-28",
+          "date_posted": "2025-12-28",
+          "amount": 71.75,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-06",
+          "date_posted": "2026-01-06",
+          "amount": 132.89,
+          "description": "Zara",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-20",
+          "date_posted": "2026-01-20",
+          "amount": 53.88,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-06",
+          "date_posted": "2026-02-06",
+          "amount": 33.79,
+          "description": "Shoppers Drug Mart",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-20",
+          "date_posted": "2026-02-20",
+          "amount": 116.2,
+          "description": "Zara",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-06",
+          "date_posted": "2026-03-06",
+          "amount": 44.32,
+          "description": "LCBO",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-20",
+          "date_posted": "2026-03-20",
+          "amount": 39.01,
+          "description": "Shoppers Drug Mart",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-06",
+          "date_posted": "2026-04-06",
+          "amount": 222.15,
+          "description": "Best Buy",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-20",
+          "date_posted": "2026-04-20",
+          "amount": 35.14,
+          "description": "LCBO",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-06",
+          "date_posted": "2026-05-06",
+          "amount": 48.11,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-20",
+          "date_posted": "2026-05-20",
+          "amount": 114.73,
+          "description": "Best Buy",
+          "currency": "CAD"
+        }
+      ]
+    }
+  ]
+}

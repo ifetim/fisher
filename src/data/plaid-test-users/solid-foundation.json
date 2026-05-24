@@ -1,8 +1,4 @@
 {
-  "_username": "solid_foundation",
-  "_password": "any_password",
-  "_story": "3 years out of school. Decent salary, emergency fund in good shape, contributing to 401k, aggressively paying student loan. Buying a car next year.",
-
   "override_accounts": [
     {
       "type": "depository",
@@ -37,7 +33,6 @@
       "starting_balance": 11200.00,
       "liability": {
         "type": "student",
-        "last_payment_amount": 600,
         "minimum_payment_amount": 280
       }
     },
