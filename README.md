@@ -2,6 +2,8 @@
 
 A personal finance app for **students** who want to understand their money — not another spreadsheet or guilt-trip budget app.
 
+**Live site:** [student-saver.vercel.app](https://student-saver.vercel.app)
+
 **The pain.** Managing money in school is hard. Paycheques and OSAP land, rent and subscriptions go out, and by mid-month you're wondering where it all went. A lot of us don't have a clear picture of *how* we spent or *where* the money actually went — and most finance apps either dump raw numbers on you or make you feel worse. That's a pain point all three of us on this team could relate to.
 
 **The fix.** Student Saver connects your accounts (Plaid), groups spending by what you actually bought, surfaces recurring subscriptions, shows how much you have left per day until payday, and lets you **ask questions in plain English** ("Can I afford this concert?") against your real data. Balances stay hidden until you choose to look. Advice is opt-in. The tone is a calm coach — clarity, not shame.
@@ -16,27 +18,37 @@ These are the choices we made on purpose, against the grain of every other finan
 - **AI is opt-in, per action.** OpenAI runs when you ask a question in dashboard chat, tap "Refresh advice", or "Get savings tips" — never on page load. Less spend, fewer hallucinations, no anxiety nudges.
 - **The health score is real code, not vibes.** `src/lib/healthScore.ts` computes a 0–100 score from your actual ratios (savings rate, spending vs income, account diversity). GPT *explains* the number — it never invents it.
 - **Merchant-name re-categorization.** Plaid's `personal_finance_category` collapses to `TRANSFER_OUT` / `OTHER` for sandbox custom users (and is coarse in production). We re-classify by merchant name after fetching, so Loblaws goes to Groceries and "E-Transfer from Mom" goes to Income — see `src/lib/plaid/categorizeMerchant.ts`.
-- **Live Plaid sandbox, not fake JSON.** We connect through Plaid Link, exchange tokens, and run `/transactions/sync` with cursor pagination. Sessions persist to disk so you don't reconnect on every reload.
+- **Live Plaid sandbox, not fake JSON.** We connect through Plaid Link, exchange tokens, and run `/transactions/sync` with cursor pagination. Sessions persist in Redis on Vercel (local file fallback in dev).
 
 ---
 
-## Try it in 2 minutes
+## Try it live
+
+1. Open **[student-saver.vercel.app](https://student-saver.vercel.app)** — marketing landing page with hero, student stats, and savings calculator
+2. **Sign up** or **Log in** from the nav
+3. Use demo credentials below, or connect a Plaid sandbox bank on Spending
+
+**Demo login:** `test@gmail.com`, `alex@gmail.com`, or `jordan@gmail.com` — password `password123`
+
+**Plaid sandbox (after Connect):** username `user_good` · password `pass_good`
+
+**Best demo flow for judges:** landing page → sign in → **Dashboard** → **Ask AI** → *"Can I afford a $200 concert?"* → switch personas in the sidebar.
+
+---
+
+## Run locally
 
 ```bash
-git clone https://github.com/ifetim/fisher.git student-saver
+git clone https://github.com/ifetim/student-saver.git
 cd student-saver
 npm install
 cp .env.example .env.local   # add Plaid sandbox + OpenAI keys (both optional)
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) for the landing page, or jump straight to `/login`.
+Open [http://localhost:3000](http://localhost:3000) for the same landing page, or jump straight to `/login`.
 
-**Demo login:** `test@gmail.com`, `alex@gmail.com`, or `jordan@gmail.com` — password `password123`
-
-The app runs **without any API keys** — it falls back to bundled JSON + prewritten advice cards and short chat replies. Add a Plaid sandbox key to demo the live bank flow; add an OpenAI key to demo real AI chat and advice.
-
-**Best demo flow for judges:** sign in → open **Dashboard** → tap **Ask AI** → try *"Can I afford a $200 concert?"* (uses your real transaction context). Switch personas in the sidebar to show different money stories.
+The app runs **without any API keys** in demo mode — bundled JSON + prewritten advice cards and short chat replies. On Vercel, add `PLAID_*`, `OPENAI_API_KEY`, and `REDIS_URL` in project settings for full Plaid + AI + session persistence. See [DEPLOY.md](./DEPLOY.md).
 
 ---
 
@@ -58,7 +70,7 @@ Each profile keeps its own cached Plaid data in `localStorage`, so switching is 
 
 | Screen | Route | What's there |
 |--------|-------|--------------|
-| Landing | `/` | Marketing page — calm navy/orange palette, no dark patterns |
+| Landing | `/` | Full marketing page — STUDENT$SAVER hero, “Being a student is…”, university savings calculator, signup CTA |
 | Login | `/login` | Email + password against `users.json` |
 | Dashboard | `/dashboard` | Net worth (hidden), accounts, monthly budget bar, **daily budget** ("$X left · $Y/day until June 1"), **subscription detector** (recurring merchants + monthly total), quick insights, week summary, **Ask AI** floating chat |
 | Spending | `/spending` | Period + category filters, transactions grouped by day, category bar breakdown, vs-last-month delta |
@@ -93,7 +105,7 @@ If `OPENAI_API_KEY` is missing, chat and advice routes degrade to hand-written f
 - **OpenAI Node SDK** (`gpt-4o-mini`, server-side only)
 - **Recharts** for category bars and trend lines
 - Plain CSS — no Tailwind, no UI kit
-- Plaid sessions persisted to `.plaid-sessions.json` on disk (gitignored)
+- Plaid sessions in **Redis** on Vercel (`REDIS_URL`); `.plaid-sessions.json` locally (gitignored)
 
 ```text
 src/
