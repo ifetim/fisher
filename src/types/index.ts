@@ -33,4 +33,9 @@ export type SavingsPlan = {
   savedAmount: number
   deadline: string
   monthlyContribution: number
+  /**
+   * Optional Plaid account ID. When set, savedAmount is treated as a fallback —
+   * the UI pulls the live balance from the linked account instead.
+   */
+  linkedAccountId?: string
 }

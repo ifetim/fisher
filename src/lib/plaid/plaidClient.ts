@@ -41,5 +41,8 @@ export function getPlaidClient(): PlaidApi {
   return plaidClient
 }
 
-export const plaidProducts = [Products.Transactions]
+// Products requested at Link time. All are enabled by default in Plaid Sandbox.
+// Identity gives us account holder name/email/phone; Transactions covers
+// accounts/balances/transactions. Add Liabilities/Investments later if needed.
+export const plaidProducts = [Products.Transactions, Products.Identity]
 export const plaidCountryCodes = [CountryCode.Ca, CountryCode.Us]

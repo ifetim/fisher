@@ -3,68 +3,70 @@
 import { useCallback, useEffect, useState } from 'react'
 import { usePlaidLink } from 'react-plaid-link'
 import { useAuth } from '../../context/AuthContext'
+import { useFinance } from '../../context/FinanceContext'
 import {
   createLinkToken,
+  disconnectPlaid,
   exchangePublicToken,
-  fetchPlaidStatus,
+  fetchPlaidSnapshot,
   fetchPlaidTransactions,
-  type NormalizedTransaction,
+  type PlaidSnapshot,
 } from '@/lib/plaidApi'
 import './PlaidConnect.css'
 
-const TEST_USER_ID = 'plaid-test-user'
+export const TEST_USER_ID = 'plaid-test-user'
 
 type PlaidConnectProps = {
+  /** Pass only from PlaidTestPage — normal app flow uses the logged-in user. */
   userId?: string
-  maxRows?: number
-  onTransactions?: (transactions: NormalizedTransaction[]) => void
 }
 
-export function PlaidConnect({
-  userId: userIdOverride,
-  maxRows = 5,
-  onTransactions,
-}: PlaidConnectProps) {
-  const { user } = useAuth()
-  const [linkToken, setLinkToken] = useState<string | null>(null)
-  const [connected, setConnected] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [transactions, setTransactions] = useState<NormalizedTransaction[]>([])
+function formatCurrency(value: number | null, currency = 'USD'): string {
+  if (value === null) return '—'
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(value)
+}
 
+export function PlaidConnect({ userId: userIdOverride }: PlaidConnectProps) {
+  const { user } = useAuth()
+  const {
+    plaidConnected,
+    plaidSyncing,
+    plaidSnapshot: ctxSnapshot,
+    syncPlaid,
+    disconnectPlaidAccount,
+  } = useFinance()
+
+  const isTestMode = !!userIdOverride
   const userId = userIdOverride ?? (user ? String(user.id) : '')
 
-  const loadTransactions = useCallback(async () => {
-    if (!userId) return
-    setLoading(true)
-    setError('')
+  // Test mode keeps everything local so it doesn't affect the logged-in user
+  const [testConnected, setTestConnected] = useState(false)
+  const [testSnapshot,  setTestSnapshot]  = useState<PlaidSnapshot | null>(null)
+  const [testTxCount,   setTestTxCount]   = useState<number | null>(null)
+
+  const connected = isTestMode ? testConnected : plaidConnected
+  const syncing   = isTestMode ? false        : plaidSyncing
+  const snapshot  = isTestMode ? testSnapshot  : ctxSnapshot
+
+  const [linkToken, setLinkToken] = useState<string | null>(null)
+  const [loading,   setLoading]   = useState(false)
+  const [error,     setError]     = useState('')
+
+  // Helper used by test-mode connect + refresh
+  const fetchTestSnapshot = useCallback(async () => {
     try {
-      const txs = await fetchPlaidTransactions(userId)
-      setTransactions(txs)
-      onTransactions?.(txs)
+      const [snap, txs] = await Promise.all([
+        fetchPlaidSnapshot(userId),
+        fetchPlaidTransactions(userId),
+      ])
+      setTestSnapshot(snap)
+      setTestTxCount(txs.length)
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Could not load Plaid transactions.',
-      )
-    } finally {
-      setLoading(false)
+      setError(err instanceof Error ? err.message : 'Could not load Plaid data')
     }
-  }, [userId, onTransactions])
+  }, [userId])
 
-  useEffect(() => {
-    if (!userId) return
-
-    void (async () => {
-      try {
-        const isConnected = await fetchPlaidStatus(userId)
-        setConnected(isConnected)
-        if (isConnected) await loadTransactions()
-      } catch {
-        /* env or server offline */
-      }
-    })()
-  }, [userId, loadTransactions])
-
+  // Fetch a link token whenever we have a user and aren't connected yet
   useEffect(() => {
     if (!userId || connected) return
 
@@ -77,7 +79,7 @@ export function PlaidConnect({
         setError(
           err instanceof Error
             ? err.message
-            : 'Plaid not configured. Add keys to .env.local',
+            : 'Plaid not configured — add keys to .env.local',
         )
       }
     })()
@@ -90,28 +92,29 @@ export function PlaidConnect({
       setError('')
       try {
         await exchangePublicToken(userId, publicToken)
-        setConnected(true)
-        await loadTransactions()
+        if (isTestMode) {
+          setTestConnected(true)
+          await fetchTestSnapshot()
+        } else {
+          await syncPlaid()
+        }
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Token exchange failed.',
-        )
+        setError(err instanceof Error ? err.message : 'Token exchange failed.')
       } finally {
         setLoading(false)
       }
     },
-    [userId, loadTransactions],
+    [userId, isTestMode, syncPlaid, fetchTestSnapshot],
   )
 
-  const { open, ready } = usePlaidLink({
-    token: linkToken,
-    onSuccess,
-  })
+  const { open, ready } = usePlaidLink({ token: linkToken, onSuccess })
 
   if (!userId) return null
 
-  const visible =
-    maxRows <= 0 ? transactions : transactions.slice(0, maxRows)
+  const accounts = snapshot?.accounts ?? []
+  const identity = snapshot?.identity ?? []
+  const institution = snapshot?.institution ?? null
+  const accountHolder = identity[0]?.names[0] ?? null
 
   return (
     <section className="plaid-connect">
@@ -125,10 +128,10 @@ export function PlaidConnect({
           <button
             type="button"
             className="plaid-connect__btn"
-            disabled={!ready || loading || !linkToken}
+            disabled={!ready || loading || syncing || !linkToken}
             onClick={() => open()}
           >
-            {loading ? 'Connecting…' : 'Connect bank'}
+            {loading || syncing ? 'Connecting…' : 'Connect bank'}
           </button>
           {linkToken && ready ? (
             <p className="plaid-connect__ready">Plaid ready — tap to open sandbox</p>
@@ -137,35 +140,101 @@ export function PlaidConnect({
           ) : null}
         </>
       ) : (
-        <p className="plaid-connect__status">
-          Connected · {transactions.length} live transactions
-        </p>
+        <div className="plaid-connect__connected">
+          {/* Institution header */}
+          <div className="plaid-connect__inst">
+            {institution?.logo ? (
+              <img src={institution.logo} alt={institution.name} className="plaid-connect__logo" />
+            ) : (
+              <div
+                className="plaid-connect__logo plaid-connect__logo--fallback"
+                style={{ background: institution?.primaryColor ?? '#0f172a' }}
+              >
+                {(institution?.name ?? 'B')[0]}
+              </div>
+            )}
+            <div>
+              <p className="plaid-connect__inst-name">
+                {syncing ? 'Syncing…' : institution?.name ?? 'Bank connected'} ✓
+              </p>
+              {accountHolder ? (
+                <p className="plaid-connect__inst-holder">Account holder: {accountHolder}</p>
+              ) : null}
+            </div>
+          </div>
+
+          {/* Account list with live balances */}
+          {accounts.length > 0 ? (
+            <ul className="plaid-connect__accounts">
+              {accounts.map((a) => (
+                <li key={a.id} className="plaid-connect__acct">
+                  <div>
+                    <p className="plaid-connect__acct-name">
+                      {a.name}
+                      {a.mask ? <span className="plaid-connect__acct-mask"> ··{a.mask}</span> : null}
+                    </p>
+                    <p className="plaid-connect__acct-type">
+                      {a.subtype ?? a.type}
+                    </p>
+                  </div>
+                  <span className="plaid-connect__acct-balance">
+                    {formatCurrency(a.balance.current, a.balance.currency)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
+          <p className="plaid-connect__meta">
+            {(isTestMode ? testTxCount : null) !== null
+              ? `${testTxCount} transactions loaded`
+              : 'Transactions synced to Dashboard + Spending'}
+          </p>
+
+          <div className="plaid-connect__actions">
+            <button
+              type="button"
+              className="plaid-connect__btn plaid-connect__btn--secondary"
+              disabled={syncing || loading}
+              onClick={async () => {
+                setLoading(true)
+                try {
+                  if (isTestMode) {
+                    await fetchTestSnapshot()
+                  } else {
+                    await syncPlaid()
+                  }
+                } catch { /* silent */ } finally {
+                  setLoading(false)
+                }
+              }}
+            >
+              {loading ? 'Refreshing…' : 'Refresh sync'}
+            </button>
+            <button
+              type="button"
+              className="plaid-connect__btn plaid-connect__btn--danger"
+              onClick={async () => {
+                try {
+                  if (isTestMode) {
+                    await disconnectPlaid(userId)
+                    setTestConnected(false)
+                    setTestSnapshot(null)
+                    setTestTxCount(null)
+                  } else {
+                    await disconnectPlaidAccount()
+                  }
+                  setLinkToken(null)
+                } catch { /* silent */ }
+              }}
+            >
+              Disconnect
+            </button>
+          </div>
+        </div>
       )}
 
       {error ? <p className="plaid-connect__error">{error}</p> : null}
-
-      {visible.length > 0 ? (
-        <ul className="plaid-connect__list">
-          {visible.map((tx) => (
-            <li key={tx.id} className="plaid-connect__row">
-              <span>
-                {tx.merchant}
-                <small> · {tx.date}</small>
-              </span>
-              <span className={tx.amount >= 0 ? 'amount--income' : 'amount--spend'}>
-                {formatAmount(tx.amount)}
-              </span>
-            </li>
-          ))}
-        </ul>
-      ) : null}
     </section>
   )
 }
-
-function formatAmount(amount: number) {
-  const prefix = amount >= 0 ? '+' : ''
-  return `${prefix}$${Math.abs(amount).toFixed(2)}`
-}
-
-export { TEST_USER_ID }

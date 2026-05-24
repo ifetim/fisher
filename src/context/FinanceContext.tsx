@@ -15,17 +15,29 @@ import {
 } from '../data'
 import type { SavingsPlan, Transaction } from '../types'
 import type { NormalizedTransaction } from '@/lib/plaid/normalizeTransaction'
+import {
+  disconnectPlaid,
+  fetchPlaidSnapshot,
+  fetchPlaidStatus,
+  fetchPlaidTransactions,
+  type PlaidSnapshot,
+} from '@/lib/plaidApi'
 import { useAuth } from './AuthContext'
 
-const UPLOADED_KEY = 'clearmint-uploaded-txs'
-const GOALS_KEY    = 'clearmint-extra-goals'
-const PLAID_KEY    = 'clearmint-plaid-txs'
+const UPLOADED_KEY      = 'clearmint-uploaded-txs'
+const GOALS_KEY         = 'clearmint-extra-goals'
+const PLAID_KEY         = 'clearmint-plaid-txs'
+const PLAID_SNAPSHOT_KEY = 'clearmint-plaid-snapshot'
 
 type FinanceContextValue = {
   transactions: Transaction[]
   addUploadedTransactions: (rows: Omit<Transaction, 'id'>[]) => void
   addPlaidTransactions: (txs: NormalizedTransaction[]) => void
   plaidConnected: boolean
+  plaidSyncing: boolean
+  plaidSnapshot: PlaidSnapshot | null
+  syncPlaid: () => Promise<void>
+  disconnectPlaidAccount: () => Promise<void>
   savingsPlans: SavingsPlan[]
   addSavingsGoal: (goal: Omit<SavingsPlan, 'id' | 'userId'>) => void
 }
@@ -61,16 +73,18 @@ let nextGoalId   = 1000
 
 export function FinanceProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth()
-  const [uploaded,    setUploaded]    = useState<Transaction[]>([])
-  const [extraGoals,  setExtraGoals]  = useState<SavingsPlan[]>([])
-  // Raw Plaid transactions stored so we can re-map on each render
-  const [plaidRaw,    setPlaidRaw]    = useState<NormalizedTransaction[]>([])
+  const [uploaded,       setUploaded]       = useState<Transaction[]>([])
+  const [extraGoals,     setExtraGoals]     = useState<SavingsPlan[]>([])
+  const [plaidRaw,       setPlaidRaw]       = useState<NormalizedTransaction[]>([])
+  const [plaidSnapshot,  setPlaidSnapshot]  = useState<PlaidSnapshot | null>(null)
+  const [plaidConnected, setPlaidConnected] = useState(false)
+  const [plaidSyncing,   setPlaidSyncing]   = useState(false)
 
-  // Hydrate from localStorage once on mount
   useEffect(() => {
     setUploaded(loadJson<Transaction[]>(UPLOADED_KEY, []))
     setExtraGoals(loadJson<SavingsPlan[]>(GOALS_KEY, []))
     setPlaidRaw(loadJson<NormalizedTransaction[]>(PLAID_KEY, []))
+    setPlaidSnapshot(loadJson<PlaidSnapshot | null>(PLAID_SNAPSHOT_KEY, null))
   }, [])
 
   // Persist each slice whenever it changes
@@ -92,6 +106,64 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     }
   }, [plaidRaw])
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (plaidSnapshot) {
+      localStorage.setItem(PLAID_SNAPSHOT_KEY, JSON.stringify(plaidSnapshot))
+    } else {
+      localStorage.removeItem(PLAID_SNAPSHOT_KEY)
+    }
+  }, [plaidSnapshot])
+
+  // Auto-sync Plaid whenever a user logs in
+  useEffect(() => {
+    if (!user) {
+      setPlaidConnected(false)
+      return
+    }
+    const userId = String(user.id)
+    void (async () => {
+      try {
+        const connected = await fetchPlaidStatus(userId)
+        setPlaidConnected(connected)
+        if (connected) {
+          setPlaidSyncing(true)
+          // Run snapshot + transactions in parallel — each tolerates the other failing
+          const [snapResult, txsResult] = await Promise.allSettled([
+            fetchPlaidSnapshot(userId),
+            fetchPlaidTransactions(userId),
+          ])
+          if (snapResult.status === 'fulfilled') setPlaidSnapshot(snapResult.value)
+          if (txsResult.status === 'fulfilled')  setPlaidRaw(txsResult.value)
+        }
+      } catch {
+        // Plaid not configured or server offline — silent on startup
+      } finally {
+        setPlaidSyncing(false)
+      }
+    })()
+  }, [user])
+
+  // Manual re-sync — called by PlaidConnect after exchange or Refresh button
+  const syncPlaid = useCallback(async () => {
+    if (!user) return
+    const userId = String(user.id)
+    setPlaidSyncing(true)
+    try {
+      const [snapResult, txsResult] = await Promise.allSettled([
+        fetchPlaidSnapshot(userId),
+        fetchPlaidTransactions(userId),
+      ])
+      if (snapResult.status === 'fulfilled') setPlaidSnapshot(snapResult.value)
+      if (txsResult.status === 'fulfilled')  setPlaidRaw(txsResult.value)
+      setPlaidConnected(true)
+    } catch (err) {
+      console.error('Plaid sync failed:', err)
+    } finally {
+      setPlaidSyncing(false)
+    }
+  }, [user])
+
   const baseTransactions = useMemo(
     () => (user ? getTransactionsForUser(user.id) : []),
     [user],
@@ -102,10 +174,14 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     [plaidRaw],
   )
 
-  // Merge: demo data + CSV uploads + Plaid live data
+  // When Plaid is connected we treat its data as the source of truth and hide
+  // the demo JSON. CSV uploads stay because the user explicitly added them.
   const transactions = useMemo(
-    () => [...baseTransactions, ...uploaded, ...plaidTransactions],
-    [baseTransactions, uploaded, plaidTransactions],
+    () =>
+      plaidConnected
+        ? [...uploaded, ...plaidTransactions]
+        : [...baseTransactions, ...uploaded],
+    [plaidConnected, baseTransactions, uploaded, plaidTransactions],
   )
 
   const savingsPlans = useMemo(() => {
@@ -126,6 +202,23 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     setPlaidRaw(txs)
   }, [])
 
+  const disconnectPlaidAccount = useCallback(async () => {
+    if (!user) return
+    const userId = String(user.id)
+    try {
+      await disconnectPlaid(userId)
+    } catch (err) {
+      console.error('Disconnect failed:', err)
+    }
+    setPlaidRaw([])
+    setPlaidSnapshot(null)
+    setPlaidConnected(false)
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(PLAID_KEY)
+      localStorage.removeItem(PLAID_SNAPSHOT_KEY)
+    }
+  }, [user])
+
   const addSavingsGoal = useCallback(
     (goal: Omit<SavingsPlan, 'id' | 'userId'>) => {
       if (!user) return
@@ -144,11 +237,15 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       transactions,
       addUploadedTransactions,
       addPlaidTransactions,
-      plaidConnected: plaidRaw.length > 0,
+      plaidConnected,
+      plaidSyncing,
+      plaidSnapshot,
+      syncPlaid,
+      disconnectPlaidAccount,
       savingsPlans,
       addSavingsGoal,
     }),
-    [transactions, addUploadedTransactions, addPlaidTransactions, plaidRaw.length, savingsPlans, addSavingsGoal],
+    [transactions, addUploadedTransactions, addPlaidTransactions, plaidConnected, plaidSyncing, plaidSnapshot, syncPlaid, disconnectPlaidAccount, savingsPlans, addSavingsGoal],
   )
 
   return (

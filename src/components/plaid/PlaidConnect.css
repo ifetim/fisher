@@ -66,6 +66,114 @@
   color: #ef4444;
 }
 
+.plaid-connect__connected-row,
+.plaid-connect__connected {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.plaid-connect__inst {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.plaid-connect__logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.plaid-connect__logo--fallback {
+  display: grid;
+  place-items: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.plaid-connect__inst-name {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-income, #22c55e);
+}
+
+.plaid-connect__inst-holder {
+  margin: 2px 0 0;
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+.plaid-connect__accounts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.plaid-connect__acct {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.plaid-connect__acct:last-child {
+  border-bottom: none;
+}
+
+.plaid-connect__acct-name {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.plaid-connect__acct-mask {
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+.plaid-connect__acct-type {
+  margin: 2px 0 0;
+  font-size: 0.72rem;
+  text-transform: capitalize;
+  color: var(--color-muted);
+}
+
+.plaid-connect__acct-balance {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.plaid-connect__meta {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+.plaid-connect__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.plaid-connect__btn--secondary {
+  background: transparent;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+}
+
+.plaid-connect__btn--danger {
+  background: transparent;
+  border: 1px solid var(--color-spend, #ef4444);
+  color: var(--color-spend, #ef4444);
+}
+
 .plaid-connect__list {
   list-style: none;
   margin: 0.75rem 0 0;

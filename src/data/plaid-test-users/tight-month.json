@@ -1,0 +1,36 @@
+{
+  "_username": "tight_month",
+  "_password": "any_password",
+  "_story": "Second-year student. Part-time job covers rent but barely. Credit card almost maxed after a rough month. Trying to save but it's hard.",
+
+  "override_accounts": [
+    {
+      "type": "depository",
+      "subtype": "checking",
+      "starting_balance": 183.42,
+      "inflow_model": {
+        "type": "monthly-deposit",
+        "income_amount": 1200,
+        "income_day_of_month": 15,
+        "transaction_name": "Part-time Payroll"
+      }
+    },
+    {
+      "type": "depository",
+      "subtype": "savings",
+      "starting_balance": 320.00
+    },
+    {
+      "type": "credit",
+      "subtype": "credit card",
+      "starting_balance": 2340.00,
+      "liability": {
+        "type": "credit",
+        "purchase_apr": 24.99,
+        "cash_apr": 29.99,
+        "minimum_payment_amount": 35,
+        "last_payment_amount": 35
+      }
+    }
+  ]
+}
