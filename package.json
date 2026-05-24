@@ -10,17 +10,22 @@
   },
   "dependencies": {
     "@upstash/redis": "^1.38.0",
+    "leaflet": "^1.9.4",
     "next": "^15.5.4",
     "openai": "^6.39.0",
+    "pdf-parse": "^2.4.5",
     "plaid": "^41.3.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
+    "react-leaflet": "^5.0.0",
     "react-plaid-link": "^4.1.1",
     "recharts": "^3.8.1",
     "redis": "^5.12.1"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.21",
     "@types/node": "^24.12.3",
+    "@types/pdf-parse": "^1.1.5",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9.39.1",

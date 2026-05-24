@@ -11,5 +11,7 @@ export function NavIcons({ id }: { id: NavId }) {
       return V3Icons.vault
     case 'advice':
       return V3Icons.spark
+    case 'student-saver':
+      return V3Icons.wage
   }
 }
