@@ -21,6 +21,7 @@ export function PlaidBanner() {
 
   const [linkToken,   setLinkToken]   = useState<string | null>(null)
   const [loading,     setLoading]     = useState(false)
+  const [error,       setError]       = useState('')
   const [confirming,  setConfirming]  = useState(false)
   const [resetting,   setResetting]   = useState(false)
 
@@ -35,9 +36,15 @@ export function PlaidBanner() {
     async (publicToken: string) => {
       if (!userId) return
       setLoading(true)
+      setError('')
       try {
         await exchangePublicToken(userId, publicToken)
-        await syncPlaid()
+        const synced = await syncPlaid()
+        if (!synced) {
+          setError('Bank linked but data did not load. Try Connect again or check server logs.')
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Could not connect bank')
       } finally {
         setLoading(false)
       }
@@ -124,10 +131,14 @@ export function PlaidBanner() {
         type="button"
         className="btn"
         disabled={!ready || loading || plaidSyncing || !linkToken}
-        onClick={() => open()}
+        onClick={() => {
+          setError('')
+          open()
+        }}
       >
         {loading || plaidSyncing ? 'Connecting…' : 'Connect'}
       </button>
+      {error ? <p className="auth-error" style={{ marginTop: 8 }}>{error}</p> : null}
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { createClient } from 'redis'
 import { Redis } from '@upstash/redis'
 import type { NormalizedTransaction } from '@/lib/plaid/normalizeTransaction'
 import { mergePlaidTransactions } from '@/lib/plaid/mergeTransactions'
@@ -19,11 +20,30 @@ function sessionKey(userId: string): string {
   return `plaid:session:${userId}`
 }
 
-function getRedis(): Redis | null {
+function getUpstashRedis(): Redis | null {
   const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL
   const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN
   if (!url || !token) return null
   return new Redis({ url, token })
+}
+
+let nodeRedisClient: Awaited<ReturnType<typeof createClient>> | null = null
+let nodeRedisConnect: Promise<Awaited<ReturnType<typeof createClient>>> | null = null
+
+async function getNodeRedis(): Promise<Awaited<ReturnType<typeof createClient>> | null> {
+  const url = process.env.REDIS_URL
+  if (!url) return null
+  if (nodeRedisClient?.isOpen) return nodeRedisClient
+  if (!nodeRedisConnect) {
+    nodeRedisConnect = (async () => {
+      const client = createClient({ url })
+      client.on('error', (err) => console.error('sessionStore: redis error', err))
+      await client.connect()
+      nodeRedisClient = client
+      return client
+    })()
+  }
+  return nodeRedisConnect
 }
 
 function readFile(): SessionMap {
@@ -44,31 +64,53 @@ function writeFile(sessions: SessionMap) {
 }
 
 async function readSession(userId: string): Promise<PlaidSession | undefined> {
-  const redis = getRedis()
-  if (redis) {
-    const session = await redis.get<PlaidSession>(sessionKey(userId))
+  const upstash = getUpstashRedis()
+  if (upstash) {
+    const session = await upstash.get<PlaidSession>(sessionKey(userId))
     return session ?? undefined
   }
+
+  const nodeRedis = await getNodeRedis()
+  if (nodeRedis) {
+    const raw = await nodeRedis.get(sessionKey(userId))
+    if (!raw) return undefined
+    return JSON.parse(raw) as PlaidSession
+  }
+
   return readFile()[userId]
 }
 
 async function writeSession(userId: string, session: PlaidSession): Promise<void> {
-  const redis = getRedis()
-  if (redis) {
-    await redis.set(sessionKey(userId), session)
+  const upstash = getUpstashRedis()
+  if (upstash) {
+    await upstash.set(sessionKey(userId), session)
     return
   }
+
+  const nodeRedis = await getNodeRedis()
+  if (nodeRedis) {
+    await nodeRedis.set(sessionKey(userId), JSON.stringify(session))
+    return
+  }
+
   const sessions = readFile()
   sessions[userId] = session
   writeFile(sessions)
 }
 
 async function removeSession(userId: string): Promise<void> {
-  const redis = getRedis()
-  if (redis) {
-    await redis.del(sessionKey(userId))
+  const upstash = getUpstashRedis()
+  if (upstash) {
+    await upstash.del(sessionKey(userId))
     return
   }
+
+  const nodeRedis = await getNodeRedis()
+  if (nodeRedis) {
+    await nodeRedis.del(sessionKey(userId))
+    return
+  }
+
   const sessions = readFile()
   delete sessions[userId]
   writeFile(sessions)

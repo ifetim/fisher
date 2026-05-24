@@ -37,7 +37,7 @@ type FinanceContextValue = {
   plaidConnected: boolean
   plaidSyncing: boolean
   plaidSnapshot: PlaidSnapshot | null
-  syncPlaid: () => Promise<void>
+  syncPlaid: () => Promise<boolean>
   disconnectPlaidAccount: () => Promise<void>
   savingsPlans: SavingsPlan[]
   addSavingsGoal: (goal: Omit<SavingsPlan, 'id' | 'userId'>) => void
@@ -138,8 +138,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
           ])
           if (snapResult.status === 'fulfilled') setPlaidSnapshot(snapResult.value)
           if (txsResult.status === 'fulfilled') {
-            const txs = txsResult.value
-            if (txs.length > 0) setPlaidRaw(txs)
+            setPlaidRaw(txsResult.value)
           }
         }
       } catch {
@@ -151,23 +150,58 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
   }, [user])
 
   const syncPlaid = useCallback(async () => {
-    if (!user) return
+    if (!user) return false
     const userId = String(user.id)
     setPlaidSyncing(true)
     try {
+      const connected = await fetchPlaidStatus(userId)
+      if (!connected) {
+        setPlaidConnected(false)
+        return false
+      }
+
       const [snapResult, txsResult] = await Promise.allSettled([
         fetchPlaidSnapshot(userId),
         fetchPlaidTransactions(userId),
       ])
-      if (snapResult.status === 'fulfilled') setPlaidSnapshot(snapResult.value)
-      if (txsResult.status === 'fulfilled') {
-        const txs = txsResult.value
-        if (txs.length > 0) setPlaidRaw(txs)
+
+      if (snapResult.status === 'fulfilled') {
+        setPlaidSnapshot(snapResult.value)
       }
-      setPlaidConnected(true)
-      setPlaidEverConnected(true)
+
+      let txs =
+        txsResult.status === 'fulfilled' ? txsResult.value : []
+
+      // Sandbox custom users often need a second pull after refresh materializes txs.
+      if (txs.length === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 2500))
+        try {
+          txs = await fetchPlaidTransactions(userId)
+        } catch {
+          // keep first (possibly empty) result
+        }
+      }
+
+      if (txsResult.status === 'fulfilled' || txs.length > 0) {
+        setPlaidRaw(txs)
+      }
+
+      const snapshotOk =
+        snapResult.status === 'fulfilled' && snapResult.value.accounts.length > 0
+      const hasData = snapshotOk || txs.length > 0
+
+      if (hasData) {
+        setPlaidConnected(true)
+        setPlaidEverConnected(true)
+        return true
+      }
+
+      setPlaidConnected(false)
+      return false
     } catch (err) {
       console.error('Plaid sync failed:', err)
+      setPlaidConnected(false)
+      return false
     } finally {
       setPlaidSyncing(false)
     }
