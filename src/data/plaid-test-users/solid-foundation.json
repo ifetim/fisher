@@ -1,0 +1,50 @@
+{
+  "_username": "solid_foundation",
+  "_password": "any_password",
+  "_story": "3 years out of school. Decent salary, emergency fund in good shape, contributing to 401k, aggressively paying student loan. Buying a car next year.",
+
+  "override_accounts": [
+    {
+      "type": "depository",
+      "subtype": "checking",
+      "starting_balance": 5820.00,
+      "inflow_model": {
+        "type": "monthly-deposit",
+        "income_amount": 5200,
+        "income_day_of_month": 1,
+        "transaction_name": "Salary - Direct Deposit"
+      }
+    },
+    {
+      "type": "depository",
+      "subtype": "savings",
+      "starting_balance": 12500.00
+    },
+    {
+      "type": "credit",
+      "subtype": "credit card",
+      "starting_balance": 820.00,
+      "liability": {
+        "type": "credit",
+        "purchase_apr": 17.49,
+        "minimum_payment_amount": 25,
+        "last_payment_amount": 820
+      }
+    },
+    {
+      "type": "loan",
+      "subtype": "student",
+      "starting_balance": 11200.00,
+      "liability": {
+        "type": "student",
+        "last_payment_amount": 600,
+        "minimum_payment_amount": 280
+      }
+    },
+    {
+      "type": "investment",
+      "subtype": "401k",
+      "starting_balance": 8900.00
+    }
+  ]
+}

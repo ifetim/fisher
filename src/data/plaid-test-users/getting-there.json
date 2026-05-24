@@ -1,0 +1,45 @@
+{
+  "_username": "getting_there",
+  "_password": "any_password",
+  "_story": "Recent grad, 1 year into first job. Paying off student loan, starting to save properly, credit card paid off each month (mostly). Making progress.",
+
+  "override_accounts": [
+    {
+      "type": "depository",
+      "subtype": "checking",
+      "starting_balance": 2450.80,
+      "inflow_model": {
+        "type": "monthly-deposit",
+        "income_amount": 3400,
+        "income_day_of_month": 1,
+        "transaction_name": "Salary - Direct Deposit"
+      }
+    },
+    {
+      "type": "depository",
+      "subtype": "savings",
+      "starting_balance": 4100.00
+    },
+    {
+      "type": "credit",
+      "subtype": "credit card",
+      "starting_balance": 560.00,
+      "liability": {
+        "type": "credit",
+        "purchase_apr": 19.99,
+        "minimum_payment_amount": 25,
+        "last_payment_amount": 560
+      }
+    },
+    {
+      "type": "loan",
+      "subtype": "student",
+      "starting_balance": 22000.00,
+      "liability": {
+        "type": "student",
+        "last_payment_amount": 280,
+        "minimum_payment_amount": 280
+      }
+    }
+  ]
+}
