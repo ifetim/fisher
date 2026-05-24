@@ -120,7 +120,9 @@ export function PlaidConnect({ userId: userIdOverride }: PlaidConnectProps) {
     <section className="plaid-connect">
       <h2 className="plaid-connect__title">Connect your bank</h2>
       <p className="plaid-connect__text">
-        Plaid sandbox: use <strong>First Platypus Bank</strong> with user_good / pass_good
+        Sandbox: <strong>First Platypus Bank</strong> — usernames{' '}
+        <strong>broke_student</strong>, <strong>many_accounts</strong>, or{' '}
+        <strong>rich_history</strong> (any password)
       </p>
 
       {!connected ? (

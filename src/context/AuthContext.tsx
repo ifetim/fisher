@@ -19,6 +19,7 @@ type AuthContextValue = {
   ready: boolean
   login: (email: string, password: string) => boolean
   logout: () => void
+  switchDemo: (userId: number) => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -56,9 +57,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }, [])
 
+  const switchDemo = useCallback((userId: number) => {
+    const match = users.find((u) => u.id === userId)
+    if (!match) return
+    sessionStorage.setItem(STORAGE_KEY, String(match.id))
+    setUser(match)
+  }, [])
+
   const value = useMemo(
-    () => ({ user, ready, login, logout }),
-    [user, ready, login, logout],
+    () => ({ user, ready, login, logout, switchDemo }),
+    [user, ready, login, logout, switchDemo],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

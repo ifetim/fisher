@@ -25,9 +25,11 @@ import {
 } from '@/lib/plaidApi'
 import { useAuth } from './AuthContext'
 
-const GOALS_KEY         = 'clearmint-extra-goals'
-const PLAID_KEY         = 'clearmint-plaid-txs'
-const PLAID_SNAPSHOT_KEY = 'clearmint-plaid-snapshot'
+const GOALS_KEY = 'clearmint-extra-goals'
+
+// Per-user keys so each demo profile keeps its own Plaid data
+function plaidTxKey(userId: number)       { return `clearmint-plaid-txs-${userId}` }
+function plaidSnapKey(userId: number)     { return `clearmint-plaid-snapshot-${userId}` }
 
 type FinanceContextValue = {
   transactions: Transaction[]
@@ -71,19 +73,15 @@ let nextGoalId = 1000
 export function FinanceProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth()
   const [extraGoals,     setExtraGoals]     = useState<SavingsPlan[]>(() => loadJson(GOALS_KEY, []))
-  const [plaidRaw,       setPlaidRaw]       = useState<NormalizedTransaction[]>(() => loadJson(PLAID_KEY, []))
-  const [plaidSnapshot,  setPlaidSnapshot]  = useState<PlaidSnapshot | null>(() => loadJson(PLAID_SNAPSHOT_KEY, null))
-  const [plaidConnected, setPlaidConnected] = useState(() =>
-    typeof window !== 'undefined' && Boolean(loadJson<PlaidSnapshot | null>(PLAID_SNAPSHOT_KEY, null)),
-  )
-  const [plaidSyncing,   setPlaidSyncing]   = useState(false)
+  const [plaidRaw,       setPlaidRaw]       = useState<NormalizedTransaction[]>([])
+  const [plaidSnapshot,  setPlaidSnapshot]  = useState<PlaidSnapshot | null>(null)
+  const [plaidConnected,      setPlaidConnected]      = useState(false)
+  const [plaidEverConnected,  setPlaidEverConnected]  = useState(false)
+  const [plaidSyncing,        setPlaidSyncing]        = useState(false)
 
+  // Reload non-Plaid data once on mount
   useEffect(() => {
     setExtraGoals(loadJson<SavingsPlan[]>(GOALS_KEY, []))
-    setPlaidRaw(loadJson<NormalizedTransaction[]>(PLAID_KEY, []))
-    const snap = loadJson<PlaidSnapshot | null>(PLAID_SNAPSHOT_KEY, null)
-    setPlaidSnapshot(snap)
-    if (snap) setPlaidConnected(true)
   }, [])
 
   useEffect(() => {
@@ -92,32 +90,47 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     }
   }, [extraGoals])
 
+  // Persist Plaid data under per-user keys so each profile is isolated
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(PLAID_KEY, JSON.stringify(plaidRaw))
-    }
-  }, [plaidRaw])
+    if (typeof window === 'undefined' || !user) return
+    localStorage.setItem(plaidTxKey(user.id), JSON.stringify(plaidRaw))
+  }, [plaidRaw, user])
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || !user) return
     if (plaidSnapshot) {
-      localStorage.setItem(PLAID_SNAPSHOT_KEY, JSON.stringify(plaidSnapshot))
+      localStorage.setItem(plaidSnapKey(user.id), JSON.stringify(plaidSnapshot))
     } else {
-      localStorage.removeItem(PLAID_SNAPSHOT_KEY)
+      localStorage.removeItem(plaidSnapKey(user.id))
     }
-  }, [plaidSnapshot])
+  }, [plaidSnapshot, user])
 
   useEffect(() => {
+    // When the active user changes, load their own cached Plaid data immediately
+    // so the UI shows their transactions without waiting for the server round-trip
     if (!user) {
+      setPlaidRaw([])
+      setPlaidSnapshot(null)
       setPlaidConnected(false)
       return
     }
+
+    const cachedTxs  = loadJson<NormalizedTransaction[]>(plaidTxKey(user.id), [])
+    const cachedSnap = loadJson<PlaidSnapshot | null>(plaidSnapKey(user.id), null)
+    setPlaidRaw(cachedTxs)
+    setPlaidSnapshot(cachedSnap)
+    const hadCache = cachedTxs.length > 0 || cachedSnap !== null
+    setPlaidConnected(hadCache)
+    setPlaidEverConnected(hadCache)
+
+    // Then re-sync from the server in the background
     const userId = String(user.id)
     void (async () => {
       try {
         const connected = await fetchPlaidStatus(userId)
         setPlaidConnected(connected)
         if (connected) {
+          setPlaidEverConnected(true)
           setPlaidSyncing(true)
           const [snapResult, txsResult] = await Promise.allSettled([
             fetchPlaidSnapshot(userId),
@@ -152,6 +165,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
         if (txs.length > 0) setPlaidRaw(txs)
       }
       setPlaidConnected(true)
+      setPlaidEverConnected(true)
     } catch (err) {
       console.error('Plaid sync failed:', err)
     } finally {
@@ -169,10 +183,12 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     [plaidRaw],
   )
 
-  const transactions = useMemo(
-    () => (plaidConnected ? plaidTransactions : baseTransactions),
-    [plaidConnected, baseTransactions, plaidTransactions],
-  )
+  const transactions = useMemo(() => {
+    if (plaidConnected) return plaidTransactions
+    // After a reset, show empty rather than falling back to demo data
+    if (plaidEverConnected) return []
+    return baseTransactions
+  }, [plaidConnected, plaidEverConnected, baseTransactions, plaidTransactions])
 
   const savingsPlans = useMemo(() => {
     if (!user) return []
@@ -195,9 +211,9 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     setPlaidRaw([])
     setPlaidSnapshot(null)
     setPlaidConnected(false)
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(PLAID_KEY)
-      localStorage.removeItem(PLAID_SNAPSHOT_KEY)
+    if (typeof window !== 'undefined' && user) {
+      localStorage.removeItem(plaidTxKey(user.id))
+      localStorage.removeItem(plaidSnapKey(user.id))
     }
   }, [user])
 

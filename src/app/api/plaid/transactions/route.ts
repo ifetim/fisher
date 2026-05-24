@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server'
 import type { Transaction as PlaidTransaction } from 'plaid'
 import { getPlaidClient } from '@/lib/plaid/plaidClient'
-import { normalizePlaidTransaction } from '@/lib/plaid/normalizeTransaction'
+import {
+  normalizePlaidTransaction,
+  reCategorizeNormalized,
+} from '@/lib/plaid/normalizeTransaction'
+import { refreshTransactionsIfEmpty } from '@/lib/plaid/refreshTransactions'
 import {
   getSession,
   getSessionTransactions,
@@ -71,8 +75,20 @@ export async function GET(request: Request) {
 
     // Prefer cached history if incremental sync returned nothing new.
     if (transactions.length === 0) {
+      await refreshTransactionsIfEmpty(session.accessToken, 0)
+      const retry = await syncPlaidTransactions(session.accessToken, session.cursor ?? undefined)
+      updateCursor(userId, retry.nextCursor)
+      transactions = mergeSessionTransactions(userId, retry.incoming, retry.removed)
+    }
+
+    if (transactions.length === 0) {
       transactions = getSessionTransactions(userId)
     }
+
+    // Re-apply the merchant heuristic so cached transactions (normalized with
+    // an older ruleset) pick up improved categories/signs without needing a
+    // Plaid disconnect + reconnect.
+    transactions = transactions.map(reCategorizeNormalized)
 
     return NextResponse.json({ transactions, count: transactions.length })
   } catch (error) {

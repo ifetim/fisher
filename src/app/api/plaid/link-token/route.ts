@@ -21,6 +21,8 @@ export async function POST(request: Request) {
       products: plaidProducts,
       country_codes: plaidCountryCodes,
       language: 'en',
+      // Request up to 2 years of history on first link (Sandbox default is ~90 days).
+      transactions: { days_requested: 730 },
     })
 
     return NextResponse.json({ linkToken: response.data.link_token })

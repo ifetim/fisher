@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getPlaidClient } from '@/lib/plaid/plaidClient'
+import { refreshTransactionsIfEmpty } from '@/lib/plaid/refreshTransactions'
 import { saveSession } from '@/lib/plaid/sessionStore'
 
 export async function POST(request: Request) {
@@ -23,6 +24,9 @@ export async function POST(request: Request) {
     })
 
     saveSession(userId, exchange.data.access_token, exchange.data.item_id)
+
+    // Custom sandbox users often return 0 txs until refresh runs.
+    await refreshTransactionsIfEmpty(exchange.data.access_token, 0)
 
     return NextResponse.json({
       connected: true,

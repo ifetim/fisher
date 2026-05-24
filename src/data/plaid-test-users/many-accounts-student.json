@@ -1,0 +1,1656 @@
+{
+  "override_accounts": [
+    {
+      "type": "depository",
+      "subtype": "checking",
+      "starting_balance": 312.6,
+      "meta": {
+        "name": "RBC Chequing",
+        "official_name": "RBC Student Banking"
+      },
+      "identity": {
+        "names": [
+          "Sam Okonkwo"
+        ],
+        "emails": [
+          {
+            "data": "sam@email.com",
+            "primary": true,
+            "type": "primary"
+          }
+        ]
+      },
+      "transactions": [
+        {
+          "date_transacted": "2025-06-01",
+          "date_posted": "2025-06-01",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-01",
+          "date_posted": "2025-06-01",
+          "amount": 950,
+          "description": "Rent Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-07",
+          "date_posted": "2025-06-07",
+          "amount": 56.9,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-09",
+          "date_posted": "2025-06-09",
+          "amount": 150,
+          "description": "Presto",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-14",
+          "date_posted": "2025-06-14",
+          "amount": 74.98,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-15",
+          "date_posted": "2025-06-15",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-19",
+          "date_posted": "2025-06-19",
+          "amount": 91.74,
+          "description": "Amex Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-01",
+          "date_posted": "2025-07-01",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-01",
+          "date_posted": "2025-07-01",
+          "amount": 950,
+          "description": "Rent Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-07",
+          "date_posted": "2025-07-07",
+          "amount": 66.2,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-09",
+          "date_posted": "2025-07-09",
+          "amount": 150,
+          "description": "Presto",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-14",
+          "date_posted": "2025-07-14",
+          "amount": 90.73,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-15",
+          "date_posted": "2025-07-15",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-19",
+          "date_posted": "2025-07-19",
+          "amount": 110.58,
+          "description": "Amex Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-01",
+          "date_posted": "2025-08-01",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-01",
+          "date_posted": "2025-08-01",
+          "amount": 950,
+          "description": "Rent Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-05",
+          "date_posted": "2025-08-05",
+          "amount": -200,
+          "description": "E-Transfer from Mom",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-07",
+          "date_posted": "2025-08-07",
+          "amount": 64.2,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-09",
+          "date_posted": "2025-08-09",
+          "amount": 150,
+          "description": "Presto",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-14",
+          "date_posted": "2025-08-14",
+          "amount": 60.15,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-15",
+          "date_posted": "2025-08-15",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-19",
+          "date_posted": "2025-08-19",
+          "amount": 148.37,
+          "description": "Amex Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-01",
+          "date_posted": "2025-09-01",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-01",
+          "date_posted": "2025-09-01",
+          "amount": 950,
+          "description": "Rent Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-07",
+          "date_posted": "2025-09-07",
+          "amount": 93.71,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-09",
+          "date_posted": "2025-09-09",
+          "amount": 150,
+          "description": "Presto",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-14",
+          "date_posted": "2025-09-14",
+          "amount": 47.58,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-15",
+          "date_posted": "2025-09-15",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-19",
+          "date_posted": "2025-09-19",
+          "amount": 150.05,
+          "description": "Amex Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-01",
+          "date_posted": "2025-10-01",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-01",
+          "date_posted": "2025-10-01",
+          "amount": 950,
+          "description": "Rent Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-07",
+          "date_posted": "2025-10-07",
+          "amount": 49.35,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-09",
+          "date_posted": "2025-10-09",
+          "amount": 150,
+          "description": "Presto",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-14",
+          "date_posted": "2025-10-14",
+          "amount": 48.07,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-15",
+          "date_posted": "2025-10-15",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-19",
+          "date_posted": "2025-10-19",
+          "amount": 151.59,
+          "description": "Amex Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-01",
+          "date_posted": "2025-11-01",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-01",
+          "date_posted": "2025-11-01",
+          "amount": 950,
+          "description": "Rent Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-05",
+          "date_posted": "2025-11-05",
+          "amount": -200,
+          "description": "E-Transfer from Mom",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-07",
+          "date_posted": "2025-11-07",
+          "amount": 73.55,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-09",
+          "date_posted": "2025-11-09",
+          "amount": 150,
+          "description": "Presto",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-14",
+          "date_posted": "2025-11-14",
+          "amount": 61.39,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-15",
+          "date_posted": "2025-11-15",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-19",
+          "date_posted": "2025-11-19",
+          "amount": 85.84,
+          "description": "Amex Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-01",
+          "date_posted": "2025-12-01",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-01",
+          "date_posted": "2025-12-01",
+          "amount": 950,
+          "description": "Rent Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-07",
+          "date_posted": "2025-12-07",
+          "amount": 85.61,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-09",
+          "date_posted": "2025-12-09",
+          "amount": 150,
+          "description": "Presto",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-14",
+          "date_posted": "2025-12-14",
+          "amount": 47.85,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-15",
+          "date_posted": "2025-12-15",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-19",
+          "date_posted": "2025-12-19",
+          "amount": 95.12,
+          "description": "Amex Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-07",
+          "date_posted": "2026-01-07",
+          "amount": 74.09,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-09",
+          "date_posted": "2026-01-09",
+          "amount": 150,
+          "description": "Presto",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-14",
+          "date_posted": "2026-01-14",
+          "amount": 51.67,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-05",
+          "date_posted": "2026-02-05",
+          "amount": -200,
+          "description": "E-Transfer from Mom",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-07",
+          "date_posted": "2026-02-07",
+          "amount": 53.11,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-09",
+          "date_posted": "2026-02-09",
+          "amount": 150,
+          "description": "Presto",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-14",
+          "date_posted": "2026-02-14",
+          "amount": 82.69,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-07",
+          "date_posted": "2026-03-07",
+          "amount": 58.56,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-09",
+          "date_posted": "2026-03-09",
+          "amount": 150,
+          "description": "Presto",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-14",
+          "date_posted": "2026-03-14",
+          "amount": 62.91,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-07",
+          "date_posted": "2026-04-07",
+          "amount": 50.85,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-09",
+          "date_posted": "2026-04-09",
+          "amount": 150,
+          "description": "Presto",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-14",
+          "date_posted": "2026-04-14",
+          "amount": 87.6,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-01",
+          "date_posted": "2026-05-01",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-01",
+          "date_posted": "2026-05-01",
+          "amount": 950,
+          "description": "Rent Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-05",
+          "date_posted": "2026-05-05",
+          "amount": -200,
+          "description": "E-Transfer from Mom",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-07",
+          "date_posted": "2026-05-07",
+          "amount": 72.68,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-09",
+          "date_posted": "2026-05-09",
+          "amount": 150,
+          "description": "Presto",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-14",
+          "date_posted": "2026-05-14",
+          "amount": 86.1,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-15",
+          "date_posted": "2026-05-15",
+          "amount": -780,
+          "description": "Campus Job Payroll",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-19",
+          "date_posted": "2026-05-19",
+          "amount": 137.63,
+          "description": "Amex Payment",
+          "currency": "CAD"
+        }
+      ]
+    },
+    {
+      "type": "depository",
+      "subtype": "checking",
+      "starting_balance": 1840.25,
+      "meta": {
+        "name": "TD Chequing",
+        "official_name": "TD Unlimited Chequing"
+      },
+      "transactions": [
+        {
+          "date_transacted": "2025-06-10",
+          "date_posted": "2025-06-10",
+          "amount": 300,
+          "description": "Transfer to EQ Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-18",
+          "date_posted": "2025-06-18",
+          "amount": 200.72,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-10",
+          "date_posted": "2025-07-10",
+          "amount": 300,
+          "description": "Transfer to EQ Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-18",
+          "date_posted": "2025-07-18",
+          "amount": 203.09,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-10",
+          "date_posted": "2025-08-10",
+          "amount": 300,
+          "description": "Transfer to EQ Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-18",
+          "date_posted": "2025-08-18",
+          "amount": 270.56,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-09",
+          "date_posted": "2025-09-09",
+          "amount": 5500,
+          "description": "University Tuition",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-10",
+          "date_posted": "2025-09-10",
+          "amount": 300,
+          "description": "Transfer to EQ Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-18",
+          "date_posted": "2025-09-18",
+          "amount": 229.19,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-10",
+          "date_posted": "2025-10-10",
+          "amount": 300,
+          "description": "Transfer to EQ Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-18",
+          "date_posted": "2025-10-18",
+          "amount": 211.88,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-10",
+          "date_posted": "2025-11-10",
+          "amount": 300,
+          "description": "Transfer to EQ Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-18",
+          "date_posted": "2025-11-18",
+          "amount": 191.27,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-10",
+          "date_posted": "2025-12-10",
+          "amount": 300,
+          "description": "Transfer to EQ Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-18",
+          "date_posted": "2025-12-18",
+          "amount": 279.78,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-01",
+          "date_posted": "2026-01-01",
+          "amount": -2850,
+          "description": "Co-op Employer - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-01",
+          "date_posted": "2026-01-01",
+          "amount": 950,
+          "description": "Rent Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-10",
+          "date_posted": "2026-01-10",
+          "amount": 300,
+          "description": "Transfer to EQ Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-15",
+          "date_posted": "2026-01-15",
+          "amount": -2850,
+          "description": "Co-op Employer - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-18",
+          "date_posted": "2026-01-18",
+          "amount": 170.44,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-19",
+          "date_posted": "2026-01-19",
+          "amount": 144.91,
+          "description": "Amex Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-20",
+          "date_posted": "2026-01-20",
+          "amount": 400,
+          "description": "Student Loan Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-24",
+          "date_posted": "2026-01-24",
+          "amount": 150,
+          "description": "Transfer to BMO Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-01",
+          "date_posted": "2026-02-01",
+          "amount": -2850,
+          "description": "Co-op Employer - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-01",
+          "date_posted": "2026-02-01",
+          "amount": 950,
+          "description": "Rent Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-10",
+          "date_posted": "2026-02-10",
+          "amount": 300,
+          "description": "Transfer to EQ Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-15",
+          "date_posted": "2026-02-15",
+          "amount": -2850,
+          "description": "Co-op Employer - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-18",
+          "date_posted": "2026-02-18",
+          "amount": 220.83,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-19",
+          "date_posted": "2026-02-19",
+          "amount": 110.23,
+          "description": "Amex Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-20",
+          "date_posted": "2026-02-20",
+          "amount": 400,
+          "description": "Student Loan Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-24",
+          "date_posted": "2026-02-24",
+          "amount": 150,
+          "description": "Transfer to BMO Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-01",
+          "date_posted": "2026-03-01",
+          "amount": -2850,
+          "description": "Co-op Employer - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-01",
+          "date_posted": "2026-03-01",
+          "amount": 950,
+          "description": "Rent Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-10",
+          "date_posted": "2026-03-10",
+          "amount": 300,
+          "description": "Transfer to EQ Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-15",
+          "date_posted": "2026-03-15",
+          "amount": -2850,
+          "description": "Co-op Employer - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-18",
+          "date_posted": "2026-03-18",
+          "amount": 224.34,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-19",
+          "date_posted": "2026-03-19",
+          "amount": 140.26,
+          "description": "Amex Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-20",
+          "date_posted": "2026-03-20",
+          "amount": 400,
+          "description": "Student Loan Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-24",
+          "date_posted": "2026-03-24",
+          "amount": 150,
+          "description": "Transfer to BMO Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-01",
+          "date_posted": "2026-04-01",
+          "amount": -2850,
+          "description": "Co-op Employer - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-01",
+          "date_posted": "2026-04-01",
+          "amount": 950,
+          "description": "Rent Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-10",
+          "date_posted": "2026-04-10",
+          "amount": 300,
+          "description": "Transfer to EQ Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-15",
+          "date_posted": "2026-04-15",
+          "amount": -2850,
+          "description": "Co-op Employer - Direct Deposit",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-18",
+          "date_posted": "2026-04-18",
+          "amount": 253.95,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-19",
+          "date_posted": "2026-04-19",
+          "amount": 145.51,
+          "description": "Amex Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-20",
+          "date_posted": "2026-04-20",
+          "amount": 400,
+          "description": "Student Loan Payment",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-24",
+          "date_posted": "2026-04-24",
+          "amount": 150,
+          "description": "Transfer to BMO Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-10",
+          "date_posted": "2026-05-10",
+          "amount": 300,
+          "description": "Transfer to EQ Savings",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-18",
+          "date_posted": "2026-05-18",
+          "amount": 198.73,
+          "description": "TD Visa Payment",
+          "currency": "CAD"
+        }
+      ]
+    },
+    {
+      "type": "depository",
+      "subtype": "savings",
+      "starting_balance": 620,
+      "meta": {
+        "name": "BMO Savings",
+        "official_name": "BMO Smart Saver"
+      },
+      "transactions": [
+        {
+          "date_transacted": "2026-01-24",
+          "date_posted": "2026-01-24",
+          "amount": -150,
+          "description": "Transfer from TD",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-24",
+          "date_posted": "2026-02-24",
+          "amount": -150,
+          "description": "Transfer from TD",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-24",
+          "date_posted": "2026-03-24",
+          "amount": -150,
+          "description": "Transfer from TD",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-24",
+          "date_posted": "2026-04-24",
+          "amount": -150,
+          "description": "Transfer from TD",
+          "currency": "CAD"
+        }
+      ]
+    },
+    {
+      "type": "depository",
+      "subtype": "savings",
+      "starting_balance": 2400,
+      "meta": {
+        "name": "EQ Bank Savings",
+        "official_name": "EQ Bank Savings Plus"
+      },
+      "transactions": [
+        {
+          "date_transacted": "2025-06-10",
+          "date_posted": "2025-06-10",
+          "amount": -300,
+          "description": "Transfer from TD Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-10",
+          "date_posted": "2025-07-10",
+          "amount": -300,
+          "description": "Transfer from TD Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-10",
+          "date_posted": "2025-08-10",
+          "amount": -300,
+          "description": "Transfer from TD Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-10",
+          "date_posted": "2025-09-10",
+          "amount": -300,
+          "description": "Transfer from TD Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-10",
+          "date_posted": "2025-10-10",
+          "amount": -300,
+          "description": "Transfer from TD Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-10",
+          "date_posted": "2025-11-10",
+          "amount": -300,
+          "description": "Transfer from TD Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-10",
+          "date_posted": "2025-12-10",
+          "amount": -300,
+          "description": "Transfer from TD Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-10",
+          "date_posted": "2026-01-10",
+          "amount": -300,
+          "description": "Transfer from TD Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-10",
+          "date_posted": "2026-02-10",
+          "amount": -300,
+          "description": "Transfer from TD Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-10",
+          "date_posted": "2026-03-10",
+          "amount": -300,
+          "description": "Transfer from TD Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-10",
+          "date_posted": "2026-04-10",
+          "amount": -300,
+          "description": "Transfer from TD Chequing",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-10",
+          "date_posted": "2026-05-10",
+          "amount": -300,
+          "description": "Transfer from TD Chequing",
+          "currency": "CAD"
+        }
+      ]
+    },
+    {
+      "type": "credit",
+      "subtype": "credit card",
+      "starting_balance": 1240.8,
+      "meta": {
+        "name": "TD Visa",
+        "official_name": "TD Cash Back Visa"
+      },
+      "liability": {
+        "type": "credit",
+        "purchase_apr": 21.99,
+        "minimum_payment_amount": 25,
+        "last_payment_amount": 180
+      },
+      "transactions": [
+        {
+          "date_transacted": "2025-06-04",
+          "date_posted": "2025-06-04",
+          "amount": 75,
+          "description": "Rogers",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-11",
+          "date_posted": "2025-06-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-21",
+          "date_posted": "2025-06-21",
+          "amount": 92.7,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-04",
+          "date_posted": "2025-07-04",
+          "amount": 75,
+          "description": "Rogers",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-11",
+          "date_posted": "2025-07-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-21",
+          "date_posted": "2025-07-21",
+          "amount": 75.25,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-04",
+          "date_posted": "2025-08-04",
+          "amount": 75,
+          "description": "Rogers",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-11",
+          "date_posted": "2025-08-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-21",
+          "date_posted": "2025-08-21",
+          "amount": 92.34,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-04",
+          "date_posted": "2025-09-04",
+          "amount": 75,
+          "description": "Rogers",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-11",
+          "date_posted": "2025-09-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-21",
+          "date_posted": "2025-09-21",
+          "amount": 50.55,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-04",
+          "date_posted": "2025-10-04",
+          "amount": 75,
+          "description": "Rogers",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-11",
+          "date_posted": "2025-10-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-21",
+          "date_posted": "2025-10-21",
+          "amount": 65.48,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-04",
+          "date_posted": "2025-11-04",
+          "amount": 75,
+          "description": "Rogers",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-11",
+          "date_posted": "2025-11-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-21",
+          "date_posted": "2025-11-21",
+          "amount": 88.63,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-04",
+          "date_posted": "2025-12-04",
+          "amount": 75,
+          "description": "Rogers",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-11",
+          "date_posted": "2025-12-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-21",
+          "date_posted": "2025-12-21",
+          "amount": 55.74,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-04",
+          "date_posted": "2026-01-04",
+          "amount": 75,
+          "description": "Rogers",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-11",
+          "date_posted": "2026-01-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-21",
+          "date_posted": "2026-01-21",
+          "amount": 49.41,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-04",
+          "date_posted": "2026-02-04",
+          "amount": 75,
+          "description": "Rogers",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-11",
+          "date_posted": "2026-02-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-21",
+          "date_posted": "2026-02-21",
+          "amount": 70.86,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-04",
+          "date_posted": "2026-03-04",
+          "amount": 75,
+          "description": "Rogers",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-11",
+          "date_posted": "2026-03-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-21",
+          "date_posted": "2026-03-21",
+          "amount": 87.72,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-04",
+          "date_posted": "2026-04-04",
+          "amount": 75,
+          "description": "Rogers",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-11",
+          "date_posted": "2026-04-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-21",
+          "date_posted": "2026-04-21",
+          "amount": 86.6,
+          "description": "Loblaws",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-04",
+          "date_posted": "2026-05-04",
+          "amount": 75,
+          "description": "Rogers",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-11",
+          "date_posted": "2026-05-11",
+          "amount": 11.99,
+          "description": "Spotify",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-21",
+          "date_posted": "2026-05-21",
+          "amount": 57.14,
+          "description": "Loblaws",
+          "currency": "CAD"
+        }
+      ]
+    },
+    {
+      "type": "credit",
+      "subtype": "credit card",
+      "starting_balance": 680.15,
+      "meta": {
+        "name": "Amex",
+        "official_name": "Amex Cobalt"
+      },
+      "liability": {
+        "type": "credit",
+        "purchase_apr": 20.99,
+        "minimum_payment_amount": 25,
+        "last_payment_amount": 95
+      },
+      "transactions": [
+        {
+          "date_transacted": "2025-06-03",
+          "date_posted": "2025-06-03",
+          "amount": 22.33,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-08",
+          "date_posted": "2025-06-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-17",
+          "date_posted": "2025-06-17",
+          "amount": 47.57,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-06-26",
+          "date_posted": "2025-06-26",
+          "amount": 101.82,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-03",
+          "date_posted": "2025-07-03",
+          "amount": 22,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-08",
+          "date_posted": "2025-07-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-17",
+          "date_posted": "2025-07-17",
+          "amount": 46.01,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-07-26",
+          "date_posted": "2025-07-26",
+          "amount": 94.04,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-03",
+          "date_posted": "2025-08-03",
+          "amount": 37.37,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-08",
+          "date_posted": "2025-08-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-17",
+          "date_posted": "2025-08-17",
+          "amount": 31.92,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-08-26",
+          "date_posted": "2025-08-26",
+          "amount": 46.42,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-03",
+          "date_posted": "2025-09-03",
+          "amount": 35.06,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-08",
+          "date_posted": "2025-09-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-17",
+          "date_posted": "2025-09-17",
+          "amount": 24.04,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-09-26",
+          "date_posted": "2025-09-26",
+          "amount": 35.47,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-03",
+          "date_posted": "2025-10-03",
+          "amount": 30.34,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-08",
+          "date_posted": "2025-10-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-17",
+          "date_posted": "2025-10-17",
+          "amount": 26.72,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-10-26",
+          "date_posted": "2025-10-26",
+          "amount": 72.03,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-03",
+          "date_posted": "2025-11-03",
+          "amount": 24.77,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-08",
+          "date_posted": "2025-11-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-17",
+          "date_posted": "2025-11-17",
+          "amount": 29.02,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-11-26",
+          "date_posted": "2025-11-26",
+          "amount": 61.23,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-03",
+          "date_posted": "2025-12-03",
+          "amount": 27.27,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-08",
+          "date_posted": "2025-12-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-17",
+          "date_posted": "2025-12-17",
+          "amount": 35.51,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2025-12-26",
+          "date_posted": "2025-12-26",
+          "amount": 61.71,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-03",
+          "date_posted": "2026-01-03",
+          "amount": 42.32,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-08",
+          "date_posted": "2026-01-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-17",
+          "date_posted": "2026-01-17",
+          "amount": 22.32,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-01-26",
+          "date_posted": "2026-01-26",
+          "amount": 70.11,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-03",
+          "date_posted": "2026-02-03",
+          "amount": 38.24,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-08",
+          "date_posted": "2026-02-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-17",
+          "date_posted": "2026-02-17",
+          "amount": 46.43,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-02-26",
+          "date_posted": "2026-02-26",
+          "amount": 68.7,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-03",
+          "date_posted": "2026-03-03",
+          "amount": 32.3,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-08",
+          "date_posted": "2026-03-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-17",
+          "date_posted": "2026-03-17",
+          "amount": 26.75,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-03-26",
+          "date_posted": "2026-03-26",
+          "amount": 34.47,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-03",
+          "date_posted": "2026-04-03",
+          "amount": 33.28,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-08",
+          "date_posted": "2026-04-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-17",
+          "date_posted": "2026-04-17",
+          "amount": 39.2,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-04-26",
+          "date_posted": "2026-04-26",
+          "amount": 31.88,
+          "description": "Amazon.ca",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-03",
+          "date_posted": "2026-05-03",
+          "amount": 34.03,
+          "description": "DoorDash",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-08",
+          "date_posted": "2026-05-08",
+          "amount": 17.99,
+          "description": "Netflix",
+          "currency": "CAD"
+        },
+        {
+          "date_transacted": "2026-05-17",
+          "date_posted": "2026-05-17",
+          "amount": 31.64,
+          "description": "DoorDash",
+          "currency": "CAD"
+        }
+      ]
+    },
+    {
+      "type": "loan",
+      "subtype": "student",
+      "starting_balance": 4200,
+      "meta": {
+        "name": "Student Loan",
+        "official_name": "RBC Student Loan"
+      },
+      "liability": {
+        "type": "student",
+        "minimum_payment_amount": 50
+      },
+      "transactions": [
+        {
+          "date_transacted": "2025-09-08",
+          "date_posted": "2025-09-08",
+          "amount": -5500,
+          "description": "Tuition - Loan Disbursement",
+          "currency": "CAD"
+        }
+      ]
+    }
+  ]
+}

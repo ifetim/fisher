@@ -1,37 +1,82 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useFinance } from '@/context/FinanceContext'
 import {
   filterTransactions,
+  getUniqueCategories,
   spendingByCategory,
+  type PeriodPreset,
 } from '@/lib/transactions'
 import { formatAmountWhole } from '@/lib/v3Format'
 import { V3Icons, V3StatusBar } from '@/components/v3/V3Icons'
 import { PlaidBanner } from '@/components/v3/PlaidBanner'
 import { txV3Icon, categoryBarTone } from '@/lib/txV3Icon'
 import { currentMonthLabel, priorMonthName, spendingVsPriorMonth } from '@/lib/v3MonthStats'
+import './SpendingPage.css'
 
 const PAGE_SIZE = 20
+
+type Period = PeriodPreset | 'all'
+
+const PERIOD_OPTIONS: { value: Period; label: string }[] = [
+  { value: 'all', label: 'All time' },
+  { value: 'threeMonths', label: 'Last 3 months' },
+  { value: 'month', label: 'This month' },
+  { value: 'lastMonth', label: 'Last month' },
+  { value: 'week', label: 'Last 7 days' },
+]
+
+function periodLabel(p: Period): string {
+  return PERIOD_OPTIONS.find((o) => o.value === p)?.label ?? 'This month'
+}
 
 export function SpendingPage() {
   const { user } = useAuth()
   const { transactions } = useFinance()
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+  const [period, setPeriod] = useState<Period>('month')
+  const [category, setCategory] = useState<string>('all')
+  const [filterOpen, setFilterOpen] = useState(false)
+  const filterRef = useRef<HTMLDivElement>(null)
 
-  const monthAll = useMemo(
-    () => filterTransactions(transactions, { accountId: 'all', period: 'month', category: 'all' }),
-    [transactions],
-  )
+  useEffect(() => {
+    if (!filterOpen) return
+    function onClick(e: MouseEvent) {
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
+        setFilterOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onClick)
+    return () => document.removeEventListener('mousedown', onClick)
+  }, [filterOpen])
 
-  const filtered = monthAll
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE)
+  }, [period, category])
 
-  const breakdown = useMemo(() => spendingByCategory(monthAll), [monthAll])
+  const filtered = useMemo(() => {
+    if (period === 'all') {
+      return transactions
+        .filter((t) => category === 'all' || t.category === category)
+        .slice()
+        .sort((a, b) => b.date.localeCompare(a.date))
+    }
+    return filterTransactions(transactions, {
+      accountId: 'all',
+      period,
+      category,
+    }).slice().sort((a, b) => b.date.localeCompare(a.date))
+  }, [transactions, period, category])
+
+  const categoryOptions = useMemo(() => getUniqueCategories(transactions), [transactions])
+
+  const breakdown = useMemo(() => spendingByCategory(filtered), [filtered])
   const maxCat = breakdown[0]?.total ?? 1
 
-  const totalSpent = monthAll.filter((t) => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0)
-  const totalIncome = monthAll.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0)
+  const totalSpent = filtered.filter((t) => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0)
+  const totalIncome = filtered.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0)
   const net = totalIncome - totalSpent
   const vsPrior = spendingVsPriorMonth(transactions)
 
@@ -46,7 +91,7 @@ export function SpendingPage() {
       let label: string
       if (d.toDateString() === today.toDateString()) label = 'Today'
       else if (d.toDateString() === yest.toDateString()) label = 'Yesterday'
-      else label = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' })
+      else label = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' })
 
       if (!map.has(label)) map.set(label, [])
       map.get(label)!.push(t)
@@ -63,6 +108,10 @@ export function SpendingPage() {
     tone: categoryBarTone(c.category),
   }))
 
+  const filtersActive = period !== 'month' || category !== 'all'
+  const headerSubtitle =
+    period === 'month' ? currentMonthLabel() : periodLabel(period)
+
   if (!user) return null
 
   return (
@@ -70,12 +119,77 @@ export function SpendingPage() {
       <V3StatusBar />
       <div className="screen-head">
         <div>
-          <p className="greet">{currentMonthLabel()}</p>
+          <p className="greet">{headerSubtitle}</p>
           <h1>Spending</h1>
         </div>
-        <button type="button" className="btn ghost">
-          {V3Icons.filter} Filter
-        </button>
+
+        <div className="spending-filter" ref={filterRef}>
+          <button
+            type="button"
+            className={`btn ghost${filtersActive ? ' spending-filter__btn--active' : ''}`}
+            onClick={() => setFilterOpen((o) => !o)}
+            aria-expanded={filterOpen}
+          >
+            {V3Icons.filter} Filter
+            {filtersActive ? <span className="spending-filter__dot" aria-hidden /> : null}
+          </button>
+
+          {filterOpen ? (
+            <div className="spending-filter__panel" role="dialog" aria-label="Filter transactions">
+              <div className="spending-filter__group">
+                <p className="spending-filter__label">Time period</p>
+                <div className="spending-filter__chips">
+                  {PERIOD_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`spending-filter__chip${period === opt.value ? ' is-on' : ''}`}
+                      onClick={() => setPeriod(opt.value)}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="spending-filter__group">
+                <p className="spending-filter__label">Category</p>
+                <select
+                  className="spending-filter__select"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option value="all">All categories</option>
+                  {categoryOptions.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="spending-filter__footer">
+                <button
+                  type="button"
+                  className="spending-filter__reset"
+                  onClick={() => {
+                    setPeriod('month')
+                    setCategory('all')
+                  }}
+                >
+                  Reset
+                </button>
+                <button
+                  type="button"
+                  className="spending-filter__done"
+                  onClick={() => setFilterOpen(false)}
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          ) : null}
+        </div>
       </div>
 
       <div className="stats">
@@ -104,9 +218,19 @@ export function SpendingPage() {
       <div className="grid cols-12">
         <div>
           <div className="sec">
-            <span className="lbl">Recent transactions</span>
-            <span className="act">Export</span>
+            <span className="lbl">
+              {period === 'all' ? 'All transactions' : 'Transactions'}
+              {filtered.length > 0 ? ` · ${filtered.length}` : ''}
+            </span>
           </div>
+
+          {filtered.length === 0 ? (
+            <p className="spending-page__empty">
+              No transactions for {periodLabel(period).toLowerCase()}
+              {category !== 'all' ? ` in ${category}` : ''}.
+            </p>
+          ) : null}
+
           {grouped.map(([day, txs]) => (
             <div key={day}>
               <p className="tx-day">{day}</p>
@@ -137,7 +261,7 @@ export function SpendingPage() {
               className="btn ghost block"
               onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
             >
-              Show more
+              Show more ({filtered.length - visibleCount} left)
             </button>
           ) : null}
         </div>
@@ -148,6 +272,9 @@ export function SpendingPage() {
           </div>
           <div className="card">
             <div className="cats">
+              {cats.length === 0 ? (
+                <p className="spending-page__empty">No spending in this period.</p>
+              ) : null}
               {cats.map((c) => (
                 <div className="cat" key={c.name}>
                   <div className="top">

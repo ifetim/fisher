@@ -1,8 +1,4 @@
 {
-  "_username": "getting_there",
-  "_password": "any_password",
-  "_story": "Recent grad, 1 year into first job. Paying off student loan, starting to save properly, credit card paid off each month (mostly). Making progress.",
-
   "override_accounts": [
     {
       "type": "depository",
@@ -37,7 +33,6 @@
       "starting_balance": 22000.00,
       "liability": {
         "type": "student",
-        "last_payment_amount": 280,
         "minimum_payment_amount": 280
       }
     }
