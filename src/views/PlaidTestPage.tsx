@@ -62,7 +62,7 @@ export function PlaidTestPage() {
         </div>
       ) : null}
 
-      <PlaidConnect userId={TEST_USER_ID} maxRows={0} />
+      <PlaidConnect userId={TEST_USER_ID} />
 
       <Link href="/dashboard" className="plaid-test__back">
         ← Back to app

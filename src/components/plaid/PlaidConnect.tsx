@@ -3,68 +3,35 @@
 import { useCallback, useEffect, useState } from 'react'
 import { usePlaidLink } from 'react-plaid-link'
 import { useAuth } from '../../context/AuthContext'
-import {
-  createLinkToken,
-  exchangePublicToken,
-  fetchPlaidStatus,
-  fetchPlaidTransactions,
-  type NormalizedTransaction,
-} from '@/lib/plaidApi'
+import { useFinance } from '../../context/FinanceContext'
+import { createLinkToken, exchangePublicToken } from '@/lib/plaidApi'
 import './PlaidConnect.css'
 
-const TEST_USER_ID = 'plaid-test-user'
+export const TEST_USER_ID = 'plaid-test-user'
 
 type PlaidConnectProps = {
+  /** Pass only from PlaidTestPage — normal app flow uses the logged-in user. */
   userId?: string
-  maxRows?: number
-  onTransactions?: (transactions: NormalizedTransaction[]) => void
 }
 
-export function PlaidConnect({
-  userId: userIdOverride,
-  maxRows = 5,
-  onTransactions,
-}: PlaidConnectProps) {
+export function PlaidConnect({ userId: userIdOverride }: PlaidConnectProps) {
   const { user } = useAuth()
-  const [linkToken, setLinkToken] = useState<string | null>(null)
-  const [connected, setConnected] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [transactions, setTransactions] = useState<NormalizedTransaction[]>([])
+  const { plaidConnected, plaidSyncing, syncPlaid } = useFinance()
 
+  // Test mode: userId prop differs from logged-in user (or no user at all)
+  const isTestMode = !!userIdOverride
   const userId = userIdOverride ?? (user ? String(user.id) : '')
 
-  const loadTransactions = useCallback(async () => {
-    if (!userId) return
-    setLoading(true)
-    setError('')
-    try {
-      const txs = await fetchPlaidTransactions(userId)
-      setTransactions(txs)
-      onTransactions?.(txs)
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Could not load Plaid transactions.',
-      )
-    } finally {
-      setLoading(false)
-    }
-  }, [userId, onTransactions])
+  // In test mode we track local connected state; normal mode reads from context
+  const [testConnected, setTestConnected] = useState(false)
+  const connected = isTestMode ? testConnected : plaidConnected
+  const syncing   = isTestMode ? false        : plaidSyncing
 
-  useEffect(() => {
-    if (!userId) return
+  const [linkToken, setLinkToken] = useState<string | null>(null)
+  const [loading,   setLoading]   = useState(false)
+  const [error,     setError]     = useState('')
 
-    void (async () => {
-      try {
-        const isConnected = await fetchPlaidStatus(userId)
-        setConnected(isConnected)
-        if (isConnected) await loadTransactions()
-      } catch {
-        /* env or server offline */
-      }
-    })()
-  }, [userId, loadTransactions])
-
+  // Fetch a link token whenever we know the userId and aren't already connected
   useEffect(() => {
     if (!userId || connected) return
 
@@ -77,7 +44,7 @@ export function PlaidConnect({
         setError(
           err instanceof Error
             ? err.message
-            : 'Plaid not configured. Add keys to .env.local',
+            : 'Plaid not configured — add keys to .env.local',
         )
       }
     })()
@@ -90,28 +57,25 @@ export function PlaidConnect({
       setError('')
       try {
         await exchangePublicToken(userId, publicToken)
-        setConnected(true)
-        await loadTransactions()
+
+        if (isTestMode) {
+          setTestConnected(true)
+        } else {
+          // Sync transactions into FinanceContext — Dashboard + Spending update automatically
+          await syncPlaid()
+        }
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Token exchange failed.',
-        )
+        setError(err instanceof Error ? err.message : 'Token exchange failed.')
       } finally {
         setLoading(false)
       }
     },
-    [userId, loadTransactions],
+    [userId, isTestMode, syncPlaid],
   )
 
-  const { open, ready } = usePlaidLink({
-    token: linkToken,
-    onSuccess,
-  })
+  const { open, ready } = usePlaidLink({ token: linkToken, onSuccess })
 
   if (!userId) return null
-
-  const visible =
-    maxRows <= 0 ? transactions : transactions.slice(0, maxRows)
 
   return (
     <section className="plaid-connect">
@@ -125,10 +89,10 @@ export function PlaidConnect({
           <button
             type="button"
             className="plaid-connect__btn"
-            disabled={!ready || loading || !linkToken}
+            disabled={!ready || loading || syncing || !linkToken}
             onClick={() => open()}
           >
-            {loading ? 'Connecting…' : 'Connect bank'}
+            {loading || syncing ? 'Connecting…' : 'Connect bank'}
           </button>
           {linkToken && ready ? (
             <p className="plaid-connect__ready">Plaid ready — tap to open sandbox</p>
@@ -138,34 +102,11 @@ export function PlaidConnect({
         </>
       ) : (
         <p className="plaid-connect__status">
-          Connected · {transactions.length} live transactions
+          {syncing ? 'Syncing transactions…' : 'Bank connected ✓'}
         </p>
       )}
 
       {error ? <p className="plaid-connect__error">{error}</p> : null}
-
-      {visible.length > 0 ? (
-        <ul className="plaid-connect__list">
-          {visible.map((tx) => (
-            <li key={tx.id} className="plaid-connect__row">
-              <span>
-                {tx.merchant}
-                <small> · {tx.date}</small>
-              </span>
-              <span className={tx.amount >= 0 ? 'amount--income' : 'amount--spend'}>
-                {formatAmount(tx.amount)}
-              </span>
-            </li>
-          ))}
-        </ul>
-      ) : null}
     </section>
   )
 }
-
-function formatAmount(amount: number) {
-  const prefix = amount >= 0 ? '+' : ''
-  return `${prefix}$${Math.abs(amount).toFixed(2)}`
-}
-
-export { TEST_USER_ID }

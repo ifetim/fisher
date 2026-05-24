@@ -7,7 +7,6 @@ import { getAccountsForUser } from '@/data'
 import { filterTransactions, spendingByCategory } from '@/lib/transactions'
 import { formatCurrency } from '@/lib/format'
 import { PlaidConnect } from '@/components/plaid/PlaidConnect'
-import type { NormalizedTransaction } from '@/lib/plaid/normalizeTransaction'
 
 const CAT_STYLE: Record<string, { icon: string; bg: string; color: string }> = {
   'Food & Dining': { icon: '🍔', bg: 'rgba(249,115,22,0.15)', color: '#f97316' },
@@ -28,12 +27,8 @@ function catStyle(category: string) {
 
 export function SpendingPage() {
   const { user } = useAuth()
-  const { transactions, addPlaidTransactions, plaidConnected } = useFinance()
+  const { transactions, plaidConnected, plaidSyncing } = useFinance()
   const accounts = user ? getAccountsForUser(user.id) : []
-
-  function handlePlaidTransactions(txs: NormalizedTransaction[]) {
-    addPlaidTransactions(txs)
-  }
 
   const filtered = useMemo(
     () => filterTransactions(transactions, { accountId: 'all', period: 'month', category: 'all' }),
@@ -106,11 +101,8 @@ export function SpendingPage() {
         </div>
       </div>
 
-      {/* Plaid connect — opens real Plaid Link and feeds transactions into FinanceContext */}
-      <PlaidConnect
-        onTransactions={handlePlaidTransactions}
-        maxRows={0}
-      />
+      {/* Plaid connect — after linking, FinanceContext auto-syncs transactions */}
+      <PlaidConnect />
 
       <div className="grid cols-12">
         {/* Transaction list */}
