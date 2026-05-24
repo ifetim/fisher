@@ -300,7 +300,10 @@ export function SpendingPage() {
                         ))}
                       </Pie>
                       <Tooltip
-                        formatter={(val: number) => [`$${formatAmountWhole(val)}`, '']}
+                        formatter={(val) => {
+                          const amount = typeof val === 'number' ? val : Number(val)
+                          return [`$${formatAmountWhole(Number.isFinite(amount) ? amount : 0)}`, '']
+                        }}
                         contentStyle={{ borderRadius: 12, border: '1px solid rgba(28,43,107,0.1)', fontSize: 12, fontWeight: 600 }}
                         itemStyle={{ color: 'var(--text)' }}
                         labelStyle={{ display: 'none' }}
