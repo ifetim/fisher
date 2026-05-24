@@ -37,6 +37,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
+    // Optional: frontend can append location via formData.append('location', '...')
+    const location = formData.get('location')?.toString() ?? null
+
     const apiKey = process.env.GEMINI_API_KEY
     if (apiKey) {
       const genAI = new GoogleGenerativeAI(apiKey)
@@ -49,7 +52,18 @@ export async function POST(request: Request) {
       const base64 = Buffer.from(bytes).toString('base64')
       const mimeType = (file.type || 'application/pdf') as string
 
-      const prompt = `You are a bank statement parser. Extract every transaction from this statement.
+      const locationLine = location
+        ? `The user is located in: ${location}.`
+        : 'You do not have the user\'s exact location — suggest well-known cheaper alternatives by name anyway.'
+
+      const prompt = `Analyze this bank statement and do the following:
+1. Extract every transaction into a structured list.
+2. Categorize all transactions and calculate total spending per category.
+3. Identify the single category the user spends the most money on.
+4. Suggest specific cheaper alternatives to help the user save money in that category.
+
+${locationLine}
+
 Return a JSON object with this exact shape:
 {
   "transactions": [
@@ -61,13 +75,20 @@ Return a JSON object with this exact shape:
       "type": "debit or credit"
     }
   ],
-  "message": "Parsed N transactions from your statement."
+  "topCategory": "category name",
+  "topCategoryTotal": 123.45,
+  "message": "summary of findings and suggestions"
 }
-Rules:
+
+Rules for transactions:
 - amount is negative for debits (money out), positive for credits (money in)
 - type is "debit" if amount < 0, "credit" if amount >= 0
-- If no transactions are found, return an empty array and a message explaining why
-- Do not include account numbers or sensitive data in merchant names`
+
+Rules for message:
+- Start with: "Your highest spending category is [category] at $[total]."
+- Then list 3–5 specific, named cheaper alternatives (real business names or well-known options) to replace what they're currently spending on
+- If location is known, tailor suggestions to that area
+- Keep it concise — 3–6 sentences total`
 
       const result = await model.generateContent([
         { text: prompt },
@@ -75,7 +96,12 @@ Rules:
       ])
 
       const raw = result.response.text()
-      const parsed = JSON.parse(raw) as { transactions: Omit<ParsedTx, 'accountId'>[]; message: string }
+      const parsed = JSON.parse(raw) as {
+        transactions: Omit<ParsedTx, 'accountId'>[]
+        topCategory: string
+        topCategoryTotal: number
+        message: string
+      }
 
       const transactions: ParsedTx[] = parsed.transactions.map((tx) => ({
         ...tx,
