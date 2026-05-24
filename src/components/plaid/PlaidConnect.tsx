@@ -4,7 +4,14 @@ import { useCallback, useEffect, useState } from 'react'
 import { usePlaidLink } from 'react-plaid-link'
 import { useAuth } from '../../context/AuthContext'
 import { useFinance } from '../../context/FinanceContext'
-import { createLinkToken, disconnectPlaid, exchangePublicToken } from '@/lib/plaidApi'
+import {
+  createLinkToken,
+  disconnectPlaid,
+  exchangePublicToken,
+  fetchPlaidSnapshot,
+  fetchPlaidTransactions,
+  type PlaidSnapshot,
+} from '@/lib/plaidApi'
 import './PlaidConnect.css'
 
 export const TEST_USER_ID = 'plaid-test-user'
@@ -14,23 +21,52 @@ type PlaidConnectProps = {
   userId?: string
 }
 
+function formatCurrency(value: number | null, currency = 'USD'): string {
+  if (value === null) return '—'
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(value)
+}
+
 export function PlaidConnect({ userId: userIdOverride }: PlaidConnectProps) {
   const { user } = useAuth()
-  const { plaidConnected, plaidSyncing, syncPlaid, disconnectPlaidAccount } = useFinance()
+  const {
+    plaidConnected,
+    plaidSyncing,
+    plaidSnapshot: ctxSnapshot,
+    syncPlaid,
+    disconnectPlaidAccount,
+  } = useFinance()
 
   const isTestMode = !!userIdOverride
   const userId = userIdOverride ?? (user ? String(user.id) : '')
 
+  // Test mode keeps everything local so it doesn't affect the logged-in user
   const [testConnected, setTestConnected] = useState(false)
+  const [testSnapshot,  setTestSnapshot]  = useState<PlaidSnapshot | null>(null)
+  const [testTxCount,   setTestTxCount]   = useState<number | null>(null)
+
   const connected = isTestMode ? testConnected : plaidConnected
   const syncing   = isTestMode ? false        : plaidSyncing
+  const snapshot  = isTestMode ? testSnapshot  : ctxSnapshot
 
-  const [linkToken,   setLinkToken]   = useState<string | null>(null)
-  const [loading,     setLoading]     = useState(false)
-  const [error,       setError]       = useState('')
-  const [txCount,     setTxCount]     = useState<number | null>(null)
+  const [linkToken, setLinkToken] = useState<string | null>(null)
+  const [loading,   setLoading]   = useState(false)
+  const [error,     setError]     = useState('')
 
-  // Fetch a link token whenever we know the userId and aren't already connected
+  // Helper used by test-mode connect + refresh
+  const fetchTestSnapshot = useCallback(async () => {
+    try {
+      const [snap, txs] = await Promise.all([
+        fetchPlaidSnapshot(userId),
+        fetchPlaidTransactions(userId),
+      ])
+      setTestSnapshot(snap)
+      setTestTxCount(txs.length)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not load Plaid data')
+    }
+  }, [userId])
+
+  // Fetch a link token whenever we have a user and aren't connected yet
   useEffect(() => {
     if (!userId || connected) return
 
@@ -56,9 +92,9 @@ export function PlaidConnect({ userId: userIdOverride }: PlaidConnectProps) {
       setError('')
       try {
         await exchangePublicToken(userId, publicToken)
-
         if (isTestMode) {
           setTestConnected(true)
+          await fetchTestSnapshot()
         } else {
           await syncPlaid()
         }
@@ -68,12 +104,17 @@ export function PlaidConnect({ userId: userIdOverride }: PlaidConnectProps) {
         setLoading(false)
       }
     },
-    [userId, isTestMode, syncPlaid],
+    [userId, isTestMode, syncPlaid, fetchTestSnapshot],
   )
 
   const { open, ready } = usePlaidLink({ token: linkToken, onSuccess })
 
   if (!userId) return null
+
+  const accounts = snapshot?.accounts ?? []
+  const identity = snapshot?.identity ?? []
+  const institution = snapshot?.institution ?? null
+  const accountHolder = identity[0]?.names[0] ?? null
 
   return (
     <section className="plaid-connect">
@@ -99,23 +140,67 @@ export function PlaidConnect({ userId: userIdOverride }: PlaidConnectProps) {
           ) : null}
         </>
       ) : (
-        <div className="plaid-connect__connected-row">
-          <p className="plaid-connect__status">
-            {syncing ? 'Syncing…' : `Bank connected ✓${txCount !== null ? ` · ${txCount} transactions` : ''}`}
+        <div className="plaid-connect__connected">
+          {/* Institution header */}
+          <div className="plaid-connect__inst">
+            {institution?.logo ? (
+              <img src={institution.logo} alt={institution.name} className="plaid-connect__logo" />
+            ) : (
+              <div
+                className="plaid-connect__logo plaid-connect__logo--fallback"
+                style={{ background: institution?.primaryColor ?? '#0f172a' }}
+              >
+                {(institution?.name ?? 'B')[0]}
+              </div>
+            )}
+            <div>
+              <p className="plaid-connect__inst-name">
+                {syncing ? 'Syncing…' : institution?.name ?? 'Bank connected'} ✓
+              </p>
+              {accountHolder ? (
+                <p className="plaid-connect__inst-holder">Account holder: {accountHolder}</p>
+              ) : null}
+            </div>
+          </div>
+
+          {/* Account list with live balances */}
+          {accounts.length > 0 ? (
+            <ul className="plaid-connect__accounts">
+              {accounts.map((a) => (
+                <li key={a.id} className="plaid-connect__acct">
+                  <div>
+                    <p className="plaid-connect__acct-name">
+                      {a.name}
+                      {a.mask ? <span className="plaid-connect__acct-mask"> ··{a.mask}</span> : null}
+                    </p>
+                    <p className="plaid-connect__acct-type">
+                      {a.subtype ?? a.type}
+                    </p>
+                  </div>
+                  <span className="plaid-connect__acct-balance">
+                    {formatCurrency(a.balance.current, a.balance.currency)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
+          <p className="plaid-connect__meta">
+            {(isTestMode ? testTxCount : null) !== null
+              ? `${testTxCount} transactions loaded`
+              : 'Transactions synced to Dashboard + Spending'}
           </p>
+
           <div className="plaid-connect__actions">
             <button
               type="button"
               className="plaid-connect__btn plaid-connect__btn--secondary"
-              disabled={syncing}
+              disabled={syncing || loading}
               onClick={async () => {
                 setLoading(true)
                 try {
                   if (isTestMode) {
-                    // Re-fetch count for display
-                    const { fetchPlaidTransactions: fetchTx } = await import('@/lib/plaidApi')
-                    const txs = await fetchTx(userId)
-                    setTxCount(txs.length)
+                    await fetchTestSnapshot()
                   } else {
                     await syncPlaid()
                   }
@@ -134,7 +219,8 @@ export function PlaidConnect({ userId: userIdOverride }: PlaidConnectProps) {
                   if (isTestMode) {
                     await disconnectPlaid(userId)
                     setTestConnected(false)
-                    setTxCount(null)
+                    setTestSnapshot(null)
+                    setTestTxCount(null)
                   } else {
                     await disconnectPlaidAccount()
                   }

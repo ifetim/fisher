@@ -2,6 +2,50 @@ import type { NormalizedTransaction } from '@/lib/plaid/normalizeTransaction'
 
 export type { NormalizedTransaction }
 
+export type PlaidAccount = {
+  id: string
+  name: string
+  officialName: string | null
+  mask: string | null
+  type: string
+  subtype: string | null
+  balance: {
+    available: number | null
+    current: number | null
+    limit: number | null
+    currency: string
+  }
+}
+
+export type PlaidIdentity = {
+  accountId: string
+  names: string[]
+  emails: string[]
+  phones: string[]
+  addresses: {
+    street: string
+    city: string
+    region: string
+    postalCode: string
+    country: string
+  }[]
+}
+
+export type PlaidInstitution = {
+  id: string
+  name: string
+  primaryColor: string | null
+  url: string | null
+  logo: string | null
+}
+
+export type PlaidSnapshot = {
+  accounts: PlaidAccount[]
+  identity: PlaidIdentity[]
+  institution: PlaidInstitution | null
+  itemId: string | null
+}
+
 async function readApiError(res: Response, fallback: string): Promise<string> {
   try {
     const data = (await res.json()) as { error?: string }
@@ -72,6 +116,18 @@ export async function disconnectPlaid(userId: string): Promise<void> {
   if (!res.ok) {
     throw new Error(await readApiError(res, 'Failed to disconnect Plaid'))
   }
+}
+
+export async function fetchPlaidSnapshot(
+  userId: string,
+): Promise<PlaidSnapshot> {
+  const res = await fetch(
+    `/api/plaid/snapshot?userId=${encodeURIComponent(userId)}`,
+  )
+  if (!res.ok) {
+    throw new Error(await readApiError(res, 'Failed to fetch Plaid snapshot'))
+  }
+  return (await res.json()) as PlaidSnapshot
 }
 
 export async function fetchPlaidTransactions(

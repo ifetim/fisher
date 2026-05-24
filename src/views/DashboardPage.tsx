@@ -10,7 +10,7 @@ const ACCOUNT_COLORS: Record<string, string> = {
 }
 
 export function DashboardPage() {
-  const { greeting, accounts, netWorth, spendingThisMonth, quickInsights, balancesVisible, toggleBalances, displayAmount } = useDashboard()
+  const { greeting, accounts, netWorth, spendingThisMonth, quickInsights, institutionName, balancesVisible, toggleBalances, displayAmount } = useDashboard()
 
   if (!greeting || !accounts) return null
 
@@ -70,6 +70,11 @@ export function DashboardPage() {
             </div>
             <div className="hero-tags">
               <span className="hero-tag">Across {accounts.length} accounts</span>
+              {institutionName ? (
+                <span className="hero-tag" style={{ background: 'rgba(34,197,94,0.18)' }}>
+                  🔗 {institutionName}
+                </span>
+              ) : null}
             </div>
           </div>
 
