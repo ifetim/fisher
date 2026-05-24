@@ -48,11 +48,11 @@ const STATIC_ADVICE: AdviceCard[] = [
 ]
 
 const CTA_ROUTES: Record<string, string> = {
-  'See breakdown':        '/spending',
-  'Set a cap':            '/spending',
+  'See breakdown':        '/dashboard',
+  'Set a cap':            '/dashboard',
   'Transfer now':         '/savings',
-  'Review subscriptions': '/spending',
-  'Learn more':           '/spending',
+  'Review subscriptions': '/dashboard',
+  'Learn more':           '/dashboard',
 }
 
 export function AdvicePage() {
