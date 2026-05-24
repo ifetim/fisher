@@ -2,236 +2,238 @@
 
 import { useRouter } from 'next/navigation'
 import { useDashboard } from '@/hooks/useDashboard'
-import { formatCurrency } from '@/lib/format'
-import { AccountGroupTile } from '@/components/dashboard/AccountGroupTile'
-import { DashboardCategoryBudgets } from '@/components/dashboard/DashboardCategoryBudgets'
 import { useCategoryBudgets } from '@/hooks/useCategoryBudgets'
-import { groupTotal } from '@/lib/accountGrouping'
-
-const ACCOUNT_COLORS: Record<string, string> = {
-  chequing: '#3b82f6',
-  savings:  '#22c55e',
-  credit:   '#ef4444',
-}
+import { useAuth } from '@/context/AuthContext'
+import { useFinance } from '@/context/FinanceContext'
+import { V3Icons, V3StatusBar } from '@/components/v3/V3Icons'
+import { accountTone, bankCode, formatAmountWhole } from '@/lib/v3Format'
+import { buildV3Insights } from '@/lib/v3Insights'
+import { weekSummary } from '@/lib/v3WeekSummary'
+import {
+  daysLeftInMonth,
+  priorMonthName,
+  spendingMonthName,
+  spendingVsPriorMonth,
+} from '@/lib/v3MonthStats'
 
 export function DashboardPage() {
   const router = useRouter()
+  const { user } = useAuth()
+  const { transactions, savingsPlans } = useFinance()
   const {
     greeting,
     accounts,
-    groupedAccounts,
     netWorth,
-    spendingThisMonth,
-    quickInsights,
-    institutionName,
     balancesVisible,
     toggleBalances,
   } = useDashboard()
-  const { rows: budgetRows, totalSpent: budgetSpent, totalLimit: budgetLimit } = useCategoryBudgets()
+  const { totalSpent: budgetSpent, totalLimit: budgetLimit } = useCategoryBudgets()
 
-  if (!greeting || !accounts) return null
+  if (!greeting || !accounts || !user) return null
 
-  // ── Survive until payday ──────────────────────────────────────────────────
-  const chequingBalance = accounts.find((a) => a.type === 'chequing')?.balance ?? 0
-  const today = new Date()
-  const daysElapsed = today.getDate()
-  const avgDailySpend =
-    daysElapsed > 0 && spendingThisMonth
-      ? Math.abs(spendingThisMonth) / daysElapsed
-      : 0
-  const daysLeft = avgDailySpend > 0 ? Math.floor(chequingBalance / avgDailySpend) : null
-  // Next payday: 15th of current month, or 1st of next month
-  const daysToPayday =
-    today.getDate() < 15
-      ? 15 - today.getDate()
-      : Math.ceil(
-          (new Date(today.getFullYear(), today.getMonth() + 1, 1).getTime() - today.getTime()) /
-            86_400_000,
-        )
-  const paydayOk = daysLeft !== null && daysLeft >= daysToPayday
-  // ─────────────────────────────────────────────────────────────────────────
+  const firstName = user.name.split(' ')[0] ?? user.name
+  const timeOfDay = greeting.split(',')[0] ?? 'Good morning'
+  const net = netWorth ?? 0
+  const budgetPct =
+    budgetLimit > 0 ? Math.min(100, Math.round((budgetSpent / budgetLimit) * 100)) : 0
 
-  const firstName = greeting.replace(/^Good \w+, /, '')
-  const timeOfDay = greeting.split(',')[0] ?? 'Good day'
+  const show = (n: number) => (balancesVisible ? `$${formatAmountWhole(n)}` : '••••')
 
-  const insightIcons = [
-    { icon: '📊', bg: 'rgba(59,130,246,0.12)' },
-    { icon: '⚡', bg: 'rgba(245,158,11,0.12)' },
-    { icon: '🎯', bg: 'rgba(134,59,255,0.12)' },
-  ]
+  const insights = buildV3Insights(transactions, savingsPlans)
+  const insightIcons = [V3Icons.down, V3Icons.alert, V3Icons.bullseye]
+  const week = weekSummary(transactions)
+  const vsPrior = spendingVsPriorMonth(transactions)
+  const monthName = spendingMonthName()
+  const daysLeft = daysLeftInMonth()
 
   return (
     <div>
-      {/* Header */}
-      <div className="screen-header">
-        <div className="greeting">
-          <p>{timeOfDay}</p>
-          <h1>Welcome back, {firstName} 👋</h1>
+      <V3StatusBar />
+      <div className="screen-head">
+        <div>
+          <p className="greet">{timeOfDay}</p>
+          <h1>Hi, {firstName}.</h1>
         </div>
-        <div className="avatar">{firstName[0]?.toUpperCase()}</div>
+        <div className="head-avatar">{firstName[0]?.toUpperCase()}</div>
       </div>
 
       <div className="grid cols-12">
-        {/* Left column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-
-          {/* Net worth hero */}
+        <div className="stack">
           <div className="hero">
-            <div className="hero-label">
-              <span>Net Worth</span>
-              <button className="eye-btn" onClick={toggleBalances}>
-                {balancesVisible ? (
-                  <>
-                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
-                      <path stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                      <circle cx="12" cy="12" r="3" stroke="#fff" strokeWidth="2"/>
-                    </svg>
-                    Hide
-                  </>
-                ) : (
-                  <>
-                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
-                      <path stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                      <line x1="1" y1="1" x2="23" y2="23" stroke="#fff" strokeWidth="2"/>
-                    </svg>
-                    Show
-                  </>
-                )}
+            <div className="label-row">
+              <span className="label">Net worth · CAD</span>
+              <button type="button" className="eye" onClick={toggleBalances}>
+                {balancesVisible ? V3Icons.eye : V3Icons.eyeOff}{' '}
+                {balancesVisible ? 'Hide' : 'Show'}
               </button>
             </div>
-            <div className="hero-amount">
-              {balancesVisible ? formatCurrency(netWorth ?? 0) : '••••••••'}
+            <div className="amount">
+              {balancesVisible ? (
+                <>
+                  ${formatAmountWhole(net)}
+                  <span className="cents">.00</span>
+                </>
+              ) : (
+                '••••••'
+              )}
             </div>
-            <div className="hero-tags">
-              <span className="hero-tag">Across {accounts.length} accounts</span>
-              {institutionName ? (
-                <span className="hero-tag" style={{ background: 'rgba(34,197,94,0.18)' }}>
-                  🔗 {institutionName}
+            <div>
+              {vsPrior !== null ? (
+                <span className="delta">
+                  {vsPrior <= 0 ? V3Icons.up : V3Icons.down}{' '}
+                  {Math.abs(vsPrior)}% vs {priorMonthName()}
                 </span>
-              ) : null}
+              ) : (
+                <span className="delta">{V3Icons.up} Tracking {accounts.length} accounts</span>
+              )}
+              <span className="delta">
+                {week.net >= 0 ? '+' : '−'}${formatAmountWhole(Math.abs(week.net))} this week
+              </span>
             </div>
           </div>
 
-          {/* Survive until payday */}
-          {daysLeft !== null && (
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 12,
-              background: paydayOk ? 'rgba(34,197,94,0.08)' : daysLeft >= daysToPayday * 0.7 ? 'rgba(245,158,11,0.08)' : 'rgba(239,68,68,0.08)',
-              border: `1.5px solid ${paydayOk ? 'rgba(34,197,94,0.2)' : daysLeft >= daysToPayday * 0.7 ? 'rgba(245,158,11,0.2)' : 'rgba(239,68,68,0.22)'}`,
-              borderRadius: 12, padding: '11px 14px', marginTop: 12,
-            }}>
-              <span style={{ fontSize: 22, lineHeight: 1 }}>
-                {paydayOk ? '✅' : daysLeft >= daysToPayday * 0.7 ? '⚠️' : '🚨'}
-              </span>
-              <div>
-                <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>
-                  {balancesVisible ? `${daysLeft} days of spending left` : '•• days of spending left'}
-                </p>
-                <p style={{ margin: '2px 0 0', fontSize: 11, color: 'var(--muted)' }}>
-                  {paydayOk
-                    ? `On track — payday in ${daysToPayday}d`
-                    : `Payday in ${daysToPayday}d — watch your spending`}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Primary accounts — chequing / savings / credit card individually */}
           <div>
-            <div className="section-label">
-              <span>Accounts</span>
+            <div className="sec">
+              <span className="lbl">Accounts</span>
+              <span className="act">See all</span>
             </div>
-            <div className="accounts">
-              {accounts.map((a) => (
-                <div className="account-card" key={a.id}>
-                  <div className="dot" style={{ background: (ACCOUNT_COLORS[a.type] ?? '#64748b') + '22' }}>
-                    <div style={{ width: 14, height: 14, borderRadius: 4, background: ACCOUNT_COLORS[a.type] ?? '#64748b' }} />
+            <div className="card">
+              {accounts.map((a) => {
+                const tone = accountTone(a.type)
+                const mask = String(1000 + Math.abs(a.id)).slice(-4)
+                return (
+                  <div className="account" key={a.id}>
+                    <div className={`icon ${tone}`.trim()}>{bankCode(a.bank)}</div>
+                    <div className="meta">
+                      <p className="name">{a.name}</p>
+                      <p className="sub">
+                        {a.bank} · ··{mask}
+                      </p>
+                    </div>
+                    <p className={`bal${a.balance < 0 ? ' neg' : ''}`}>
+                      {balancesVisible
+                        ? (a.balance < 0 ? '−' : '') +
+                          '$' +
+                          formatAmountWhole(Math.abs(a.balance))
+                        : '••••'}
+                    </p>
                   </div>
-                  <p className="name">{a.name}</p>
-                  <p className="bank">{a.bank}</p>
-                  <p className={'balance' + (a.balance < 0 ? ' neg' : '')}>
-                    {balancesVisible
-                      ? (a.balance < 0 ? '−' : '') + formatCurrency(Math.abs(a.balance))
-                      : '••••'}
+                )
+              })}
+            </div>
+          </div>
+
+          <div>
+            <div className="sec">
+              <span className="lbl">{monthName} spending</span>
+              <span className="act" onClick={() => router.push('/spending')} role="button" tabIndex={0}>
+                Details
+              </span>
+            </div>
+            <div className="card pad budget">
+              <div className="top-row">
+                <div>
+                  <p className="lbl">Spent</p>
+                  <p className="num">
+                    {show(budgetSpent)}
+                    <span className="of">/ ${formatAmountWhole(budgetLimit)}</span>
                   </p>
+                </div>
+                <span className="pct-tag">{budgetPct}%</span>
+              </div>
+              <div className="bar">
+                <div className="fill" style={{ width: `${budgetPct}%` }} />
+              </div>
+              <p className="foot">
+                {daysLeft} days left in {monthName} · pacing on budget
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="stack">
+          <div>
+            <div className="sec">
+              <span className="lbl">Quick insights</span>
+            </div>
+            <div className="card">
+              {insights.map((row, i) => (
+                <div className={`insight ${row.kind}`} key={i}>
+                  <div className="ico">{insightIcons[i] ?? V3Icons.bullseye}</div>
+                  <p className="txt">{row.text}</p>
                 </div>
               ))}
             </div>
-
-            {/* Grouped tiles — collapsed by default to avoid clutter */}
-            {groupedAccounts ? (
-              <div className="account-groups">
-                <AccountGroupTile
-                  title="Investments"
-                  emoji="📈"
-                  accentBg="rgba(134,59,255,0.15)"
-                  accounts={groupedAccounts.investments}
-                  groupTotal={groupTotal(groupedAccounts.investments)}
-                  balancesVisible={balancesVisible}
-                />
-                <AccountGroupTile
-                  title="Loans"
-                  emoji="🏛️"
-                  accentBg="rgba(239,68,68,0.12)"
-                  accounts={groupedAccounts.loans}
-                  groupTotal={groupTotal(groupedAccounts.loans, true)}
-                  isDebt
-                  balancesVisible={balancesVisible}
-                />
-                <AccountGroupTile
-                  title="Other accounts"
-                  emoji="🏦"
-                  accentBg="rgba(59,130,246,0.12)"
-                  accounts={groupedAccounts.otherDeposits}
-                  groupTotal={groupTotal(groupedAccounts.otherDeposits)}
-                  balancesVisible={balancesVisible}
-                />
-              </div>
-            ) : null}
           </div>
 
-          {/* Category budgets this month */}
-          <div style={{ marginTop: 16 }}>
-            <div className="section-label">
-              <span>Category budgets</span>
+          <div>
+            <div className="sec">
+              <span className="lbl">This week</span>
             </div>
-            <div className="card card-pad">
-              <DashboardCategoryBudgets
-                rows={budgetRows}
-                totalSpent={budgetSpent}
-                totalLimit={budgetLimit}
-                balancesVisible={balancesVisible}
-              />
+            <div className="card pad">
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
+                  marginBottom: 8,
+                }}
+              >
+                <span style={{ fontSize: 13, color: 'var(--muted)', fontWeight: 500 }}>Income</span>
+                <span
+                  style={{
+                    fontFamily: 'var(--display)',
+                    fontSize: 16,
+                    fontWeight: 600,
+                    color: 'var(--mint)',
+                  }}
+                >
+                  +${formatAmountWhole(week.income)}
+                </span>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
+                  marginBottom: 8,
+                }}
+              >
+                <span style={{ fontSize: 13, color: 'var(--muted)', fontWeight: 500 }}>Spending</span>
+                <span
+                  style={{
+                    fontFamily: 'var(--display)',
+                    fontSize: 16,
+                    fontWeight: 600,
+                    color: 'var(--rose)',
+                  }}
+                >
+                  −${formatAmountWhole(week.spending)}
+                </span>
+              </div>
+              <div style={{ height: 1, background: 'var(--border)', margin: '10px 0' }} />
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
+                }}
+              >
+                <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--text)' }}>Net</span>
+                <span
+                  style={{
+                    fontFamily: 'var(--display)',
+                    fontSize: 18,
+                    fontWeight: 600,
+                    color: 'var(--orange)',
+                  }}
+                >
+                  {week.net >= 0 ? '+' : '−'}${formatAmountWhole(Math.abs(week.net))}
+                </span>
+              </div>
             </div>
           </div>
         </div>
-
-        {/* Right column: insights */}
-        <div>
-          <div className="section-label">
-            <span>Quick insights</span>
-          </div>
-          <div className="card">
-            {(quickInsights ?? []).map((text, i) => (
-              <div className="card-row insight-row" key={i}>
-                <div className="insight-icon" style={{ background: insightIcons[i % insightIcons.length]?.bg }}>
-                  {insightIcons[i % insightIcons.length]?.icon}
-                </div>
-                <p className="insight-text">{text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Dev only — reset onboarding */}
-      <div style={{ marginTop: 32, textAlign: 'center' }}>
-        <button
-          style={{ background: 'none', border: '1px dashed var(--border)', borderRadius: 8, padding: '6px 14px', fontSize: '0.75rem', color: 'var(--muted)', cursor: 'pointer' }}
-          onClick={() => { localStorage.removeItem('clearmint-onboarded'); router.push('/onboarding') }}
-        >
-          ↩ Preview onboarding
-        </button>
       </div>
     </div>
   )

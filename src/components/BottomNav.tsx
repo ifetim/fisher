@@ -16,7 +16,8 @@ export function BottomNav() {
         return (
           <button
             key={href}
-            className={`bnav-item${isActive ? ' active' : ''}`}
+            type="button"
+            className={`item${isActive ? ' active' : ''}`}
             onClick={() => router.push(href)}
             aria-label={label}
           >
