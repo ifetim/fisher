@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GoogleGenAI } from '@google/genai'
 
 type ParsedTx = {
   accountId: number
@@ -42,11 +42,7 @@ export async function POST(request: Request) {
 
     const apiKey = process.env.GEMINI_API_KEY
     if (apiKey) {
-      const genAI = new GoogleGenerativeAI(apiKey)
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash-latest',
-        generationConfig: { responseMimeType: 'application/json' },
-      })
+      const ai = new GoogleGenAI({ apiKey })
 
       const bytes = await file.arrayBuffer()
       const base64 = Buffer.from(bytes).toString('base64')
@@ -54,7 +50,7 @@ export async function POST(request: Request) {
 
       const locationLine = location
         ? `The user is located in: ${location}.`
-        : 'You do not have the user\'s exact location — suggest well-known cheaper alternatives by name anyway.'
+        : "You do not have the user's exact location — suggest well-known cheaper alternatives by name anyway."
 
       const prompt = `Analyze this bank statement and do the following:
 1. Extract every transaction into a structured list.
@@ -90,12 +86,21 @@ Rules for message:
 - If location is known, tailor suggestions to that area
 - Keep it concise — 3–6 sentences total`
 
-      const result = await model.generateContent([
-        { text: prompt },
-        { inlineData: { mimeType, data: base64 } },
-      ])
+      const result = await ai.models.generateContent({
+        model: 'gemini-2.0-flash-lite',
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { text: prompt },
+              { inlineData: { mimeType, data: base64 } },
+            ],
+          },
+        ],
+        config: { responseMimeType: 'application/json' },
+      })
 
-      const raw = result.response.text().replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim()
+      const raw = (result.text ?? '').replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim()
       const parsed = JSON.parse(raw) as {
         transactions: Omit<ParsedTx, 'accountId'>[]
         topCategory: string

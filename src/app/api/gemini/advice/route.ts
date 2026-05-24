@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GoogleGenAI } from '@google/genai'
 
 export async function POST(request: Request) {
   try {
@@ -13,11 +13,7 @@ export async function POST(request: Request) {
 
     const apiKey = process.env.GEMINI_API_KEY
     if (apiKey) {
-      const genAI = new GoogleGenerativeAI(apiKey)
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash-latest',
-        generationConfig: { responseMimeType: 'application/json' },
-      })
+      const ai = new GoogleGenAI({ apiKey })
 
       const factorLines = factors.length
         ? factors.map((f) => `- ${f.label}: ${f.detail}`).join('\n')
@@ -43,8 +39,13 @@ Rules:
 - Reference actual numbers or categories from their factors where relevant
 - Last card must always summarize their score with what it means and one priority action`
 
-      const result = await model.generateContent(prompt)
-      const raw = result.response.text()
+      const result = await ai.models.generateContent({
+        model: 'gemini-2.0-flash-lite',
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        config: { responseMimeType: 'application/json' },
+      })
+
+      const raw = (result.text ?? '').replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim()
       const parsed = JSON.parse(raw) as { cards: { title: string; body: string }[] }
 
       return NextResponse.json({ cards: parsed.cards })

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GoogleGenAI } from '@google/genai'
 
 export async function POST(request: Request) {
   try {
@@ -17,11 +17,7 @@ export async function POST(request: Request) {
 
     const apiKey = process.env.GEMINI_API_KEY
     if (apiKey) {
-      const genAI = new GoogleGenerativeAI(apiKey)
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash-latest',
-        generationConfig: { responseMimeType: 'application/json' },
-      })
+      const ai = new GoogleGenAI({ apiKey })
 
       const amountContext =
         current !== undefined && previous !== undefined
@@ -44,8 +40,13 @@ Rules:
 - Do not start with "I" or "Great news"
 - Tone: direct, friendly coach`
 
-      const result = await model.generateContent(prompt)
-      const raw = result.response.text()
+      const result = await ai.models.generateContent({
+        model: 'gemini-2.0-flash-lite',
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        config: { responseMimeType: 'application/json' },
+      })
+
+      const raw = (result.text ?? '').replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim()
       const parsed = JSON.parse(raw) as { message: string }
 
       return NextResponse.json({ category, pctChange: pct, message: parsed.message })

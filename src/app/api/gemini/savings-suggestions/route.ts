@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GoogleGenAI } from '@google/genai'
 
 export async function POST(request: Request) {
   try {
@@ -15,11 +15,7 @@ export async function POST(request: Request) {
 
     const apiKey = process.env.GEMINI_API_KEY
     if (apiKey) {
-      const genAI = new GoogleGenerativeAI(apiKey)
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash-latest',
-        generationConfig: { responseMimeType: 'application/json' },
-      })
+      const ai = new GoogleGenAI({ apiKey })
 
       const merchantList = merchants.length
         ? merchants.slice(0, 5).join(', ')
@@ -46,8 +42,13 @@ Rules:
 - No generic advice — tie each tip directly to their data
 - Tone: practical, not preachy`
 
-      const result = await model.generateContent(prompt)
-      const raw = result.response.text()
+      const result = await ai.models.generateContent({
+        model: 'gemini-2.0-flash-lite',
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        config: { responseMimeType: 'application/json' },
+      })
+
+      const raw = (result.text ?? '').replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim()
       const parsed = JSON.parse(raw) as { suggestions: string[] }
 
       return NextResponse.json({ suggestions: parsed.suggestions })
