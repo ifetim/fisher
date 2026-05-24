@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useFinance } from '@/context/FinanceContext'
 import { getAccountsForUser } from '@/data'
@@ -25,10 +25,19 @@ function catStyle(category: string) {
   return CAT_STYLE[category] ?? DEFAULT_STYLE
 }
 
+const PAGE_SIZE = 20
+
 export function SpendingPage() {
   const { user } = useAuth()
-  const { transactions, plaidConnected, plaidSyncing } = useFinance()
-  const accounts = user ? getAccountsForUser(user.id) : []
+  const { transactions, plaidConnected, plaidSnapshot } = useFinance()
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+
+  // Source of truth for the accounts count: Plaid when connected, else demo
+  const accountsCount = plaidConnected
+    ? (plaidSnapshot?.accounts.length ?? 0)
+    : user
+      ? getAccountsForUser(user.id).length
+      : 0
 
   const filtered = useMemo(
     () => filterTransactions(transactions, { accountId: 'all', period: 'month', category: 'all' }),
@@ -42,9 +51,10 @@ export function SpendingPage() {
   const totalIncome = filtered.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0)
   const net = totalIncome - totalSpent
 
+  // Group by day, but only the slice the user has scrolled into via "Show more"
   const grouped = useMemo(() => {
     const map = new Map<string, typeof filtered>()
-    for (const t of filtered.slice(0, 30)) {
+    for (const t of filtered.slice(0, visibleCount)) {
       const d = new Date(t.date + 'T00:00:00')
       const today = new Date(); today.setHours(0,0,0,0)
       const yest  = new Date(today); yest.setDate(yest.getDate() - 1)
@@ -57,7 +67,9 @@ export function SpendingPage() {
       map.get(label)!.push(t)
     }
     return [...map.entries()]
-  }, [filtered])
+  }, [filtered, visibleCount])
+
+  const hasMore = filtered.length > visibleCount
 
   if (!user) return null
 
@@ -97,7 +109,7 @@ export function SpendingPage() {
         </div>
         <div className="chip neutral">
           <p className="chip-label">ACCOUNTS</p>
-          <p className="chip-amount">{accounts.length}</p>
+          <p className="chip-amount">{accountsCount}</p>
         </div>
       </div>
 
@@ -133,6 +145,19 @@ export function SpendingPage() {
               </div>
             </div>
           ))}
+
+          {hasMore ? (
+            <button
+              type="button"
+              className="show-more-btn"
+              onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+            >
+              Show {Math.min(PAGE_SIZE, filtered.length - visibleCount)} more
+              <span style={{ color: 'var(--muted)', marginLeft: 6, fontWeight: 500 }}>
+                ({filtered.length - visibleCount} remaining)
+              </span>
+            </button>
+          ) : null}
         </div>
 
         {/* Category breakdown */}

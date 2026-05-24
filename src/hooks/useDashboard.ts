@@ -8,21 +8,28 @@ import {
   computeNetWorth,
   getTimeGreeting,
 } from '../lib/dashboard'
+import {
+  groupPlaidAccounts,
+  netWorthFromGroups,
+  type GroupedAccounts,
+} from '../lib/accountGrouping'
 import type { Account } from '../types'
 import type { PlaidAccount } from '@/lib/plaidApi'
 import { useBalanceVisibility } from './useBalanceVisibility'
 
 /**
- * Convert a Plaid account into the app's Account shape so Dashboard cards
- * can render demo data and live Plaid data with the same component.
- * Credit accounts in Plaid carry a positive `current` balance (money owed),
- * so we flip the sign to match our "negative = liability" convention.
+ * Convert a Plaid account into the local Account shape so the existing
+ * account-card components can render Plaid data without changes. Credit
+ * accounts in Plaid carry a positive `current` (money owed); we flip it so
+ * "negative balance = liability" matches our convention.
  */
 function plaidToAccount(p: PlaidAccount, userId: number, index: number): Account {
   const type: Account['type'] =
-    p.type === 'credit'   ? 'credit'
-  : p.subtype === 'savings' ? 'savings'
-  : 'chequing'
+    p.type === 'credit'
+      ? 'credit'
+      : p.subtype === 'savings'
+        ? 'savings'
+        : 'chequing'
 
   const rawBalance = p.balance.current ?? p.balance.available ?? 0
   const balance = type === 'credit' ? -Math.abs(rawBalance) : rawBalance
@@ -39,32 +46,44 @@ function plaidToAccount(p: PlaidAccount, userId: number, index: number): Account
 
 export function useDashboard() {
   const { user } = useAuth()
-  const { transactions, plaidSnapshot } = useFinance()
+  const { transactions, plaidSnapshot, plaidConnected } = useFinance()
   const visibility = useBalanceVisibility(false)
 
   const data = useMemo(() => {
     if (!user) return null
-
-    const localAccounts = getAccountsForUser(user.id)
-    const plaidAccounts = (plaidSnapshot?.accounts ?? []).map((a, i) =>
-      plaidToAccount(a, user.id, i),
-    )
-    const accounts = [...localAccounts, ...plaidAccounts]
 
     const now = new Date()
     const year = now.getFullYear()
     const month = now.getMonth() + 1
     const firstName = user.name.split(' ')[0] ?? user.name
 
+    // --- Account selection: real Plaid data takes over once connected ---
+    const plaidAccountsRaw = plaidSnapshot?.accounts ?? []
+    const groups: GroupedAccounts = plaidConnected
+      ? groupPlaidAccounts(plaidAccountsRaw)
+      : { primary: [], investments: [], loans: [], otherDeposits: [] }
+
+    // Primary card list — what shows individually on Dashboard
+    const primaryAccounts: Account[] = plaidConnected
+      ? groups.primary.map((a, i) => plaidToAccount(a, user.id, i))
+      : getAccountsForUser(user.id)
+
+    // Net Worth — Plaid covers everything when connected; else from demo
+    const netWorth = plaidConnected
+      ? netWorthFromGroups(groups)
+      : computeNetWorth(getAccountsForUser(user.id))
+
     return {
       greeting: getTimeGreeting(firstName),
-      accounts,
-      netWorth: computeNetWorth(accounts),
+      accounts: primaryAccounts,
+      groupedAccounts: groups,
+      netWorth,
       spendingThisMonth: computeMonthSpending(transactions, year, month),
       quickInsights: buildQuickInsights(transactions),
       institutionName: plaidSnapshot?.institution?.name ?? null,
+      plaidConnected,
     }
-  }, [user, transactions, plaidSnapshot])
+  }, [user, transactions, plaidSnapshot, plaidConnected])
 
   return { ...visibility, ...data }
 }

@@ -174,10 +174,14 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     [plaidRaw],
   )
 
-  // Merge: demo data + CSV uploads + Plaid live data
+  // When Plaid is connected we treat its data as the source of truth and hide
+  // the demo JSON. CSV uploads stay because the user explicitly added them.
   const transactions = useMemo(
-    () => [...baseTransactions, ...uploaded, ...plaidTransactions],
-    [baseTransactions, uploaded, plaidTransactions],
+    () =>
+      plaidConnected
+        ? [...uploaded, ...plaidTransactions]
+        : [...baseTransactions, ...uploaded],
+    [plaidConnected, baseTransactions, uploaded, plaidTransactions],
   )
 
   const savingsPlans = useMemo(() => {

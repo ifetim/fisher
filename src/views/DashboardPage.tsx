@@ -2,6 +2,8 @@
 
 import { useDashboard } from '@/hooks/useDashboard'
 import { formatCurrency } from '@/lib/format'
+import { AccountGroupTile } from '@/components/dashboard/AccountGroupTile'
+import { groupTotal } from '@/lib/accountGrouping'
 
 const ACCOUNT_COLORS: Record<string, string> = {
   chequing: '#3b82f6',
@@ -10,7 +12,17 @@ const ACCOUNT_COLORS: Record<string, string> = {
 }
 
 export function DashboardPage() {
-  const { greeting, accounts, netWorth, spendingThisMonth, quickInsights, institutionName, balancesVisible, toggleBalances, displayAmount } = useDashboard()
+  const {
+    greeting,
+    accounts,
+    groupedAccounts,
+    netWorth,
+    spendingThisMonth,
+    quickInsights,
+    institutionName,
+    balancesVisible,
+    toggleBalances,
+  } = useDashboard()
 
   if (!greeting || !accounts) return null
 
@@ -78,7 +90,7 @@ export function DashboardPage() {
             </div>
           </div>
 
-          {/* Accounts */}
+          {/* Primary accounts — chequing / savings / credit card individually */}
           <div>
             <div className="section-label">
               <span>Accounts</span>
@@ -99,6 +111,37 @@ export function DashboardPage() {
                 </div>
               ))}
             </div>
+
+            {/* Grouped tiles — collapsed by default to avoid clutter */}
+            {groupedAccounts ? (
+              <div className="account-groups">
+                <AccountGroupTile
+                  title="Investments"
+                  emoji="📈"
+                  accentBg="rgba(134,59,255,0.15)"
+                  accounts={groupedAccounts.investments}
+                  groupTotal={groupTotal(groupedAccounts.investments)}
+                  balancesVisible={balancesVisible}
+                />
+                <AccountGroupTile
+                  title="Loans"
+                  emoji="🏛️"
+                  accentBg="rgba(239,68,68,0.12)"
+                  accounts={groupedAccounts.loans}
+                  groupTotal={groupTotal(groupedAccounts.loans, true)}
+                  isDebt
+                  balancesVisible={balancesVisible}
+                />
+                <AccountGroupTile
+                  title="Other accounts"
+                  emoji="🏦"
+                  accentBg="rgba(59,130,246,0.12)"
+                  accounts={groupedAccounts.otherDeposits}
+                  groupTotal={groupTotal(groupedAccounts.otherDeposits)}
+                  balancesVisible={balancesVisible}
+                />
+              </div>
+            ) : null}
           </div>
 
           {/* Spending this month */}

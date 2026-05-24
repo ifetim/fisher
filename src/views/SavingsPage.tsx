@@ -1,11 +1,12 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
+import { FormEvent, useMemo, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useFinance } from '@/context/FinanceContext'
 import { goalProgress, monthlyNeeded } from '@/lib/savings'
 import { formatCurrency } from '@/lib/format'
 import type { SavingsPlan } from '@/types'
+import type { PlaidAccount } from '@/lib/plaidApi'
 
 const GOAL_STYLES = [
   { emoji: '✈️', bg: 'rgba(59,130,246,0.15)' },
@@ -15,25 +16,73 @@ const GOAL_STYLES = [
   { emoji: '🎯', bg: 'rgba(239,68,68,0.12)'  },
 ]
 
+/**
+ * Look up the live balance for a linked Plaid account. Used to override
+ * `savedAmount` on plans the user has connected to a real savings account,
+ * so the progress bar reflects actual money in the bank.
+ */
+function liveSavedAmount(
+  plan: SavingsPlan,
+  plaidAccounts: PlaidAccount[],
+): number {
+  if (!plan.linkedAccountId) return plan.savedAmount
+  const account = plaidAccounts.find((a) => a.id === plan.linkedAccountId)
+  if (!account) return plan.savedAmount
+  return account.balance.current ?? account.balance.available ?? plan.savedAmount
+}
+
 export function SavingsPage() {
   const { user } = useAuth()
-  const { savingsPlans, addSavingsGoal } = useFinance()
+  const { savingsPlans, addSavingsGoal, plaidConnected, plaidSnapshot } = useFinance()
   const [showForm, setShowForm] = useState(false)
-  const [name, setName]       = useState('')
-  const [target, setTarget]   = useState('')
-  const [deadline, setDeadline] = useState('')
+  const [name, setName]               = useState('')
+  const [target, setTarget]           = useState('')
+  const [deadline, setDeadline]       = useState('')
+  const [linkedAccountId, setLinkedAccountId] = useState('')
 
-  const totalSaved  = savingsPlans.reduce((s, g) => s + g.savedAmount, 0)
-  const totalTarget = savingsPlans.reduce((s, g) => s + g.targetAmount, 0)
+  // Only savings-type Plaid accounts can be linked to a goal (no checking, credit, loans)
+  const linkableAccounts = useMemo<PlaidAccount[]>(() => {
+    if (!plaidConnected || !plaidSnapshot) return []
+    return plaidSnapshot.accounts.filter(
+      (a) => a.type === 'depository' && (a.subtype === 'savings' || a.subtype === 'cd' || a.subtype === 'money market'),
+    )
+  }, [plaidConnected, plaidSnapshot])
+
+  // Resolve each plan's "actually saved" amount — live from Plaid if linked
+  const resolvedPlans = useMemo(
+    () =>
+      savingsPlans.map((p) => ({
+        ...p,
+        savedAmount: liveSavedAmount(p, plaidSnapshot?.accounts ?? []),
+      })),
+    [savingsPlans, plaidSnapshot],
+  )
+
+  const totalSaved  = resolvedPlans.reduce((s, g) => s + g.savedAmount, 0)
+  const totalTarget = resolvedPlans.reduce((s, g) => s + g.targetAmount, 0)
   const overallPct  = totalTarget > 0 ? Math.round((totalSaved / totalTarget) * 100) : 0
 
   function handleAdd(e: FormEvent) {
     e.preventDefault()
     const amount = Number(target)
     if (!name || !deadline || amount <= 0) return
-    addSavingsGoal({ goal: name, targetAmount: amount, savedAmount: 0, deadline, monthlyContribution: Math.ceil(amount / 12) })
+
+    // If linked, savedAmount is just a fallback (live balance takes priority)
+    const startingSaved = linkedAccountId
+      ? linkableAccounts.find((a) => a.id === linkedAccountId)?.balance.current ?? 0
+      : 0
+
+    addSavingsGoal({
+      goal: name,
+      targetAmount: amount,
+      savedAmount: startingSaved,
+      deadline,
+      monthlyContribution: Math.ceil(amount / 12),
+      linkedAccountId: linkedAccountId || undefined,
+    })
+
     setShowForm(false)
-    setName(''); setTarget(''); setDeadline('')
+    setName(''); setTarget(''); setDeadline(''); setLinkedAccountId('')
   }
 
   if (!user) return null
@@ -42,7 +91,7 @@ export function SavingsPage() {
     <div>
       <div className="screen-header">
         <div className="greeting">
-          <p>{savingsPlans.length} active goal{savingsPlans.length !== 1 ? 's' : ''}</p>
+          <p>{resolvedPlans.length} active goal{resolvedPlans.length !== 1 ? 's' : ''}</p>
           <h1>Savings</h1>
         </div>
         <button className="plaid-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }} onClick={() => setShowForm(true)}>
@@ -58,7 +107,7 @@ export function SavingsPage() {
         <div className="hero-label"><span>Total Saved</span></div>
         <div className="hero-amount">{formatCurrency(totalSaved)}</div>
         <div className="hero-tags">
-          <span className="hero-tag">of {formatCurrency(totalTarget)} across {savingsPlans.length} goal{savingsPlans.length !== 1 ? 's' : ''}</span>
+          <span className="hero-tag">of {formatCurrency(totalTarget)} across {resolvedPlans.length} goal{resolvedPlans.length !== 1 ? 's' : ''}</span>
           <span className="hero-tag" style={{ background: 'rgba(255,255,255,0.1)' }}>{overallPct}% complete</span>
         </div>
       </div>
@@ -87,6 +136,28 @@ export function SavingsPage() {
                 style={{ padding: '0.6rem 0.75rem', border: '1px solid var(--border)', borderRadius: '0.5rem', fontSize: '0.875rem' }} />
             </div>
           </div>
+
+          {/* Optional Plaid account link — only shows if user has eligible accounts */}
+          {linkableAccounts.length > 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--muted)' }}>
+                Link to bank account <span style={{ fontWeight: 400 }}>(optional — auto-tracks your saved amount)</span>
+              </label>
+              <select
+                value={linkedAccountId}
+                onChange={(e) => setLinkedAccountId(e.target.value)}
+                style={{ padding: '0.6rem 0.75rem', border: '1px solid var(--border)', borderRadius: '0.5rem', fontSize: '0.875rem', background: 'white' }}
+              >
+                <option value="">Track manually</option>
+                {linkableAccounts.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name}{a.mask ? ` ··${a.mask}` : ''}{' '}— {formatCurrency(a.balance.current ?? 0)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : null}
+
           <div style={{ display: 'flex', gap: '0.65rem' }}>
             <button type="submit" className="plaid-btn">Save goal</button>
             <button type="button" onClick={() => setShowForm(false)}
@@ -99,15 +170,32 @@ export function SavingsPage() {
 
       <div className="section-label"><span>Your goals</span></div>
       <div className="goal-grid">
-        {savingsPlans.map((plan, i) => (
-          <GoalCard key={plan.id} plan={plan} style={GOAL_STYLES[i % GOAL_STYLES.length]!} />
+        {resolvedPlans.map((plan, i) => (
+          <GoalCard
+            key={plan.id}
+            plan={plan}
+            style={GOAL_STYLES[i % GOAL_STYLES.length]!}
+            linkedAccountName={
+              plan.linkedAccountId
+                ? plaidSnapshot?.accounts.find((a) => a.id === plan.linkedAccountId)?.name ?? null
+                : null
+            }
+          />
         ))}
       </div>
     </div>
   )
 }
 
-function GoalCard({ plan, style }: { plan: SavingsPlan; style: { emoji: string; bg: string } }) {
+function GoalCard({
+  plan,
+  style,
+  linkedAccountName,
+}: {
+  plan: SavingsPlan
+  style: { emoji: string; bg: string }
+  linkedAccountName: string | null
+}) {
   const pct = goalProgress(plan)
   const needed = monthlyNeeded(plan)
 
@@ -128,7 +216,14 @@ function GoalCard({ plan, style }: { plan: SavingsPlan; style: { emoji: string; 
         <span className="saved">{formatCurrency(plan.savedAmount)} saved</span>
         <span>of {formatCurrency(plan.targetAmount)}</span>
       </div>
-      <p style={{ margin: '0.5rem 0 0', fontSize: '0.72rem', color: 'var(--muted)' }}>~{formatCurrency(needed)}/mo needed</p>
+      <p style={{ margin: '0.5rem 0 0', fontSize: '0.72rem', color: 'var(--muted)' }}>
+        ~{formatCurrency(needed)}/mo needed
+      </p>
+      {linkedAccountName ? (
+        <p style={{ margin: '0.35rem 0 0', fontSize: '0.7rem', color: 'var(--green)', fontWeight: 600 }}>
+          🔗 Auto-tracking from {linkedAccountName}
+        </p>
+      ) : null}
     </div>
   )
 }

@@ -311,6 +311,91 @@ p { text-wrap: pretty; }
 .account-card .balance { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
 .account-card .balance.neg { color: var(--red); }
 
+/* ───────── Show-more transaction pagination ───────── */
+.show-more-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.show-more-btn:hover {
+  background: rgba(0,0,0,0.02);
+  border-color: var(--text);
+}
+
+/* ───────── Grouped account tiles (collapsible) ───────── */
+.account-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+.group-tile {
+  background: var(--surface);
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.group-tile__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+.group-tile__head:hover { background: rgba(0,0,0,0.02); }
+.group-tile__icon {
+  width: 38px; height: 38px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.group-tile__meta { flex: 1; min-width: 0; }
+.group-tile__title { margin: 0; font-size: 14px; font-weight: 700; }
+.group-tile__sub { margin: 2px 0 0; font-size: 11px; color: var(--muted); }
+.group-tile__total { display: flex; align-items: center; gap: 8px; }
+.group-tile__amount { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+.group-tile__chev {
+  font-size: 12px;
+  color: var(--muted);
+  transition: transform 200ms ease;
+}
+.group-tile__chev.is-open { transform: rotate(180deg); }
+.group-tile__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+.group-tile__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 10px 64px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.group-tile__row:last-child { border-bottom: none; }
+.group-tile__row-name { margin: 0; font-size: 13px; font-weight: 600; }
+.group-tile__row-mask { font-weight: 400; color: var(--muted); font-size: 12px; }
+.group-tile__row-sub { margin: 2px 0 0; font-size: 11px; color: var(--muted); text-transform: capitalize; }
+.group-tile__row-amount { font-size: 14px; font-weight: 700; letter-spacing: -0.3px; }
+
 /* ───────── Insights ───────── */
 .insight-row { display: flex; align-items: center; gap: 12px; }
 .insight-icon {
