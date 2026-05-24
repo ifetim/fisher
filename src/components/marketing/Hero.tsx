@@ -2,7 +2,7 @@
 
 export default function Hero() {
   return (
-    <section className="hero" id="hero">
+    <section className="landing-hero" id="hero">
       <div className="hero-logo">
         <span className="grad-cap" aria-hidden="true">
           <svg width="80" height="60" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">

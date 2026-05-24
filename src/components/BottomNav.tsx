@@ -1,28 +1,28 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { appNavLinks, isNavActive } from './nav/navLinks'
-import { NAV_ICON_MAP } from './nav/NavIcons'
-import './BottomNav.css'
+import { useRouter, usePathname } from 'next/navigation'
+import { navLinks } from './nav/navLinks'
+import { NavIcons } from './nav/NavIcons'
 
 export function BottomNav() {
   const pathname = usePathname()
+  const router = useRouter()
 
   return (
-    <nav className="bottom-nav" aria-label="Main">
-      {appNavLinks.map(({ href, label }) => {
-        const active = isNavActive(pathname, href)
-        const Icon = NAV_ICON_MAP[href]
+    <nav className="bnav" aria-label="Main">
+      {navLinks.map(({ id, href, label }) => {
+        const isActive =
+          pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
         return (
-          <Link
+          <button
             key={href}
-            href={href}
-            className={`bottom-nav__link${active ? ' bottom-nav__link--active' : ''}`}
+            className={`bnav-item${isActive ? ' active' : ''}`}
+            onClick={() => router.push(href)}
+            aria-label={label}
           >
-            {Icon && <Icon />}
+            <NavIcons id={id} />
             <span>{label}</span>
-          </Link>
+          </button>
         )
       })}
     </nav>

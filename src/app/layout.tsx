@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Providers } from '@/components/Providers'
 import './globals.css'
-import '@/styles/app-theme.css'
+import '@/styles/fisher.css'
 
 export const metadata: Metadata = {
   title: 'ClearMint — Your spending, decoded',
@@ -15,8 +15,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" style={{ background: '#f6f6fa' }}>
+      <body style={{ background: '#f6f6fa', margin: 0 }}>
         <Providers>{children}</Providers>
       </body>
     </html>

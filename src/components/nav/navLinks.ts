@@ -1,10 +1,8 @@
-export const appNavLinks = [
-  { href: '/dashboard', label: 'Dashboard' },
-  { href: '/spending', label: 'Spending' },
-  { href: '/savings', label: 'Savings' },
-  { href: '/advice', label: 'Advice' },
+export const navLinks = [
+  { id: 'dashboard', href: '/dashboard', label: 'Dashboard' },
+  { id: 'spending',  href: '/spending',  label: 'Spending'  },
+  { id: 'savings',   href: '/savings',   label: 'Savings'   },
+  { id: 'advice',    href: '/advice',    label: 'Advice'    },
 ] as const
 
-export function isNavActive(pathname: string, href: string): boolean {
-  return pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
-}
+export type NavId = typeof navLinks[number]['id']

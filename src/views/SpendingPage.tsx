@@ -1,285 +1,172 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import {
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Bar,
-  BarChart,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-} from 'recharts'
+import { useMemo } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useFinance } from '@/context/FinanceContext'
 import { getAccountsForUser } from '@/data'
-import { formatCurrency, formatTooltipValue } from '@/lib/format'
-import {
-  filterTransactions,
-  getUniqueCategories,
-  monthOverMonthCategoryChange,
-  spendingByCategory,
-  spendingVsIncomeTrend,
-  type SpendingFilters,
-} from '@/lib/transactions'
-import type { Transaction } from '@/types'
+import { filterTransactions, spendingByCategory } from '@/lib/transactions'
+import { formatCurrency } from '@/lib/format'
 import { PlaidConnect } from '@/components/plaid/PlaidConnect'
-import { StatementUpload } from '@/components/spending/StatementUpload'
-import '@/components/shared/page.css'
-import './SpendingPage.css'
+import type { NormalizedTransaction } from '@/lib/plaid/normalizeTransaction'
 
-const CHART_COLORS = [
-  '#2a9d8f',
-  '#1c2b6b',
-  '#c43d3d',
-  '#1a7a4a',
-  '#d4922a',
-  '#3d4f8f',
-  '#5eb8aa',
-]
+const CAT_STYLE: Record<string, { icon: string; bg: string; color: string }> = {
+  'Food & Dining': { icon: '🍔', bg: 'rgba(249,115,22,0.15)', color: '#f97316' },
+  Groceries:       { icon: '🛒', bg: 'rgba(34,197,94,0.15)',  color: '#22c55e' },
+  Transport:       { icon: '🚇', bg: 'rgba(59,130,246,0.15)', color: '#3b82f6' },
+  Shopping:        { icon: '🛍️', bg: 'rgba(134,59,255,0.15)', color: '#863bff' },
+  Entertainment:   { icon: '🎵', bg: 'rgba(236,72,153,0.15)', color: '#ec4899' },
+  Income:          { icon: '💰', bg: 'rgba(34,197,94,0.15)',  color: '#22c55e' },
+  Bills:           { icon: '⚡', bg: 'rgba(245,158,11,0.15)', color: '#f59e0b' },
+  Health:          { icon: '💊', bg: 'rgba(239,68,68,0.12)',  color: '#ef4444' },
+}
+
+const DEFAULT_STYLE = { icon: '💳', bg: 'rgba(100,116,139,0.12)', color: '#64748b' }
+
+function catStyle(category: string) {
+  return CAT_STYLE[category] ?? DEFAULT_STYLE
+}
 
 export function SpendingPage() {
   const { user } = useAuth()
-  const { transactions } = useFinance()
+  const { transactions, addPlaidTransactions, plaidConnected } = useFinance()
   const accounts = user ? getAccountsForUser(user.id) : []
 
-  const [filters, setFilters] = useState<SpendingFilters>({
-    accountId: 'all',
-    period: 'month',
-    category: 'all',
-  })
-  const [selectedTx, setSelectedTx] = useState<Transaction | null>(null)
-  const [alertMsg, setAlertMsg] = useState<string | null>(null)
-  const [alertLoading, setAlertLoading] = useState(false)
+  function handlePlaidTransactions(txs: NormalizedTransaction[]) {
+    addPlaidTransactions(txs)
+  }
 
   const filtered = useMemo(
-    () => filterTransactions(transactions, filters),
-    [transactions, filters],
-  )
-
-  const categories = useMemo(
-    () => getUniqueCategories(transactions),
+    () => filterTransactions(transactions, { accountId: 'all', period: 'month', category: 'all' }),
     [transactions],
   )
 
-  const donutData = useMemo(() => spendingByCategory(filtered), [filtered])
-  const trendData = useMemo(
-    () => spendingVsIncomeTrend(filtered, 'month'),
-    [filtered],
-  )
+  const breakdown = useMemo(() => spendingByCategory(filtered), [filtered])
+  const maxSpend = Math.max(...breakdown.map((b) => b.total), 1)
 
-  const foodChange = useMemo(
-    () => monthOverMonthCategoryChange(transactions, 'Food & Dining'),
-    [transactions],
-  )
+  const totalSpent  = filtered.filter((t) => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0)
+  const totalIncome = filtered.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0)
+  const net = totalIncome - totalSpent
 
-  async function runSpendingAlert() {
-    if (!foodChange) {
-      setAlertMsg('Not enough history yet for a month-over-month comparison.')
-      return
+  const grouped = useMemo(() => {
+    const map = new Map<string, typeof filtered>()
+    for (const t of filtered.slice(0, 30)) {
+      const d = new Date(t.date + 'T00:00:00')
+      const today = new Date(); today.setHours(0,0,0,0)
+      const yest  = new Date(today); yest.setDate(yest.getDate() - 1)
+      let label: string
+      if (d.toDateString() === today.toDateString()) label = 'Today'
+      else if (d.toDateString() === yest.toDateString()) label = 'Yesterday'
+      else label = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' })
+
+      if (!map.has(label)) map.set(label, [])
+      map.get(label)!.push(t)
     }
-    setAlertLoading(true)
-    try {
-      const res = await fetch('/api/gemini/spending-alert', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          category: 'Food & Dining',
-          pctChange: foodChange.pctChange,
-          current: foodChange.current,
-          previous: foodChange.previous,
-        }),
-      })
-      const data = (await res.json()) as { message?: string }
-      setAlertMsg(data.message ?? 'Spending looks steady this month.')
-    } catch {
-      setAlertMsg('Could not load alert. Try again.')
-    } finally {
-      setAlertLoading(false)
-    }
-  }
+    return [...map.entries()]
+  }, [filtered])
 
   if (!user) return null
 
+  const netColor = net >= 0 ? 'var(--green)' : 'var(--red)'
+
   return (
-    <section className="page spending-page">
-      <h1 className="page__title">Spending</h1>
-      <p className="page__subtitle">See where your money goes — tap a chart slice to filter.</p>
-
-      <div className="filters">
-        <select
-          value={filters.accountId}
-          onChange={(e) =>
-            setFilters((f) => ({
-              ...f,
-              accountId: e.target.value === 'all' ? 'all' : Number(e.target.value),
-            }))
-          }
-        >
-          <option value="all">All accounts</option>
-          {accounts.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.name}
-            </option>
-          ))}
-        </select>
-        <select
-          value={filters.period}
-          onChange={(e) =>
-            setFilters((f) => ({
-              ...f,
-              period: e.target.value as SpendingFilters['period'],
-            }))
-          }
-        >
-          <option value="week">This week</option>
-          <option value="month">This month</option>
-          <option value="lastMonth">Last month</option>
-          <option value="threeMonths">Last 3 months</option>
-        </select>
-        <select
-          value={filters.category}
-          onChange={(e) =>
-            setFilters((f) => ({ ...f, category: e.target.value }))
-          }
-        >
-          <option value="all">All categories</option>
-          {categories.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
+    <div>
+      <div className="screen-header">
+        <div className="greeting">
+          <p>{new Date().toLocaleDateString('en-CA', { month: 'long', year: 'numeric' })}</p>
+          <h1>Spending</h1>
+        </div>
+        <button className="eye-btn dark">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
+            <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
+            <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>
+          </svg>
+          Filter
+        </button>
       </div>
 
-      {alertMsg ? <div className="alert-banner">{alertMsg}</div> : null}
-      <button
-        type="button"
-        className="btn btn--secondary spending-page__alert-btn"
-        disabled={alertLoading}
-        onClick={() => void runSpendingAlert()}
-      >
-        {alertLoading ? 'Checking…' : 'Smart spending alert'}
-      </button>
-
-      <div className="spending-page__charts-row">
-        <div className="page__section">
-          <h2 className="page__section-title">By category</h2>
-          <div className="chart-wrap card">
-            {donutData.length === 0 ? (
-              <p className="spending-page__empty">No spending in this period.</p>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={donutData}
-                    dataKey="total"
-                    nameKey="category"
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={55}
-                    outerRadius={90}
-                    onClick={(_, index) => {
-                      const slice = donutData[index]
-                      if (slice) {
-                        setFilters((f) => ({ ...f, category: slice.category }))
-                      }
-                    }}
-                  >
-                    {donutData.map((_, i) => (
-                      <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={formatTooltipValue} />
-                </PieChart>
-              </ResponsiveContainer>
-            )}
-          </div>
+      {/* Summary chips */}
+      <div className="summary-chips">
+        <div className="chip red">
+          <p className="chip-label">SPENT</p>
+          <p className="chip-amount">{formatCurrency(totalSpent)}</p>
         </div>
-
-        <div className="page__section">
-          <h2 className="page__section-title">Spending vs income</h2>
-          <div className="chart-wrap card">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={trendData}>
-                <XAxis dataKey="label" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} />
-                <Tooltip formatter={formatTooltipValue} />
-                <Legend />
-                <Bar dataKey="spending" fill="var(--color-spend)" name="Spending" />
-                <Bar dataKey="income" fill="var(--color-income)" name="Income" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="chip green">
+          <p className="chip-label">INCOME</p>
+          <p className="chip-amount">{formatCurrency(totalIncome)}</p>
+        </div>
+        <div className="chip purple">
+          <p className="chip-label">NET</p>
+          <p className="chip-amount" style={{ color: netColor }}>{net >= 0 ? '+' : ''}{formatCurrency(net)}</p>
+        </div>
+        <div className="chip neutral">
+          <p className="chip-label">ACCOUNTS</p>
+          <p className="chip-amount">{accounts.length}</p>
         </div>
       </div>
 
-      <div className="spending-page__bottom-row">
-        <div className="page__section">
-          <h2 className="page__section-title">Transactions ({filtered.length})</h2>
-          <ul className="tx-list card">
-            {filtered.slice(0, 50).map((t) => (
-              <li key={t.id}>
-                <button
-                  type="button"
-                  className="tx-list__item"
-                  onClick={() => setSelectedTx(t)}
-                >
-                  <div>
-                    <div className="tx-list__merchant">{t.merchant}</div>
-                    <div className="tx-list__meta">
-                      {t.category} · {t.date}
+      {/* Plaid connect — opens real Plaid Link and feeds transactions into FinanceContext */}
+      <PlaidConnect
+        onTransactions={handlePlaidTransactions}
+        maxRows={0}
+      />
+
+      <div className="grid cols-12">
+        {/* Transaction list */}
+        <div>
+          <div className="section-label">
+            <span>Recent transactions</span>
+          </div>
+          {grouped.map(([day, txs]) => (
+            <div key={day}>
+              <p className="day-label">{day}</p>
+              <div className="card" style={{ marginBottom: 8 }}>
+                {txs.map((tx) => {
+                  const s = catStyle(tx.category)
+                  const pos = tx.amount > 0
+                  return (
+                    <div className="card-row tx-row" key={tx.id}>
+                      <div className="tx-icon" style={{ background: s.bg }}>{s.icon}</div>
+                      <div className="tx-meta">
+                        <p className="merchant">{tx.merchant}</p>
+                        <p className="cat">{tx.category}</p>
+                      </div>
+                      <span className={'tx-amount' + (pos ? ' pos' : '')}>
+                        {pos ? '+' : '−'}${Math.abs(tx.amount).toFixed(2)}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Category breakdown */}
+        <div>
+          <div className="section-label"><span>By category</span></div>
+          <div className="card card-pad">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {breakdown.map((b) => {
+                const s = catStyle(b.category)
+                return (
+                  <div key={b.category}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>{b.category}</span>
+                      <span style={{ fontSize: 13, fontWeight: 700 }}>{formatCurrency(b.total)}</span>
+                    </div>
+                    <div style={{ height: 6, background: 'var(--bg)', borderRadius: 3, overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${(b.total / maxSpend) * 100}%`, background: s.color, borderRadius: 3 }} />
                     </div>
                   </div>
-                  <span className={t.amount >= 0 ? 'amount--income' : 'amount--spend'}>
-                    {t.amount >= 0 ? '+' : ''}
-                    {formatCurrency(t.amount)}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+                )
+              })}
+            </div>
+          </div>
 
-        <div className="spending-page__tools">
-          <PlaidConnect maxRows={5} />
-          <StatementUpload />
         </div>
       </div>
-
-      {selectedTx ? (
-        <div
-          className="modal-backdrop"
-          role="presentation"
-          onClick={() => setSelectedTx(null)}
-        >
-          <div
-            className="modal"
-            role="dialog"
-            aria-labelledby="tx-modal-title"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 id="tx-modal-title" className="modal__title">
-              {selectedTx.merchant}
-            </h2>
-            <p>{selectedTx.category}</p>
-            <p>{selectedTx.date}</p>
-            <p className={selectedTx.amount >= 0 ? 'amount--income' : 'amount--spend'}>
-              {formatCurrency(selectedTx.amount)}
-            </p>
-            <button
-              type="button"
-              className="btn btn--secondary modal__close"
-              onClick={() => setSelectedTx(null)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      ) : null}
-    </section>
+    </div>
   )
 }

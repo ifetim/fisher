@@ -1,0 +1,6 @@
+@import './LoginPage.css';
+
+/* Signup-specific brand gradient variant */
+.auth-brand--signup {
+  background: linear-gradient(150deg, #0d2242 0%, #0e7490 100%);
+}

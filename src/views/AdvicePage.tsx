@@ -5,156 +5,117 @@ import { useAuth } from '@/context/AuthContext'
 import { useFinance } from '@/context/FinanceContext'
 import { getAccountsForUser } from '@/data'
 import { computeHealthScore } from '@/lib/healthScore'
-import { StatementUpload } from '@/components/spending/StatementUpload'
-import '@/components/shared/page.css'
-import './AdvicePage.css'
 
-type AdviceCard = { title: string; body: string }
+type AdviceCard = { kind: 'win' | 'warn' | 'tip'; tag: string; emoji: string; title: string; body: string; cta: string }
 
-const LITERACY = [
-  {
-    id: 'emergency',
-    title: 'Emergency fund',
-    body: 'An emergency fund is cash set aside for surprises — job changes, car repairs, medical bills. Start with one week of essential expenses, then build toward 1–3 months over time.',
-  },
-  {
-    id: 'compound',
-    title: 'Compound interest',
-    body: 'When savings earn interest, that interest can earn more interest over time. Starting early matters more than starting big — consistency wins.',
-  },
-  {
-    id: 'credit',
-    title: 'Credit score basics',
-    body: 'Payment history and credit utilization (how much of your limit you use) are the biggest factors. Pay on time and keep balances low relative to limits.',
-  },
+const STATIC_ADVICE: AdviceCard[] = [
+  { kind: 'win',  tag: 'Win',   emoji: '🎉', title: "You're saving regularly",       body: 'Consistent contributions are the #1 driver of long-term wealth. Keep the momentum.', cta: 'See goals' },
+  { kind: 'warn', tag: 'Watch', emoji: '⚠️', title: 'Food & Dining spending is high', body: 'Try a weekly meal-prep day to cut delivery costs without feeling restrictive.', cta: 'View spending' },
+  { kind: 'tip',  tag: 'Tip',   emoji: '💡', title: 'Review your subscriptions',      body: 'Small recurring charges add up fast. Audit once a month and cancel what you don\'t use.', cta: 'Review subs' },
+  { kind: 'tip',  tag: 'Tip',   emoji: '🔁', title: 'Build your emergency fund',      body: 'Aim for 1–3 months of expenses in cash. It\'s your financial shock absorber.', cta: 'Add goal' },
 ]
-
-const CATEGORY_TIPS: Record<string, string> = {
-  'Food & Dining':
-    'Try a “delivery budget” — decide a dollar cap before opening the app. Meal prep twice a week often cuts food spend without feeling restrictive.',
-  Transport:
-    'Combine errands into one trip, check transit passes, and review insurance at renewal — small fixes add up monthly.',
-  Shopping:
-    'Use a 48-hour rule for non-essentials over $50. If you still want it after two days, buy with intention.',
-}
 
 export function AdvicePage() {
   const { user } = useAuth()
   const { transactions } = useFinance()
-  const [expanded, setExpanded] = useState<string | null>(null)
-  const [cards, setCards] = useState<AdviceCard[]>([])
-  const [loadingAdvice, setLoadingAdvice] = useState(false)
+  const [aiCards, setAiCards] = useState<AdviceCard[]>([])
+  const [loading, setLoading] = useState(false)
 
   const accounts = user ? getAccountsForUser(user.id) : []
+  const health = useMemo(() => computeHealthScore(accounts, transactions), [accounts, transactions])
 
-  const health = useMemo(
-    () => computeHealthScore(accounts, transactions),
-    [accounts, transactions],
-  )
+  const cards = aiCards.length > 0 ? aiCards : STATIC_ADVICE
 
-  async function loadAdvice() {
-    setLoadingAdvice(true)
+  async function loadAiAdvice() {
+    setLoading(true)
     try {
       const res = await fetch('/api/gemini/advice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          score: health.score,
-          factors: health.factors.map((f) => ({
-            label: f.label,
-            detail: f.detail,
-          })),
-        }),
+        body: JSON.stringify({ score: health.score, factors: health.factors.map((f) => ({ label: f.label, detail: f.detail })) }),
       })
-      const data = (await res.json()) as { cards?: AdviceCard[] }
-      setCards(data.cards ?? [])
-    } catch {
-      setCards([])
-    } finally {
-      setLoadingAdvice(false)
-    }
+      const data = (await res.json()) as { cards?: { title: string; body: string }[] }
+      if (data.cards) {
+        setAiCards(data.cards.map((c, i) => ({
+          kind: i === 0 ? 'win' : i === 1 ? 'warn' : 'tip',
+          tag: i === 0 ? 'Win' : i === 1 ? 'Watch' : 'Tip',
+          emoji: ['🎉', '⚠️', '💡', '🔁'][i] ?? '💡',
+          title: c.title,
+          body: c.body,
+          cta: 'Learn more',
+        } satisfies AdviceCard)))
+      }
+    } catch { /* keep static */ }
+    finally { setLoading(false) }
   }
 
   if (!user) return null
 
-  const scoreColor =
-    health.score >= 70
-      ? 'var(--color-income)'
-      : health.score >= 45
-        ? 'var(--color-text)'
-        : 'var(--color-spend)'
+  const ringCircumference = 2 * Math.PI * 44
+  const scoreOffset = ringCircumference * (1 - health.score / 100)
+  const scoreLabel = health.score >= 70 ? 'Looking strong' : health.score >= 45 ? 'Making progress' : 'Needs attention'
 
   return (
-    <section className="page advice-page">
-      <h1 className="page__title">Advice</h1>
-      <p className="page__subtitle">
-        Your health score is calculated from your data — AI only explains it.
-      </p>
-
-      <div className="advice-page__score card">
-        <p className="page__section-title">Spending health score</p>
-        <p className="advice-page__score-value" style={{ color: scoreColor }}>
-          {health.score}
-        </p>
-        <p className="advice-page__score-out-of">out of 100</p>
-        <ul className="advice-page__factors">
-          {health.factors.map((f) => (
-            <li key={f.id}>
-              <strong>{f.label}</strong> — {f.detail}
-            </li>
-          ))}
-        </ul>
+    <div>
+      <div className="screen-header">
+        <div className="greeting">
+          <p>AI-powered insights</p>
+          <h1>Advice</h1>
+        </div>
+        <div className="avatar" style={{ background: 'linear-gradient(135deg, #fbbf24, #f97316)', fontSize: 18 }}>✨</div>
       </div>
 
-      <button
-        type="button"
-        className="btn btn--primary advice-page__cta"
-        disabled={loadingAdvice}
-        onClick={() => void loadAdvice()}
-      >
-        {loadingAdvice ? 'Loading advice…' : 'Get personalized advice'}
-      </button>
-
-      <div className="advice-page__grid">
-        {cards.length > 0
-          ? cards.map((c) => (
-              <article key={c.title} className="card advice-page__card">
-                <h3>{c.title}</h3>
-                <p>{c.body}</p>
-              </article>
-            ))
-          : null}
-
-        {Object.entries(CATEGORY_TIPS).map(([cat, tip]) => (
-          <article key={cat} className="card advice-page__tip">
-            <h3>{cat}</h3>
-            <p>{tip}</p>
-          </article>
-        ))}
+      {/* Health score */}
+      <div className="health-card" style={{ marginBottom: 22 }}>
+        <div className="health-ring">
+          <svg width="100" height="100">
+            <circle cx="50" cy="50" r="44" stroke="rgba(255,255,255,0.2)" strokeWidth="8" fill="none"/>
+            <circle cx="50" cy="50" r="44" stroke="#fff" strokeWidth="8" fill="none"
+              strokeDasharray={ringCircumference}
+              strokeDashoffset={scoreOffset}
+              strokeLinecap="round"/>
+          </svg>
+          <div className="score">{health.score}</div>
+        </div>
+        <div className="meta">
+          <p className="label">Financial Health</p>
+          <p className="title">{scoreLabel}</p>
+          <p className="sub">
+            {health.factors[0]?.detail ?? 'Keep saving and watch your spending.'}
+          </p>
+        </div>
       </div>
 
-      <div className="page__section">
-        <h2 className="page__section-title">Financial literacy</h2>
-        {LITERACY.map((item) => (
-          <div key={item.id} className="card advice-page__literacy">
-            <button
-              type="button"
-              className="advice-page__literacy-head"
-              onClick={() =>
-                setExpanded((e) => (e === item.id ? null : item.id))
-              }
-            >
-              {item.title}
-              <span aria-hidden>{expanded === item.id ? '−' : '+'}</span>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
+        <div className="section-label" style={{ margin: 0 }}><span>For you this week</span></div>
+        <button
+          className="plaid-btn"
+          style={{ fontSize: '0.75rem', padding: '0.45rem 0.9rem' }}
+          disabled={loading}
+          onClick={() => void loadAiAdvice()}
+        >
+          {loading ? 'Thinking…' : '✨ Refresh with AI'}
+        </button>
+      </div>
+
+      <div className="advice-grid">
+        {cards.map((c, i) => (
+          <div className="advice-card" key={i}>
+            <div className="advice-head">
+              <span style={{ fontSize: 22 }}>{c.emoji}</span>
+              <span className={`badge ${c.kind}`}>{c.tag}</span>
+            </div>
+            <p className="advice-title">{c.title}</p>
+            <p className="advice-body">{c.body}</p>
+            <button className="advice-cta">
+              {c.cta}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
             </button>
-            {expanded === item.id ? (
-              <p className="advice-page__literacy-body">{item.body}</p>
-            ) : null}
           </div>
         ))}
       </div>
-
-      <StatementUpload />
-    </section>
+    </div>
   )
 }

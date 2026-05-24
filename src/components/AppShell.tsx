@@ -1,16 +1,16 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
-import { AppSidebar } from './nav/AppSidebar'
 import { BottomNav } from './BottomNav'
-import './AppShell.css'
+import { AppSidebar } from './nav/AppSidebar'
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { user, ready, logout } = useAuth()
+  const { user, ready } = useAuth()
   const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     if (ready && !user) {
@@ -18,45 +18,20 @@ export function AppShell({ children }: { children: ReactNode }) {
     }
   }, [ready, user, router])
 
-  if (!ready) {
-    return (
-      <div className="app-shell">
-        <main className="app-shell__main app-shell__main--gate">
-          <p className="app-shell__gate">Loading…</p>
-        </main>
-      </div>
-    )
-  }
-
   if (!user) {
     return (
-      <div className="app-shell">
-        <main className="app-shell__main app-shell__main--gate">
-          <p className="app-shell__gate">Redirecting to sign in…</p>
-        </main>
+      <div style={{ minHeight: '100dvh', display: 'grid', placeItems: 'center', background: '#f6f6fa' }}>
+        <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>Loading…</p>
       </div>
     )
   }
 
   return (
-    <div className="app-shell">
-      <AppSidebar />
-      <div className="app-shell__body">
-        <header className="app-shell__header">
-          <span className="app-shell__brand">ClearMint</span>
-          <button
-            type="button"
-            className="app-shell__logout"
-            onClick={() => {
-              logout()
-              router.replace('/login')
-            }}
-          >
-            Sign out
-          </button>
-        </header>
-        <main className="app-shell__main">{children}</main>
-      </div>
+    <div className="app">
+      <AppSidebar active={pathname} />
+      <main className="main">
+        <div className="main-inner">{children}</div>
+      </main>
       <BottomNav />
     </div>
   )

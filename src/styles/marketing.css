@@ -27,17 +27,18 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
+.marketing-page {
   font-family: var(--font-body);
   background: var(--navy);
   color: var(--white);
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
 /* ===== SCROLLBAR ===== */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--navy-deep); }
-::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 3px; }
+.marketing-page::-webkit-scrollbar { width: 6px; }
+.marketing-page::-webkit-scrollbar-track { background: var(--navy-deep); }
+.marketing-page::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 3px; }
 
 /* ===== NAVBAR ===== */
 .navbar {
@@ -132,7 +133,7 @@ body {
 }
 
 /* ===== HERO SECTION ===== */
-.hero {
+.landing-hero {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -143,7 +144,7 @@ body {
   overflow: hidden;
 }
 
-.hero::before {
+.landing-hero::before {
   content: '';
   position: absolute;
   inset: 0;

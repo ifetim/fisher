@@ -9,7 +9,7 @@ export function NetWorthSection({
   onToggleBalances,
 }: NetWorthSectionProps) {
   return (
-    <section className="dash-ui__block dash-ui__block--hero" data-ui-slot="net-worth">
+    <section className="dash-ui__block" data-ui-slot="net-worth">
       <div className="dash-ui__block-head">
         <h2 className="dash-ui__label">Net worth</h2>
         <BalanceToggle

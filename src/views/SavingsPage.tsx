@@ -1,220 +1,134 @@
 'use client'
 
-import { FormEvent, useMemo, useState } from 'react'
-import {
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { FormEvent, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useFinance } from '@/context/FinanceContext'
-import { formatCurrency, formatTooltipValue } from '@/lib/format'
-import {
-  buildContributionHistory,
-  goalProgress,
-  monthlyNeeded,
-} from '@/lib/savings'
+import { goalProgress, monthlyNeeded } from '@/lib/savings'
+import { formatCurrency } from '@/lib/format'
 import type { SavingsPlan } from '@/types'
-import '@/components/shared/page.css'
-import './SavingsPage.css'
+
+const GOAL_STYLES = [
+  { emoji: '✈️', bg: 'rgba(59,130,246,0.15)' },
+  { emoji: '🏠', bg: 'rgba(134,59,255,0.15)' },
+  { emoji: '🛟', bg: 'rgba(245,158,11,0.15)' },
+  { emoji: '💻', bg: 'rgba(34,197,94,0.15)'  },
+  { emoji: '🎯', bg: 'rgba(239,68,68,0.12)'  },
+]
 
 export function SavingsPage() {
   const { user } = useAuth()
-  const { savingsPlans, addSavingsGoal, transactions } = useFinance()
+  const { savingsPlans, addSavingsGoal } = useFinance()
   const [showForm, setShowForm] = useState(false)
-  const [suggestions, setSuggestions] = useState<string[]>([])
-  const [loadingTips, setLoadingTips] = useState(false)
-  const [name, setName] = useState('')
-  const [target, setTarget] = useState('')
+  const [name, setName]       = useState('')
+  const [target, setTarget]   = useState('')
   const [deadline, setDeadline] = useState('')
 
-  const primary = savingsPlans[0]
+  const totalSaved  = savingsPlans.reduce((s, g) => s + g.savedAmount, 0)
+  const totalTarget = savingsPlans.reduce((s, g) => s + g.targetAmount, 0)
+  const overallPct  = totalTarget > 0 ? Math.round((totalSaved / totalTarget) * 100) : 0
 
-  const chartData = useMemo(
-    () => (primary ? buildContributionHistory(primary) : []),
-    [primary],
-  )
-
-  const topMerchants = useMemo(() => {
-    const totals = new Map<string, number>()
-    for (const t of transactions) {
-      if (t.amount >= 0) continue
-      totals.set(t.merchant, (totals.get(t.merchant) ?? 0) + Math.abs(t.amount))
-    }
-    return [...totals.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 3)
-      .map(([m]) => m)
-  }, [transactions])
-
-  async function loadSuggestions(plan: SavingsPlan) {
-    setLoadingTips(true)
-    try {
-      const res = await fetch('/api/gemini/savings-suggestions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          goal: plan.goal,
-          merchants: topMerchants,
-          monthlyNeeded: monthlyNeeded(plan),
-        }),
-      })
-      const data = (await res.json()) as { suggestions?: string[] }
-      setSuggestions(data.suggestions ?? [])
-    } catch {
-      setSuggestions(['Try reducing one recurring subscription this month.'])
-    } finally {
-      setLoadingTips(false)
-    }
-  }
-
-  function handleAddGoal(e: FormEvent) {
+  function handleAdd(e: FormEvent) {
     e.preventDefault()
-    const targetAmount = Number(target)
-    if (!name || !deadline || targetAmount <= 0) return
-
-    addSavingsGoal({
-      goal: name,
-      targetAmount,
-      savedAmount: 0,
-      deadline,
-      monthlyContribution: Math.ceil(targetAmount / 12),
-    })
+    const amount = Number(target)
+    if (!name || !deadline || amount <= 0) return
+    addSavingsGoal({ goal: name, targetAmount: amount, savedAmount: 0, deadline, monthlyContribution: Math.ceil(amount / 12) })
     setShowForm(false)
-    setName('')
-    setTarget('')
-    setDeadline('')
+    setName(''); setTarget(''); setDeadline('')
   }
 
   if (!user) return null
 
   return (
-    <section className="page savings-page">
-      <h1 className="page__title">Savings</h1>
-      <p className="page__subtitle">Track goals and see how small cuts speed things up.</p>
-
-      <div className="savings-page__goals-grid">
-        {savingsPlans.map((plan) => (
-          <GoalCard key={plan.id} plan={plan} />
-        ))}
+    <div>
+      <div className="screen-header">
+        <div className="greeting">
+          <p>{savingsPlans.length} active goal{savingsPlans.length !== 1 ? 's' : ''}</p>
+          <h1>Savings</h1>
+        </div>
+        <button className="plaid-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }} onClick={() => setShowForm(true)}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          New goal
+        </button>
       </div>
 
-      {showForm ? (
-        <form className="card savings-page__form" onSubmit={handleAddGoal}>
-          <h2 className="page__section-title">New goal</h2>
-          <div className="field">
-            <label htmlFor="goal-name">Goal name</label>
-            <input
-              id="goal-name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="goal-target">Target amount ($)</label>
-            <input
-              id="goal-target"
-              type="number"
-              min={1}
-              value={target}
-              onChange={(e) => setTarget(e.target.value)}
-              required
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="goal-deadline">Deadline</label>
-            <input
-              id="goal-deadline"
-              type="date"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit" className="btn btn--primary">
-            Save goal
-          </button>
-          <button
-            type="button"
-            className="btn btn--ghost savings-page__cancel"
-            onClick={() => setShowForm(false)}
-          >
-            Cancel
-          </button>
-        </form>
-      ) : (
-        <button
-          type="button"
-          className="btn btn--secondary savings-page__add"
-          onClick={() => setShowForm(true)}
-        >
-          Add goal
-        </button>
-      )}
+      {/* Hero */}
+      <div className="hero" style={{ marginBottom: 22 }}>
+        <div className="hero-label"><span>Total Saved</span></div>
+        <div className="hero-amount">{formatCurrency(totalSaved)}</div>
+        <div className="hero-tags">
+          <span className="hero-tag">of {formatCurrency(totalTarget)} across {savingsPlans.length} goal{savingsPlans.length !== 1 ? 's' : ''}</span>
+          <span className="hero-tag" style={{ background: 'rgba(255,255,255,0.1)' }}>{overallPct}% complete</span>
+        </div>
+      </div>
 
-      {primary ? (
-        <>
-          <div className="page__section">
-            <h2 className="page__section-title">Contribution history</h2>
-            <div className="chart-wrap card">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData}>
-                  <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                  <YAxis tick={{ fontSize: 11 }} />
-                  <Tooltip formatter={formatTooltipValue} />
-                  <Line
-                    type="monotone"
-                    dataKey="amount"
-                    stroke="var(--color-savings)"
-                    strokeWidth={2}
-                    dot
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+      {/* Add goal form */}
+      {showForm && (
+        <form
+          onSubmit={handleAdd}
+          style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '0.875rem', padding: '1.25rem', marginBottom: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}
+        >
+          <p style={{ margin: 0, fontWeight: 700, fontSize: '0.95rem' }}>New goal</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--muted)' }}>Goal name</label>
+            <input value={name} onChange={(e) => setName(e.target.value)} required
+              style={{ padding: '0.6rem 0.75rem', border: '1px solid var(--border)', borderRadius: '0.5rem', fontSize: '0.875rem' }} />
+          </div>
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--muted)' }}>Target ($)</label>
+              <input type="number" min={1} value={target} onChange={(e) => setTarget(e.target.value)} required
+                style={{ padding: '0.6rem 0.75rem', border: '1px solid var(--border)', borderRadius: '0.5rem', fontSize: '0.875rem' }} />
+            </div>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--muted)' }}>Deadline</label>
+              <input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} required
+                style={{ padding: '0.6rem 0.75rem', border: '1px solid var(--border)', borderRadius: '0.5rem', fontSize: '0.875rem' }} />
             </div>
           </div>
+          <div style={{ display: 'flex', gap: '0.65rem' }}>
+            <button type="submit" className="plaid-btn">Save goal</button>
+            <button type="button" onClick={() => setShowForm(false)}
+              style={{ padding: '0.55rem 1rem', border: '1px solid var(--border)', borderRadius: '0.5rem', background: 'transparent', cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600, color: 'var(--muted)' }}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
 
-          <button
-            type="button"
-            className="btn btn--primary savings-page__tips"
-            disabled={loadingTips}
-            onClick={() => void loadSuggestions(primary)}
-          >
-            {loadingTips ? 'Thinking…' : 'Savings suggestions'}
-          </button>
-          {suggestions.length > 0 ? (
-            <ul className="savings-page__suggestions card">
-              {suggestions.map((s) => (
-                <li key={s}>{s}</li>
-              ))}
-            </ul>
-          ) : null}
-        </>
-      ) : null}
-    </section>
+      <div className="section-label"><span>Your goals</span></div>
+      <div className="goal-grid">
+        {savingsPlans.map((plan, i) => (
+          <GoalCard key={plan.id} plan={plan} style={GOAL_STYLES[i % GOAL_STYLES.length]!} />
+        ))}
+      </div>
+    </div>
   )
 }
 
-function GoalCard({ plan }: { plan: SavingsPlan }) {
+function GoalCard({ plan, style }: { plan: SavingsPlan; style: { emoji: string; bg: string } }) {
   const pct = goalProgress(plan)
   const needed = monthlyNeeded(plan)
 
   return (
-    <article className="card savings-page__goal">
-      <h2 className="savings-page__goal-name">{plan.goal}</h2>
-      <p className="savings-page__goal-amounts">
-        {formatCurrency(plan.savedAmount)} of {formatCurrency(plan.targetAmount)}
-      </p>
-      <div className="savings-page__bar" role="progressbar" aria-valuenow={pct}>
-        <div className="savings-page__bar-fill" style={{ width: `${pct}%` }} />
+    <div className="goal-card">
+      <div className="goal-head">
+        <div className="goal-emoji" style={{ background: style.bg }}>{style.emoji}</div>
+        <div className="info">
+          <p className="name">{plan.goal}</p>
+          <p className="target">By {plan.deadline}</p>
+        </div>
+        <div className="goal-pct">{pct}%</div>
       </div>
-      <p className="savings-page__meta">
-        {pct}% · Deadline {plan.deadline} · ~{formatCurrency(needed)}/mo needed
-      </p>
-    </article>
+      <div className="goal-bar">
+        <div className="goal-bar-fill" style={{ width: `${pct}%` }} />
+      </div>
+      <div className="goal-foot">
+        <span className="saved">{formatCurrency(plan.savedAmount)} saved</span>
+        <span>of {formatCurrency(plan.targetAmount)}</span>
+      </div>
+      <p style={{ margin: '0.5rem 0 0', fontSize: '0.72rem', color: 'var(--muted)' }}>~{formatCurrency(needed)}/mo needed</p>
+    </div>
   )
 }

@@ -3,20 +3,17 @@ import Hero from '@/components/marketing/Hero'
 import ExpensiveSection from '@/components/marketing/ExpensiveSection'
 import SavingsSection from '@/components/marketing/SavingsSection'
 import SignupSection from '@/components/marketing/SignupSection'
+import '@/styles/marketing.css'
 
 export default function MarketingPage() {
   return (
-    <>
+    <div className="marketing-page">
       <Navbar />
-      <main>
-        <Hero />
-        <ExpensiveSection />
-        <SavingsSection />
-        <SignupSection />
-      </main>
-      <footer className="footer">
-        © 2026 ClearMint · Built for students · Alberta, Canada
-      </footer>
-    </>
+      <Hero />
+      <ExpensiveSection />
+      <SavingsSection />
+      <SignupSection />
+      <footer className="footer">© 2026 Fisher · Built for students 🎓</footer>
+    </div>
   )
 }

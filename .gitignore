@@ -27,3 +27,8 @@ out
 *.njsproj
 *.sln
 *.sw?
+.plaid-sessions.json
+
+# editor / build cache
+.claude/
+tsconfig.tsbuildinfo

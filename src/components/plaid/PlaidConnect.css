@@ -1,68 +1,58 @@
 .plaid-connect {
-  margin-bottom: 1.25rem;
-  padding: 1.15rem 1.25rem;
-  border-radius: var(--radius-lg);
-  background: var(--white);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
 }
 
 .plaid-connect__title {
   margin: 0 0 0.35rem;
-  font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 600;
-  color: var(--navy);
-  letter-spacing: -0.02em;
 }
 
 .plaid-connect__text {
-  margin: 0 0 0.85rem;
-  font-size: 0.85rem;
+  margin: 0 0 0.75rem;
+  font-size: 0.8rem;
   color: var(--color-muted);
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
-.plaid-connect__btn {
+.plaid-connect__btn,
+.plaid-connect__button {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.65rem 1rem;
   border: none;
-  border-radius: var(--radius-sm);
-  background: var(--navy);
-  color: var(--white);
-  font-family: var(--font-body);
-  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  background: var(--color-accent);
+  color: white;
+  font: inherit;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s, box-shadow 0.15s;
 }
 
-.plaid-connect__btn:hover:not(:disabled) {
-  background: var(--navy-deep);
-  box-shadow: var(--shadow-sm);
-}
-
-.plaid-connect__btn:disabled {
+.plaid-connect__btn:disabled,
+.plaid-connect__button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 .plaid-connect__status {
   margin: 0.5rem 0 0;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   color: var(--color-income);
-  font-weight: 500;
 }
 
 .plaid-connect__ready {
   margin: 0.5rem 0 0;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--color-muted);
 }
 
 .plaid-connect__error {
-  margin: 0.5rem 0 0;
-  font-size: 0.8rem;
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
   color: var(--color-spend);
 }
 
@@ -70,16 +60,15 @@
   list-style: none;
   margin: 0.75rem 0 0;
   padding: 0;
-  border-top: 1px solid var(--color-border);
 }
 
 .plaid-connect__row {
   display: flex;
   justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.55rem 0;
+  gap: 1rem;
+  padding: 0.4rem 0;
+  font-size: 0.875rem;
   border-bottom: 1px solid var(--color-border);
-  font-size: 0.85rem;
 }
 
 .plaid-connect__row:last-child {

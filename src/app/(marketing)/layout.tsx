@@ -1,5 +1,3 @@
-import '@/styles/marketing.css'
-
 export default function MarketingLayout({
   children,
 }: Readonly<{
