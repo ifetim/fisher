@@ -1,0 +1,248 @@
+/* StudentSaverPage.css
+   Extends clearmint-v3.css tokens — no new variables introduced.
+   Mirrors patterns from SpendingPage.css + SavingsPage.css. */
+
+/* ── Page shell ── */
+.ss-page {
+  padding: 20px 16px 32px;
+}
+@media (min-width: 640px) {
+  .ss-page { padding: 28px 0 40px; }
+}
+
+.ss-title {
+  font-family: var(--display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0 0 0.35rem;
+}
+
+.ss-sub {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 36rem;
+}
+
+/* ── Upload drop zone ── */
+.ss-dropzone {
+  border: 1.5px dashed var(--border-strong);
+  border-radius: 14px;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  margin-bottom: 1.25rem;
+  outline: none;
+}
+.ss-dropzone:hover,
+.ss-dropzone:focus-visible {
+  border-color: var(--orange);
+  background: var(--orange-soft);
+}
+.ss-dropzone--active {
+  border-color: var(--orange);
+  background: var(--orange-soft);
+}
+
+.ss-dropzone__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--orange-soft);
+  color: var(--orange);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 0.75rem;
+}
+.ss-dropzone__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ss-dropzone__name {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.ss-dropzone__hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ── Campus field ── */
+.ss-field {
+  margin-bottom: 1.25rem;
+}
+.ss-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.ss-select {
+  width: 100%;
+  padding: 0.65rem 0.875rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236b7387' stroke-width='1.8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 8l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px;
+  cursor: pointer;
+}
+.ss-select:focus {
+  outline: none;
+  border-color: var(--orange);
+}
+
+/* ── Hero summary card ── */
+.ss-hero {
+  background: var(--hero-gradient) !important;
+  border: none !important;
+  color: #fff;
+  padding: 22px 22px 20px !important;
+  margin-bottom: 0;
+}
+
+.ss-hero__campus {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+
+.ss-hero__summary {
+  margin: 0 0 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  opacity: 0.92;
+}
+
+.ss-hero__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.ss-hero__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ss-hero__val {
+  font-family: var(--display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.ss-hero__val--highlight {
+  color: var(--orange-bright);
+}
+.ss-hero__lbl {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+/* ── Transaction rows ── */
+.ss-tx-wrap {
+  overflow: hidden;
+}
+.ss-tx-wrap + .ss-tx-wrap {
+  border-top: 1px solid var(--border-soft);
+}
+
+.ss-tx-btn {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  transition: background 0.12s;
+}
+.ss-tx-btn:hover {
+  background: var(--bg);
+}
+
+.ss-tx-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.ss-save-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--orange);
+  background: var(--orange-soft);
+  padding: 2px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.ss-save-badge--mint {
+  color: var(--mint);
+  background: var(--mint-soft);
+}
+
+.ss-chevron {
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+}
+.ss-chevron svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Alternatives panel ── */
+.ss-alternatives {
+  border-top: 1px solid var(--border-soft);
+  background: rgba(42, 157, 143, 0.04);
+}
+.ss-alt-label {
+  margin: 0;
+  padding: 8px 16px 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mint);
+}
+
+/* ── Misc ── */
+.ss-count {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.ss-empty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  padding: 2rem 0;
+  margin: 0;
+}

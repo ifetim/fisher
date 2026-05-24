@@ -3,6 +3,7 @@ export const navLinks = [
   { id: 'spending',  href: '/spending',  label: 'Spending'  },
   { id: 'savings',   href: '/savings',   label: 'Savings'   },
   { id: 'advice',    href: '/advice',    label: 'Advice'    },
+  { id: 'student-saver',    href: '/student-saver',    label: 'Student-saver'    },
 ] as const
 
 export type NavId = typeof navLinks[number]['id']
