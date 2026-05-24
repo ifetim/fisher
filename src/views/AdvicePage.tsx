@@ -62,7 +62,7 @@ export function AdvicePage() {
           <p>AI-powered insights</p>
           <h1>Advice</h1>
         </div>
-        <div className="avatar" style={{ background: 'linear-gradient(135deg, #fbbf24, #f97316)', fontSize: 18 }}>✨</div>
+        <div className="avatar" style={{ fontSize: 18 }}>✨</div>
       </div>
 
       {/* Health score */}

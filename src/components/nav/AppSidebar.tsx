@@ -34,6 +34,14 @@ export function AppSidebar({ active }: { active: string }) {
         )
       })}
 
+      <button
+        style={{ background: 'none', border: 'none', padding: '6px 12px', cursor: 'pointer', fontSize: '0.72rem', color: 'var(--muted)', textAlign: 'left', borderRadius: '8px', marginBottom: '4px' }}
+        onClick={() => { localStorage.removeItem('clearmint-onboarded'); router.push('/onboarding') }}
+        title="Dev: reset onboarding"
+      >
+        ↩ Preview onboarding
+      </button>
+
       <div className="sidebar-foot">
         <div className="avatar">{initials}</div>
         <div className="info">

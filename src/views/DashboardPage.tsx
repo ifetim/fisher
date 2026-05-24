@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useDashboard } from '@/hooks/useDashboard'
 import { formatCurrency } from '@/lib/format'
 
@@ -10,6 +11,7 @@ const ACCOUNT_COLORS: Record<string, string> = {
 }
 
 export function DashboardPage() {
+  const router = useRouter()
   const { greeting, accounts, netWorth, spendingThisMonth, quickInsights, balancesVisible, toggleBalances, displayAmount } = useDashboard()
 
   if (!greeting || !accounts) return null
@@ -18,9 +20,9 @@ export function DashboardPage() {
   const timeOfDay = greeting.split(',')[0] ?? 'Good day'
 
   const insightIcons = [
-    { icon: '📉', bg: 'rgba(34,197,94,0.15)' },
-    { icon: '⚡', bg: 'rgba(245,158,11,0.15)' },
-    { icon: '🎯', bg: 'rgba(134,59,255,0.15)' },
+    { icon: '📊', bg: 'rgba(59,130,246,0.12)' },
+    { icon: '⚡', bg: 'rgba(245,158,11,0.12)' },
+    { icon: '🎯', bg: 'rgba(134,59,255,0.12)' },
   ]
 
   const budget = 2500
@@ -138,6 +140,16 @@ export function DashboardPage() {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Dev only — reset onboarding */}
+      <div style={{ marginTop: 32, textAlign: 'center' }}>
+        <button
+          style={{ background: 'none', border: '1px dashed var(--border)', borderRadius: 8, padding: '6px 14px', fontSize: '0.75rem', color: 'var(--muted)', cursor: 'pointer' }}
+          onClick={() => { localStorage.removeItem('clearmint-onboarded'); router.push('/onboarding') }}
+        >
+          ↩ Preview onboarding
+        </button>
       </div>
     </div>
   )

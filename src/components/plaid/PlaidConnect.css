@@ -1,59 +1,69 @@
 .plaid-connect {
   margin-bottom: 1.5rem;
-  padding: 1rem;
-  border: 1px dashed var(--color-border);
-  border-radius: 0.5rem;
-  background: var(--color-surface);
+  padding: 1rem 1.1rem;
+  border: 1.5px solid var(--border, rgba(15,23,42,0.07));
+  border-radius: 12px;
+  background: var(--surface, #fff);
+  box-shadow: var(--shadow-card);
 }
 
 .plaid-connect__title {
-  margin: 0 0 0.35rem;
-  font-size: 1rem;
+  margin: 0 0 0.3rem;
+  font-size: 0.95rem;
   font-weight: 600;
+  color: var(--text, #0f172a);
 }
 
 .plaid-connect__text {
   margin: 0 0 0.75rem;
-  font-size: 0.8rem;
-  color: var(--color-muted);
-  line-height: 1.45;
+  font-size: 0.78rem;
+  color: var(--muted, #6b7280);
+  line-height: 1.5;
 }
 
 .plaid-connect__btn,
 .plaid-connect__button {
   width: 100%;
-  padding: 0.65rem 1rem;
+  padding: 0.6rem 1rem;
   border: none;
-  border-radius: 0.5rem;
-  background: var(--color-accent);
+  border-radius: 8px;
+  background: var(--purple, #863bff);
   color: white;
   font: inherit;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.plaid-connect__btn:hover:not(:disabled),
+.plaid-connect__button:hover:not(:disabled) {
+  opacity: 0.9;
 }
 
 .plaid-connect__btn:disabled,
 .plaid-connect__button:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .plaid-connect__status {
-  margin: 0.5rem 0 0;
-  font-size: 0.875rem;
-  color: var(--color-income);
+  margin: 0.4rem 0 0;
+  font-size: 0.82rem;
+  color: #22c55e;
+  font-weight: 500;
 }
 
 .plaid-connect__ready {
-  margin: 0.5rem 0 0;
-  font-size: 0.8rem;
-  color: var(--color-muted);
+  margin: 0.4rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted, #6b7280);
 }
 
 .plaid-connect__error {
-  margin: 0.75rem 0 0;
-  font-size: 0.875rem;
-  color: var(--color-spend);
+  margin: 0.6rem 0 0;
+  font-size: 0.82rem;
+  color: #ef4444;
 }
 
 .plaid-connect__list {
@@ -67,8 +77,8 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.4rem 0;
-  font-size: 0.875rem;
-  border-bottom: 1px solid var(--color-border);
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--border, rgba(15,23,42,0.07));
 }
 
 .plaid-connect__row:last-child {
@@ -76,5 +86,5 @@
 }
 
 .plaid-connect__row small {
-  color: var(--color-muted);
+  color: var(--muted, #6b7280);
 }

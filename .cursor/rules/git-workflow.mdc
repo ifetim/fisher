@@ -18,3 +18,9 @@ When starting work on a **new feature**, always use a **new branch**. Do not imp
 Merge to `main` only when that slice works and is ready to integrate.
 
 This matches `PLAN.md` — feature branches are the default workflow for this repo.
+
+## Commits
+
+- Plain commit messages only (title + optional body).
+- **Never** add `Co-authored-by:` trailers — including `Co-authored-by: Cursor` or any agent attribution.
+- Do not mention Cursor, agents, or AI in commit messages unless the user explicitly asks.

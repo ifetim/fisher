@@ -36,7 +36,7 @@ export function SignupPage() {
     // Demo app — auto-login with the demo account
     const ok = login('fe@email.com', 'password123')
     if (ok) {
-      router.replace('/dashboard')
+      router.replace('/onboarding')
     } else {
       router.push('/login?from=signup')
     }

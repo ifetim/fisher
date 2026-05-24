@@ -103,6 +103,16 @@ export function SavingsPage() {
           <GoalCard key={plan.id} plan={plan} style={GOAL_STYLES[i % GOAL_STYLES.length]!} />
         ))}
       </div>
+
+      {!showForm && (
+        <button
+          onClick={() => setShowForm(true)}
+          style={{ marginTop: 20, background: 'none', border: '1.5px dashed var(--border)', borderRadius: 12, padding: '14px 24px', fontSize: '0.85rem', color: 'var(--muted)', cursor: 'pointer', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+        >
+          <span style={{ fontSize: 18, lineHeight: 1 }}>+</span>
+          Add another goal
+        </button>
+      )}
     </div>
   )
 }
