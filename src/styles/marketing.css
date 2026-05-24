@@ -159,6 +159,8 @@ html {
   display: flex;
   align-items: center;
   user-select: none;
+  max-width: 100%;
+  padding: 0 1rem;
 }
 
 .hero-title {
@@ -169,6 +171,8 @@ html {
   letter-spacing: -0.03em;
   line-height: 1;
   text-shadow: 0 4px 30px rgba(0,0,0,0.25);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .grad-cap {
@@ -731,4 +735,47 @@ html {
   .stats-row { flex-direction: column; align-items: center; }
   .signup-form { padding: 2rem 1.5rem; }
   .food-comparison { flex-direction: column; align-items: center; }
+
+  .landing-hero {
+    padding: 5.5rem 1rem 3rem;
+    justify-content: center;
+  }
+
+  .hero-logo {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+  }
+
+  .grad-cap {
+    position: static;
+    transform: rotate(-12deg);
+    line-height: 0;
+  }
+
+  .grad-cap svg {
+    width: 52px;
+    height: auto;
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 11vw, 3.25rem);
+    letter-spacing: -0.02em;
+    text-align: center;
+  }
+
+  .dollar-badge {
+    width: 0.9em;
+    height: 0.9em;
+    flex-shrink: 0;
+  }
+
+  .hero-subtitle {
+    padding: 0 1rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-align: center;
+    line-height: 1.4;
+  }
 }
