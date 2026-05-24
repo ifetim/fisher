@@ -3,21 +3,25 @@
   padding: 1rem;
   border: 1px dashed var(--color-border);
   border-radius: 0.5rem;
-  background: #f8fafc;
+  background: var(--color-surface);
 }
 
 .plaid-connect__title {
   margin: 0 0 0.35rem;
   font-size: 1rem;
+  font-weight: 600;
 }
 
-.plaid-connect__hint {
+.plaid-connect__text {
   margin: 0 0 0.75rem;
   font-size: 0.8rem;
   color: var(--color-muted);
+  line-height: 1.45;
 }
 
+.plaid-connect__btn,
 .plaid-connect__button {
+  width: 100%;
   padding: 0.65rem 1rem;
   border: none;
   border-radius: 0.5rem;
@@ -28,15 +32,22 @@
   cursor: pointer;
 }
 
+.plaid-connect__btn:disabled,
 .plaid-connect__button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 .plaid-connect__status {
-  margin: 0;
+  margin: 0.5rem 0 0;
   font-size: 0.875rem;
   color: var(--color-income);
+}
+
+.plaid-connect__ready {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-muted);
 }
 
 .plaid-connect__error {
@@ -60,22 +71,10 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-.plaid-connect__row .income {
-  color: var(--color-income);
+.plaid-connect__row:last-child {
+  border-bottom: none;
 }
 
-.plaid-connect__row .spend {
-  color: var(--color-spend);
-}
-
-.plaid-connect__ready {
-  margin: 0.5rem 0 0;
-  font-size: 0.8rem;
-  color: var(--color-income);
-}
-
-.plaid-connect__date {
-  display: block;
-  font-size: 0.75rem;
+.plaid-connect__row small {
   color: var(--color-muted);
 }

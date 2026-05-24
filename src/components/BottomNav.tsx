@@ -1,32 +1,28 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import './BottomNav.css'
-
-const links = [
-  { href: '/dashboard', label: 'Dashboard' },
-  { href: '/spending', label: 'Spending' },
-  { href: '/savings', label: 'Savings' },
-  { href: '/advice', label: 'Advice' },
-] as const
+import { useRouter, usePathname } from 'next/navigation'
+import { navLinks } from './nav/navLinks'
+import { NavIcons } from './nav/NavIcons'
 
 export function BottomNav() {
   const pathname = usePathname()
+  const router = useRouter()
 
   return (
-    <nav className="bottom-nav" aria-label="Main">
-      {links.map(({ href, label }) => {
+    <nav className="bnav" aria-label="Main">
+      {navLinks.map(({ id, href, label }) => {
         const isActive =
           pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
         return (
-          <Link
+          <button
             key={href}
-            href={href}
-            className={`bottom-nav__link${isActive ? ' bottom-nav__link--active' : ''}`}
+            className={`bnav-item${isActive ? ' active' : ''}`}
+            onClick={() => router.push(href)}
+            aria-label={label}
           >
-            {label}
-          </Link>
+            <NavIcons id={id} />
+            <span>{label}</span>
+          </button>
         )
       })}
     </nav>

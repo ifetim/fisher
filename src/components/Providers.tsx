@@ -2,7 +2,12 @@
 
 import type { ReactNode } from 'react'
 import { AuthProvider } from '@/context/AuthContext'
+import { FinanceProvider } from '@/context/FinanceContext'
 
 export function Providers({ children }: { children: ReactNode }) {
-  return <AuthProvider>{children}</AuthProvider>
+  return (
+    <AuthProvider>
+      <FinanceProvider>{children}</FinanceProvider>
+    </AuthProvider>
+  )
 }

@@ -1,0 +1,133 @@
+/* In-app shared styles — matches src 2 */
+
+.page__subtitle {
+  margin: 0 0 1.25rem;
+  color: var(--color-muted);
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.page__section {
+  margin-bottom: 1.5rem;
+}
+
+.page__section-title {
+  margin: 0 0 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+}
+
+.card {
+  padding: 1rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-surface);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: white;
+}
+
+.btn--secondary {
+  background: var(--color-text);
+  color: white;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-muted);
+  border: 1px solid var(--color-border);
+}
+
+.alert-banner {
+  padding: 0.85rem 1rem;
+  border-radius: 0.5rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: var(--color-text);
+  line-height: 1.5;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.login-page-wrap {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: var(--color-surface);
+}
+
+.login {
+  width: 100%;
+  max-width: 24rem;
+}
+
+.login__form {
+  border: 1px solid var(--color-border) !important;
+  border-radius: 0.75rem !important;
+  padding: 1.5rem !important;
+  background: var(--color-bg) !important;
+}
+
+.landing {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background: var(--color-bg);
+}
+
+.landing__title {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.landing__lead {
+  margin: 0 0 1.5rem;
+  max-width: 22rem;
+  color: var(--color-muted);
+  line-height: 1.55;
+}
+
+.spending-page__charts-row,
+.spending-page__bottom-row,
+.savings-page__goals-grid,
+.advice-page__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .spending-page__charts-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .savings-page__goals-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

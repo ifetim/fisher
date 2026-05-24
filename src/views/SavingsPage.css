@@ -1,0 +1,66 @@
+.savings-page__goal {
+  margin-bottom: 0;
+}
+
+.savings-page__goal-name {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.savings-page__goal-amounts {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-savings);
+}
+
+.savings-page__bar {
+  height: 0.5rem;
+  background: var(--color-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.savings-page__bar-fill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 999px;
+}
+
+.savings-page__meta {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.savings-page__add,
+.savings-page__tips {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.savings-page__form {
+  margin-bottom: 1rem;
+}
+
+.savings-page__cancel {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.savings-page__suggestions {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 1rem;
+}
+
+.savings-page__suggestions li + li {
+  margin-top: 0.65rem;
+}
+
+.savings-page__suggestions li {
+  line-height: 1.5;
+  font-size: 0.9rem;
+}

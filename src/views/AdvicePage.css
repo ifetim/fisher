@@ -1,0 +1,91 @@
+.advice-page__score {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.advice-page__score-value {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.advice-page__score-out-of {
+  margin: 0.25rem 0 1rem;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.advice-page__factors {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.advice-page__factors li + li {
+  margin-top: 0.5rem;
+}
+
+.advice-page__factors strong {
+  color: var(--color-accent);
+}
+
+.advice-page__cta {
+  width: 100%;
+  margin-bottom: 1.25rem;
+}
+
+.advice-page__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.advice-page__card h3,
+.advice-page__tip h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.advice-page__card p,
+.advice-page__tip p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.advice-page__literacy {
+  margin-bottom: 0.5rem;
+  padding: 0;
+  overflow: hidden;
+}
+
+.advice-page__literacy-head {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border: none;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  color: var(--color-text);
+}
+
+.advice-page__literacy-body {
+  margin: 0;
+  padding: 0 1rem 1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}

@@ -1,0 +1,28 @@
+.statement-upload {
+  margin-top: 0;
+}
+
+.statement-upload__label {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.statement-upload__hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  line-height: 1.4;
+}
+
+.statement-upload__input {
+  display: none;
+}
+
+.statement-upload__msg {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-income);
+  font-weight: 600;
+}

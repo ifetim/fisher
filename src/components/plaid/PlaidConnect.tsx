@@ -15,7 +15,6 @@ import './PlaidConnect.css'
 const TEST_USER_ID = 'plaid-test-user'
 
 type PlaidConnectProps = {
-  /** Override auth user — used on /plaid-test */
   userId?: string
   maxRows?: number
   onTransactions?: (transactions: NormalizedTransaction[]) => void
@@ -23,7 +22,7 @@ type PlaidConnectProps = {
 
 export function PlaidConnect({
   userId: userIdOverride,
-  maxRows = 10,
+  maxRows = 5,
   onTransactions,
 }: PlaidConnectProps) {
   const { user } = useAuth()
@@ -61,7 +60,7 @@ export function PlaidConnect({
         setConnected(isConnected)
         if (isConnected) await loadTransactions()
       } catch {
-        /* server may be offline */
+        /* env or server offline */
       }
     })()
   }, [userId, loadTransactions])
@@ -78,7 +77,7 @@ export function PlaidConnect({
         setError(
           err instanceof Error
             ? err.message
-            : 'Plaid API not reachable. Run: npm run dev',
+            : 'Plaid not configured. Add keys to .env.local',
         )
       }
     })()
@@ -95,7 +94,7 @@ export function PlaidConnect({
         await loadTransactions()
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : 'Bank connected but token exchange failed.',
+          err instanceof Error ? err.message : 'Token exchange failed.',
         )
       } finally {
         setLoading(false)
@@ -112,37 +111,36 @@ export function PlaidConnect({
   if (!userId) return null
 
   const visible =
-    maxRows === undefined
-      ? transactions.slice(0, 10)
-      : maxRows <= 0
-        ? transactions
-        : transactions.slice(0, maxRows)
+    maxRows <= 0 ? transactions : transactions.slice(0, maxRows)
 
   return (
     <section className="plaid-connect">
-      <h2 className="plaid-connect__title">Bank (Plaid Sandbox)</h2>
-      <p className="plaid-connect__hint">
-        Demo: First Platypus Bank · user_good / pass_good
+      <h2 className="plaid-connect__title">Connect your bank</h2>
+      <p className="plaid-connect__text">
+        Plaid sandbox: use <strong>First Platypus Bank</strong> with user_good / pass_good
       </p>
 
       {!connected ? (
-        <button
-          type="button"
-          className="plaid-connect__button"
-          disabled={!ready || loading || !linkToken}
-          onClick={() => open()}
-        >
-          {loading ? 'Connecting…' : 'Connect bank'}
-        </button>
+        <>
+          <button
+            type="button"
+            className="plaid-connect__btn"
+            disabled={!ready || loading || !linkToken}
+            onClick={() => open()}
+          >
+            {loading ? 'Connecting…' : 'Connect bank'}
+          </button>
+          {linkToken && ready ? (
+            <p className="plaid-connect__ready">Plaid ready — tap to open sandbox</p>
+          ) : !error && !linkToken ? (
+            <p className="plaid-connect__ready">Loading Plaid…</p>
+          ) : null}
+        </>
       ) : (
         <p className="plaid-connect__status">
-          Connected · {transactions.length} transactions
+          Connected · {transactions.length} live transactions
         </p>
       )}
-
-      {linkToken && !connected ? (
-        <p className="plaid-connect__ready">Link token ready</p>
-      ) : null}
 
       {error ? <p className="plaid-connect__error">{error}</p> : null}
 
@@ -152,10 +150,10 @@ export function PlaidConnect({
             <li key={tx.id} className="plaid-connect__row">
               <span>
                 {tx.merchant}
-                <small className="plaid-connect__date">{tx.date}</small>
+                <small> · {tx.date}</small>
               </span>
-              <span className={tx.type === 'credit' ? 'income' : 'spend'}>
-                {tx.amount < 0 ? '' : '+'}${Math.abs(tx.amount).toFixed(2)}
+              <span className={tx.amount >= 0 ? 'amount--income' : 'amount--spend'}>
+                {formatAmount(tx.amount)}
               </span>
             </li>
           ))}
@@ -163,6 +161,11 @@ export function PlaidConnect({
       ) : null}
     </section>
   )
+}
+
+function formatAmount(amount: number) {
+  const prefix = amount >= 0 ? '+' : ''
+  return `${prefix}$${Math.abs(amount).toFixed(2)}`
 }
 
 export { TEST_USER_ID }

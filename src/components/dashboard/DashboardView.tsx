@@ -42,6 +42,8 @@ export function DashboardView({
       <SpendingThisMonth
         amount={spendingThisMonth}
         displayAmount={displayAmount}
+        balancesVisible={balancesVisible}
+        onToggleBalances={toggleBalances}
       />
       <QuickInsights insights={quickInsights} />
     </div>

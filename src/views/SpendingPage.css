@@ -1,0 +1,38 @@
+.spending-page__alert-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: auto;
+  margin-bottom: 1rem;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.85rem;
+}
+
+.spending-page__alert-btn::before {
+  content: '✦';
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.spending-page__tools {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.spending-page__empty {
+  margin: 0;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.spending-page__charts-row .card,
+.spending-page__bottom-row .card {
+  animation: card-in 0.4s ease-out both;
+}
+
+.spending-page__charts-row > :nth-child(1) .card { animation-delay: 0.1s; }
+.spending-page__charts-row > :nth-child(2) .card { animation-delay: 0.18s; }
+.spending-page__bottom-row > :nth-child(1) .card { animation-delay: 0.26s; }
