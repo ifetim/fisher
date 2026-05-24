@@ -5,17 +5,23 @@ import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import { navLinks } from './navLinks'
 import { NavIcons } from './NavIcons'
+import { V3Icons } from '@/components/v3/V3Icons'
 
 export function AppSidebar({ active }: { active: string }) {
   const { user, logout } = useAuth()
   const router = useRouter()
-  const initials = user?.avatar ?? user?.name?.slice(0, 2).toUpperCase() ?? 'U'
+  const initials = user?.avatar ?? user?.name?.slice(0, 1).toUpperCase() ?? 'U'
+
+  function signOut() {
+    logout()
+    router.replace('/')
+  }
 
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
-        <div className="sidebar-brand-logo">F</div>
-        <div className="sidebar-brand-name">Fisher</div>
+        <div className="logo">$</div>
+        <div className="name">ClearMint</div>
       </div>
 
       {navLinks.map((link) => {
@@ -34,27 +40,15 @@ export function AppSidebar({ active }: { active: string }) {
         )
       })}
 
-      <button
-        style={{ background: 'none', border: 'none', padding: '6px 12px', cursor: 'pointer', fontSize: '0.72rem', color: 'var(--muted)', textAlign: 'left', borderRadius: '8px', marginBottom: '4px' }}
-        onClick={() => { localStorage.removeItem('clearmint-onboarded'); router.push('/onboarding') }}
-        title="Dev: reset onboarding"
-      >
-        ↩ Preview onboarding
-      </button>
-
       <div className="sidebar-foot">
         <div className="avatar">{initials}</div>
         <div className="info">
           <p className="name">{user?.name ?? 'User'}</p>
-          <p className="sub">
-            <button
-              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontSize: '0.72rem', color: 'var(--muted)' }}
-              onClick={() => { logout(); router.replace('/login') }}
-            >
-              Sign out
-            </button>
-          </p>
+          <p className="sub">Free plan</p>
         </div>
+        <button type="button" className="out" onClick={signOut} aria-label="Sign out">
+          {V3Icons.out}
+        </button>
       </div>
     </aside>
   )

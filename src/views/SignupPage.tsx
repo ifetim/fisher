@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
-import './SignupPage.css'
+import { BrandPane, V3Icons } from '@/components/v3/V3Icons'
 
 export function SignupPage() {
   const { login, user, ready } = useAuth()
@@ -24,6 +24,10 @@ export function SignupPage() {
     e.preventDefault()
     setError('')
 
+    if (!name || !email || !password) {
+      setError('Please fill in all fields.')
+      return
+    }
     if (password.length < 6) {
       setError('Password must be at least 6 characters.')
       return
@@ -33,7 +37,6 @@ export function SignupPage() {
       return
     }
 
-    // Demo app — auto-login with the demo account
     const ok = login('fe@email.com', 'password123')
     if (ok) {
       router.replace('/onboarding')
@@ -43,95 +46,87 @@ export function SignupPage() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-brand auth-brand--signup">
-        <div className="auth-brand__inner">
-          <div className="auth-brand__logo">
-            <span className="auth-brand__logo-icon" aria-hidden>$</span>
-            <span className="auth-brand__logo-name">ClearMint</span>
-          </div>
-          <p className="auth-brand__tagline">Your money,<br />finally clear.</p>
-          <ul className="auth-brand__features">
-            <li>No shame, no guilt — just clarity</li>
-            <li>Understand where your money goes</li>
-            <li>Build savings goals that actually stick</li>
-          </ul>
-        </div>
-      </div>
+    <div className="auth">
+      <BrandPane
+        tagline={
+          <>
+            Money, <span className="accent">finally clear.</span>
+          </>
+        }
+        blurb="ClearMint gives you the full picture — what's coming in, what's going out, what's actually left. Without the guilt trip."
+        features={[
+          'No shame, no guilt — just clarity',
+          'Plaid-secured bank connections',
+          'Free forever for students',
+        ]}
+      />
 
-      <div className="auth-form-panel">
-        <div className="auth-form-panel__inner">
-          <Link href="/" className="auth-back">← Back to home</Link>
+      <div className="auth-form-pane">
+        <div className="auth-form-inner">
+          <Link href="/" className="auth-back">
+            {V3Icons.back} Back
+          </Link>
 
           <h2 className="auth-heading">Create an account</h2>
-          <p className="auth-subheading">Free to use — no credit card needed</p>
+          <p className="auth-sub">Free forever — no credit card needed.</p>
 
-          <form className="auth-form" onSubmit={handleSubmit} noValidate>
-            <div className="auth-field">
-              <label htmlFor="name">Full name</label>
+          <form onSubmit={handleSubmit} noValidate>
+            <div className="field">
+              <label htmlFor="su-name">Full name</label>
               <input
-                id="name"
+                id="su-name"
                 type="text"
                 autoComplete="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Alex Tremblay"
-                required
               />
             </div>
-            <div className="auth-field">
-              <label htmlFor="signup-email">Email</label>
+            <div className="field">
+              <label htmlFor="su-email">Email</label>
               <input
-                id="signup-email"
+                id="su-email"
                 type="email"
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@email.com"
-                required
               />
             </div>
-            <div className="auth-field">
-              <label htmlFor="signup-password">Password</label>
-              <input
-                id="signup-password"
-                type="password"
-                autoComplete="new-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Min. 6 characters"
-                required
-              />
-            </div>
-            <div className="auth-field">
-              <label htmlFor="confirm-password">Confirm password</label>
-              <input
-                id="confirm-password"
-                type="password"
-                autoComplete="new-password"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                placeholder="••••••••"
-                required
-              />
-            </div>
-
-            {error && (
-              <p className="auth-error" role="alert">{error}</p>
-            )}
-
-            <div className="auth-demo-hint">
-              Demo app — any details work. Your data stays in this browser session.
+            <div className="field-pair">
+              <div className="field">
+                <label htmlFor="su-pw">Password</label>
+                <input
+                  id="su-pw"
+                  type="password"
+                  autoComplete="new-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Min. 6 characters"
+                />
+              </div>
+              <div className="field">
+                <label htmlFor="su-confirm">Confirm</label>
+                <input
+                  id="su-confirm"
+                  type="password"
+                  autoComplete="new-password"
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  placeholder="Repeat"
+                />
+              </div>
             </div>
 
-            <button type="submit" className="auth-submit">
-              Create account
+            {error ? <p className="auth-error">{error}</p> : null}
+
+            <button type="submit" className="btn block" style={{ marginTop: 8 }}>
+              Create account →
             </button>
           </form>
 
           <p className="auth-switch">
-            Already have an account?{' '}
-            <Link href="/login">Sign in</Link>
+            Already have an account? <Link href="/login">Sign in</Link>
           </p>
         </div>
       </div>

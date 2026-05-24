@@ -5,14 +5,45 @@ import { useAuth } from '@/context/AuthContext'
 import { useFinance } from '@/context/FinanceContext'
 import { getAccountsForUser } from '@/data'
 import { computeHealthScore } from '@/lib/healthScore'
+import { V3Icons, V3StatusBar } from '@/components/v3/V3Icons'
 
-type AdviceCard = { kind: 'win' | 'warn' | 'tip'; tag: string; emoji: string; title: string; body: string; cta: string }
+type AdviceCard = {
+  kind: 'win' | 'watch' | 'tip'
+  tag: string
+  title: string
+  body: string
+  cta: string
+}
 
 const STATIC_ADVICE: AdviceCard[] = [
-  { kind: 'win',  tag: 'Win',   emoji: '🎉', title: "You're saving regularly",       body: 'Consistent contributions are the #1 driver of long-term wealth. Keep the momentum.', cta: 'See goals' },
-  { kind: 'warn', tag: 'Watch', emoji: '⚠️', title: 'Food & Dining spending is high', body: 'Try a weekly meal-prep day to cut delivery costs without feeling restrictive.', cta: 'View spending' },
-  { kind: 'tip',  tag: 'Tip',   emoji: '💡', title: 'Review your subscriptions',      body: 'Small recurring charges add up fast. Audit once a month and cancel what you don\'t use.', cta: 'Review subs' },
-  { kind: 'tip',  tag: 'Tip',   emoji: '🔁', title: 'Build your emergency fund',      body: 'Aim for 1–3 months of expenses in cash. It\'s your financial shock absorber.', cta: 'Add goal' },
+  {
+    kind: 'win',
+    tag: 'Win',
+    title: "You're saving 22% of income",
+    body: 'Above the recommended 20%. That puts you on track to hit your emergency fund a month early.',
+    cta: 'See breakdown',
+  },
+  {
+    kind: 'watch',
+    tag: 'Watch',
+    title: 'Dining out crept up',
+    body: "That's worth a look. Want to set a soft cap for next month?",
+    cta: 'Set a cap',
+  },
+  {
+    kind: 'tip',
+    tag: 'Tip',
+    title: 'Move extra cash to savings',
+    body: 'Your chequing has been steady. Moving the excess could help your goals.',
+    cta: 'Transfer now',
+  },
+  {
+    kind: 'tip',
+    tag: 'Tip',
+    title: 'Cancel one streaming service?',
+    body: "Review subscriptions you haven't used lately — small wins add up.",
+    cta: 'Review subscriptions',
+  },
 ]
 
 export function AdvicePage() {
@@ -32,86 +63,105 @@ export function AdvicePage() {
       const res = await fetch('/api/ai/advice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ score: health.score, factors: health.factors.map((f) => ({ label: f.label, detail: f.detail })) }),
+        body: JSON.stringify({
+          score: health.score,
+          factors: health.factors.map((f) => ({ label: f.label, detail: f.detail })),
+        }),
       })
       const data = (await res.json()) as { cards?: { title: string; body: string }[] }
       if (data.cards) {
-        setAiCards(data.cards.map((c, i) => ({
-          kind: i === 0 ? 'win' : i === 1 ? 'warn' : 'tip',
-          tag: i === 0 ? 'Win' : i === 1 ? 'Watch' : 'Tip',
-          emoji: ['🎉', '⚠️', '💡', '🔁'][i] ?? '💡',
-          title: c.title,
-          body: c.body,
-          cta: 'Learn more',
-        } satisfies AdviceCard)))
+        setAiCards(
+          data.cards.map((c, i) => ({
+            kind: i === 0 ? 'win' : i === 1 ? 'watch' : 'tip',
+            tag: i === 0 ? 'Win' : i === 1 ? 'Watch' : 'Tip',
+            title: c.title,
+            body: c.body,
+            cta: 'Learn more',
+          })),
+        )
       }
-    } catch { /* keep static */ }
-    finally { setLoading(false) }
+    } catch {
+      /* keep static */
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (!user) return null
 
-  const ringCircumference = 2 * Math.PI * 44
-  const scoreOffset = ringCircumference * (1 - health.score / 100)
-  const scoreLabel = health.score >= 70 ? 'Looking strong' : health.score >= 45 ? 'Making progress' : 'Needs attention'
+  const C = 2 * Math.PI * 38
+  const score = health.score
+  const scoreLabel =
+    health.score >= 70 ? 'Looking strong' : health.score >= 45 ? 'Making progress' : 'Needs attention'
 
   return (
     <div>
-      <div className="screen-header">
-        <div className="greeting">
-          <p>AI-powered insights</p>
+      <V3StatusBar />
+      <div className="screen-head">
+        <div>
+          <p className="greet">AI-powered insights</p>
           <h1>Advice</h1>
         </div>
-        <div className="avatar" style={{ fontSize: 18 }}>✨</div>
+        <div className="head-avatar spark">{V3Icons.spark}</div>
       </div>
 
-      {/* Health score */}
-      <div className="health-card" style={{ marginBottom: 22 }}>
-        <div className="health-ring">
-          <svg width="100" height="100">
-            <circle cx="50" cy="50" r="44" stroke="rgba(255,255,255,0.2)" strokeWidth="8" fill="none"/>
-            <circle cx="50" cy="50" r="44" stroke="#fff" strokeWidth="8" fill="none"
-              strokeDasharray={ringCircumference}
-              strokeDashoffset={scoreOffset}
-              strokeLinecap="round"/>
+      <div className="health">
+        <div className="ring">
+          <svg width="100%" height="100%" viewBox="0 0 86 86" preserveAspectRatio="xMidYMid meet">
+            <circle
+              cx="43"
+              cy="43"
+              r="38"
+              stroke="currentColor"
+              strokeOpacity="0.18"
+              strokeWidth="7"
+              fill="none"
+            />
+            <circle
+              cx="43"
+              cy="43"
+              r="38"
+              stroke="currentColor"
+              strokeWidth="7"
+              fill="none"
+              strokeDasharray={C}
+              strokeDashoffset={C * (1 - score / 100)}
+              strokeLinecap="round"
+            />
           </svg>
-          <div className="score">{health.score}</div>
+          <div className="score">{score}</div>
         </div>
-        <div className="meta">
-          <p className="label">Financial Health</p>
+        <div className="body">
+          <p className="label">Financial health</p>
           <p className="title">{scoreLabel}</p>
           <p className="sub">
-            {health.factors[0]?.detail ?? 'Keep saving and watch your spending.'}
+            {health.factors[0]?.detail ?? 'Keep saving and watch dining.'}
           </p>
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
-        <div className="section-label" style={{ margin: 0 }}><span>For you this week</span></div>
-        <button
-          className="plaid-btn"
-          style={{ fontSize: '0.75rem', padding: '0.45rem 0.9rem' }}
-          disabled={loading}
+      <div className="sec">
+        <span className="lbl">For you this week</span>
+        <span
+          className="act"
           onClick={() => void loadAiAdvice()}
+          role="button"
+          tabIndex={0}
+          style={{ opacity: loading ? 0.6 : 1 }}
         >
-          {loading ? 'Thinking…' : '✨ Refresh with AI'}
-        </button>
+          {loading ? 'Thinking…' : 'Refresh'}
+        </span>
       </div>
-
       <div className="advice-grid">
         {cards.map((c, i) => (
-          <div className="advice-card" key={i}>
-            <div className="advice-head">
-              <span style={{ fontSize: 22 }}>{c.emoji}</span>
+          <div className="advice" key={i}>
+            <div className="head">
               <span className={`badge ${c.kind}`}>{c.tag}</span>
             </div>
-            <p className="advice-title">{c.title}</p>
-            <p className="advice-body">{c.body}</p>
-            <button className="advice-cta">
-              {c.cta}
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-              </svg>
+            <p className="title">{c.title}</p>
+            <p className="body">{c.body}</p>
+            <button type="button" className="cta">
+              {c.cta} {V3Icons.arrow}
             </button>
           </div>
         ))}

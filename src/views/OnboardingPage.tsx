@@ -1,42 +1,94 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { useFinance } from '@/context/FinanceContext'
-import { PlaidConnect } from '@/components/plaid/PlaidConnect'
-import './OnboardingPage.css'
+import { ObPlaidStep } from '@/components/v3/ObPlaidStep'
+import { V3Icons } from '@/components/v3/V3Icons'
 
 const ONBOARDING_KEY = 'clearmint-onboarded'
 
 const REASONS = [
   {
     id: 'overspend',
-    emoji: '🔍',
+    icon: V3Icons.bullseye,
     title: "I overspend and don't know where it goes",
     sub: 'Track every dollar automatically',
   },
   {
     id: 'save',
-    emoji: '🌱',
+    icon: V3Icons.vault,
     title: "I want to start saving but don't know how much",
     sub: 'Set goals and see a clear path',
   },
   {
     id: 'debt',
-    emoji: '📉',
+    icon: V3Icons.down,
     title: "I'm trying to get on top of debt",
     sub: 'Understand your full picture first',
   },
   {
     id: 'overview',
-    emoji: '🗂️',
+    icon: V3Icons.card,
     title: 'I just want everything in one place',
-    sub: 'All your accounts and spending, unified',
+    sub: 'Accounts and spending, unified',
   },
 ] as const
 
 type ReasonId = (typeof REASONS)[number]['id']
+
+function StepLeftPane({ step }: { step: number }) {
+  const taglines: Record<number, ReactNode> = {
+    1: (
+      <>
+        Let&apos;s make your money <span className="accent">make sense.</span>
+      </>
+    ),
+    2: (
+      <>
+        Connect once, <span className="accent">see everything.</span>
+      </>
+    ),
+    3: (
+      <>
+        You&apos;re <span className="accent">ready to go.</span>
+      </>
+    ),
+  }
+  const blurbs: Record<number, string> = {
+    1: 'Pick the goal that fits — ClearMint adapts so the advice you see is actually for you.',
+    2: 'Plaid-secured, read-only access. We never see your password and never move money.',
+    3: 'Everything is set up. You can adjust anything later from Settings.',
+  }
+
+  return (
+    <div className="auth-brand">
+      <div className="auth-logo">
+        <div className="icon">$</div>
+        <div className="wordmark">ClearMint</div>
+      </div>
+
+      <div>
+        <h1 className="auth-tagline">{taglines[step]}</h1>
+        <p className="auth-blurb">{blurbs[step]}</p>
+
+        <div className="ob-steps" aria-label={`Step ${step} of 3`}>
+          {[1, 2, 3].map((n) => (
+            <span
+              key={n}
+              className={`ob-dot ${n < step ? 'done' : ''} ${n === step ? 'active' : ''}`.trim()}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="auth-foot">
+        Step <strong>{step}</strong> of 3 · about a minute
+      </div>
+    </div>
+  )
+}
 
 export function OnboardingPage() {
   const router = useRouter()
@@ -44,18 +96,16 @@ export function OnboardingPage() {
   const { plaidConnected } = useFinance()
   const [step, setStep] = useState(1)
   const [reason, setReason] = useState<ReasonId | null>(null)
-  const [bankDone, setBankDone] = useState(false)
+  const [bankConnected, setBankConnected] = useState(false)
 
   useEffect(() => {
-    if (plaidConnected) setBankDone(true)
+    if (plaidConnected) setBankConnected(true)
   }, [plaidConnected])
 
-  // Redirect to login if not authenticated
   useEffect(() => {
     if (ready && !user) router.replace('/login')
   }, [ready, user, router])
 
-  // Skip onboarding if already completed
   useEffect(() => {
     if (typeof window !== 'undefined' && localStorage.getItem(ONBOARDING_KEY)) {
       router.replace('/dashboard')
@@ -71,139 +121,119 @@ export function OnboardingPage() {
 
   if (!ready || !user) return null
 
+  const firstName = user.name.split(' ')[0] ?? user.name
+  const reasonObj = REASONS.find((r) => r.id === reason)
+
   return (
-    <div className="ob-page">
-      {/* ── Left brand panel ── */}
-      <div className="ob-brand">
-        <div className="ob-brand__inner">
-          <div className="auth-brand__logo">
-            <span className="auth-brand__logo-icon" aria-hidden>$</span>
-            <span className="auth-brand__logo-name">ClearMint</span>
-          </div>
+    <div className="auth">
+      <StepLeftPane step={step} />
 
-          <p className="ob-brand__tagline">
-            {step === 1 && <>Let's make your<br />money make sense.</>}
-            {step === 2 && <>Connect once,<br />see everything.</>}
-            {step === 3 && <>You're ready<br />to go.</>}
-          </p>
-
-          <div className="ob-steps" aria-label="Progress">
-            {[1, 2, 3].map((n) => (
-              <span
-                key={n}
-                className={`ob-step-dot${n === step ? ' ob-step-dot--active' : ''}${n < step ? ' ob-step-dot--done' : ''}`}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Right content panel ── */}
-      <div className="auth-form-panel">
-        <div className="auth-form-panel__inner ob-content">
-
-          {/* Step 1 — Why are you here */}
+      <div className="auth-form-pane">
+        <div className="auth-form-inner">
           {step === 1 && (
-            <div className="ob-step" key="step1">
+            <>
               <p className="ob-step-label">Step 1 of 3</p>
               <h2 className="auth-heading">Why are you here?</h2>
-              <p className="auth-subheading">Pick the one that fits best — it shapes how ClearMint guides you.</p>
+              <p className="auth-sub">
+                Pick the one that fits best — it shapes how ClearMint guides you.
+              </p>
 
               <div className="ob-reasons">
                 {REASONS.map((r) => (
                   <button
                     key={r.id}
                     type="button"
-                    className={`ob-reason${reason === r.id ? ' ob-reason--selected' : ''}`}
+                    className={`ob-reason${reason === r.id ? ' selected' : ''}`}
                     onClick={() => setReason(r.id)}
                   >
-                    <span className="ob-reason__emoji" aria-hidden>{r.emoji}</span>
-                    <span className="ob-reason__body">
-                      <span className="ob-reason__title">{r.title}</span>
-                      <span className="ob-reason__sub">{r.sub}</span>
-                    </span>
-                    <span className="ob-reason__check" aria-hidden>
-                      {reason === r.id ? '✓' : ''}
-                    </span>
+                    <div className="ico">{r.icon}</div>
+                    <div className="body">
+                      <p className="title">{r.title}</p>
+                      <p className="sub">{r.sub}</p>
+                    </div>
+                    <div className="check">{reason === r.id ? V3Icons.check : null}</div>
                   </button>
                 ))}
               </div>
 
               <button
-                className="auth-submit"
+                type="button"
+                className="btn block"
                 disabled={!reason}
+                style={!reason ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
                 onClick={() => setStep(2)}
               >
-                Continue
+                Continue →
               </button>
-            </div>
+            </>
           )}
 
-          {/* Step 2 — Connect bank */}
           {step === 2 && (
-            <div className="ob-step" key="step2">
+            <>
               <p className="ob-step-label">Step 2 of 3</p>
               <h2 className="auth-heading">Connect your bank</h2>
-              <p className="auth-subheading">
-                We use Plaid — read-only, bank-level security. Your credentials never touch our servers.
+              <p className="auth-sub">
+                Plaid-secured, read-only access. Your credentials never touch our servers.
               </p>
 
-              <div className="ob-plaid-wrap">
-                <PlaidConnect />
-              </div>
+              <ObPlaidStep connected={bankConnected} />
 
-              <button
-                className="auth-submit"
-                onClick={() => setStep(3)}
-              >
-                {bankDone ? 'Looks good — continue' : 'Skip for now, use demo data'}
+              <button type="button" className="btn block" onClick={() => setStep(3)}>
+                {bankConnected ? 'Looks good — continue →' : 'Skip for now, use demo data →'}
               </button>
 
-              <button
-                type="button"
-                className="ob-back"
-                onClick={() => setStep(1)}
-              >
-                ← Back
+              <button type="button" className="ob-back" onClick={() => setStep(1)}>
+                {V3Icons.back} Back
               </button>
-            </div>
+            </>
           )}
 
-          {/* Step 3 — All set */}
           {step === 3 && (
-            <div className="ob-step ob-step--final" key="step3">
+            <>
               <p className="ob-step-label">Step 3 of 3</p>
 
-              <div className="ob-final-icon" aria-hidden>✦</div>
+              <div className="ob-final">
+                <div className="check-ring">{V3Icons.check}</div>
 
-              <h2 className="auth-heading ob-final-heading">You're all set</h2>
-              <p className="auth-subheading">
-                {bankDone
-                  ? 'Your bank is connected. ClearMint will keep your transactions in sync.'
-                  : "You're starting with demo data — you can connect a real bank any time from the Spending screen."}
-              </p>
+                <h2 className="auth-heading">You&apos;re all set, {firstName}.</h2>
+                <p className="auth-sub">
+                  {bankConnected
+                    ? "Your bank's connected and we're syncing your transactions in the background."
+                    : "You're starting with demo data — you can connect a real bank any time from Spending."}
+                </p>
 
-              <div className="ob-summary">
-                <div className="ob-summary__row">
-                  <span className="ob-summary__icon">🎯</span>
-                  <span className="ob-summary__text">
-                    {REASONS.find((r) => r.id === reason)?.title ?? 'Goal set'}
-                  </span>
+                <div className="ob-summary">
+                  <div className="row done">
+                    <div className="ico">{V3Icons.bullseye}</div>
+                    <span className="text">{reasonObj ? reasonObj.title : 'Goal saved'}</span>
+                  </div>
+                  <div className="row">
+                    <div
+                      className="ico"
+                      style={
+                        bankConnected
+                          ? { background: 'var(--mint-soft)', color: 'var(--mint)' }
+                          : undefined
+                      }
+                    >
+                      {bankConnected ? V3Icons.check : V3Icons.bank}
+                    </div>
+                    <span className="text">
+                      {bankConnected ? 'Bank connected via Plaid' : 'Using demo data for now'}
+                    </span>
+                  </div>
                 </div>
-                <div className="ob-summary__row">
-                  <span className="ob-summary__icon">{bankDone ? '🏦' : '🗂️'}</span>
-                  <span className="ob-summary__text">
-                    {bankDone ? 'Bank connected via Plaid' : 'Using demo data'}
-                  </span>
-                </div>
+
+                <button type="button" className="btn block" onClick={finish}>
+                  Open my dashboard {V3Icons.arrow}
+                </button>
               </div>
 
-              <button className="auth-submit ob-final-btn" onClick={finish}>
-                Open my dashboard →
+              <button type="button" className="ob-back" onClick={() => setStep(2)}>
+                {V3Icons.back} Back
               </button>
-            </div>
+            </>
           )}
-
         </div>
       </div>
     </div>

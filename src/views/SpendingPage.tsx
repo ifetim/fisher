@@ -3,57 +3,37 @@
 import { useMemo, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useFinance } from '@/context/FinanceContext'
-import { useCategoryBudgets } from '@/hooks/useCategoryBudgets'
-import { getAccountsForUser } from '@/data'
 import {
   filterTransactions,
   spendingByCategory,
-  spendingVsIncomeTrend,
 } from '@/lib/transactions'
-import { formatCurrency } from '@/lib/format'
-import { categoryStyle } from '@/lib/categoryStyles'
-import { PlaidConnect } from '@/components/plaid/PlaidConnect'
-import { CategoryBreakdownChart } from '@/components/spending/CategoryBreakdownChart'
-import { SpendingTrendChart } from '@/components/spending/SpendingTrendChart'
-import { CategoryBudgetsPanel } from '@/components/spending/CategoryBudgetsPanel'
-import '@/components/spending/spending-charts.css'
+import { formatAmountWhole } from '@/lib/v3Format'
+import { V3Icons, V3StatusBar } from '@/components/v3/V3Icons'
+import { PlaidBanner } from '@/components/v3/PlaidBanner'
+import { txV3Icon, categoryBarTone } from '@/lib/txV3Icon'
+import { currentMonthLabel, priorMonthName, spendingVsPriorMonth } from '@/lib/v3MonthStats'
 
 const PAGE_SIZE = 20
 
 export function SpendingPage() {
   const { user } = useAuth()
-  const { transactions, plaidConnected, plaidSnapshot } = useFinance()
-  const { rows: budgetRows, setLimit } = useCategoryBudgets()
+  const { transactions } = useFinance()
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
-  const [categoryFilter, setCategoryFilter] = useState<string | 'all'>('all')
-
-  const accountsCount = plaidConnected
-    ? (plaidSnapshot?.accounts.length ?? 0)
-    : user
-      ? getAccountsForUser(user.id).length
-      : 0
-
-  const filtered = useMemo(
-    () =>
-      filterTransactions(transactions, {
-        accountId: 'all',
-        period: 'month',
-        category: categoryFilter,
-      }),
-    [transactions, categoryFilter],
-  )
 
   const monthAll = useMemo(
     () => filterTransactions(transactions, { accountId: 'all', period: 'month', category: 'all' }),
     [transactions],
   )
 
+  const filtered = monthAll
+
   const breakdown = useMemo(() => spendingByCategory(monthAll), [monthAll])
-  const trend = useMemo(() => spendingVsIncomeTrend(monthAll, 'week'), [monthAll])
+  const maxCat = breakdown[0]?.total ?? 1
 
   const totalSpent = monthAll.filter((t) => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0)
   const totalIncome = monthAll.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0)
   const net = totalIncome - totalSpent
+  const vsPrior = spendingVsPriorMonth(transactions)
 
   const grouped = useMemo(() => {
     const map = new Map<string, typeof filtered>()
@@ -76,79 +56,72 @@ export function SpendingPage() {
 
   const hasMore = filtered.length > visibleCount
 
-  if (!user) return null
+  const cats = breakdown.map((c) => ({
+    name: c.category,
+    val: Math.round(c.total),
+    pct: Math.round((c.total / maxCat) * 100),
+    tone: categoryBarTone(c.category),
+  }))
 
-  const netColor = net >= 0 ? 'var(--green)' : 'var(--red)'
+  if (!user) return null
 
   return (
     <div>
-      <div className="screen-header">
-        <div className="greeting">
-          <p>{new Date().toLocaleDateString('en-CA', { month: 'long', year: 'numeric' })}</p>
+      <V3StatusBar />
+      <div className="screen-head">
+        <div>
+          <p className="greet">{currentMonthLabel()}</p>
           <h1>Spending</h1>
         </div>
-        {categoryFilter !== 'all' ? (
-          <button type="button" className="eye-btn dark" onClick={() => setCategoryFilter('all')}>
-            Clear filter · {categoryFilter}
-          </button>
-        ) : null}
+        <button type="button" className="btn ghost">
+          {V3Icons.filter} Filter
+        </button>
       </div>
 
-      <div className="summary-chips">
-        <div className="chip red">
-          <p className="chip-label">SPENT</p>
-          <p className="chip-amount">{formatCurrency(totalSpent)}</p>
+      <div className="stats">
+        <div className="stat rose">
+          <p className="lbl">Spent</p>
+          <p className="num">${formatAmountWhole(totalSpent)}</p>
         </div>
-        <div className="chip green">
-          <p className="chip-label">INCOME</p>
-          <p className="chip-amount">{formatCurrency(totalIncome)}</p>
+        <div className="stat mint">
+          <p className="lbl">Income</p>
+          <p className="num">${formatAmountWhole(totalIncome)}</p>
         </div>
-        <div className="chip purple">
-          <p className="chip-label">NET</p>
-          <p className="chip-amount" style={{ color: netColor }}>
-            {net >= 0 ? '+' : ''}
-            {formatCurrency(net)}
+        <div className="stat orange">
+          <p className="lbl">Net</p>
+          <p className="num">
+            {net >= 0 ? '+' : '−'}${formatAmountWhole(Math.abs(net))}
           </p>
         </div>
-        <div className="chip neutral">
-          <p className="chip-label">ACCOUNTS</p>
-          <p className="chip-amount">{accountsCount}</p>
+        <div className="stat">
+          <p className="lbl">vs {priorMonthName()}</p>
+          <p className="num">{vsPrior === null ? '—' : `${vsPrior > 0 ? '+' : ''}${vsPrior}%`}</p>
         </div>
       </div>
 
-      <div className="spending-charts">
-        <CategoryBreakdownChart
-          data={breakdown}
-          activeCategory={categoryFilter}
-          onSelectCategory={setCategoryFilter}
-        />
-        <SpendingTrendChart data={trend} />
-      </div>
-
-      <PlaidConnect />
+      <PlaidBanner />
 
       <div className="grid cols-12">
         <div>
-          <div className="section-label">
-            <span>Recent transactions{categoryFilter !== 'all' ? ` · ${categoryFilter}` : ''}</span>
+          <div className="sec">
+            <span className="lbl">Recent transactions</span>
+            <span className="act">Export</span>
           </div>
           {grouped.map(([day, txs]) => (
             <div key={day}>
-              <p className="day-label">{day}</p>
+              <p className="tx-day">{day}</p>
               <div className="card" style={{ marginBottom: 8 }}>
                 {txs.map((tx) => {
-                  const s = categoryStyle(tx.category)
+                  const { ico, svg } = txV3Icon(tx.category, tx.amount)
                   const pos = tx.amount > 0
                   return (
-                    <div className="card-row tx-row" key={tx.id}>
-                      <div className="tx-icon" style={{ background: s.bg }}>
-                        {s.icon}
-                      </div>
-                      <div className="tx-meta">
-                        <p className="merchant">{tx.merchant}</p>
+                    <div className="tx" key={tx.id}>
+                      <div className={`ico ${ico}`.trim()}>{svg}</div>
+                      <div className="meta">
+                        <p className="merch">{tx.merchant}</p>
                         <p className="cat">{tx.category}</p>
                       </div>
-                      <span className={'tx-amount' + (pos ? ' pos' : '')}>
+                      <span className={`amt${pos ? ' pos' : ''}`}>
                         {pos ? '+' : '−'}${Math.abs(tx.amount).toFixed(2)}
                       </span>
                     </div>
@@ -161,26 +134,32 @@ export function SpendingPage() {
           {hasMore ? (
             <button
               type="button"
-              className="show-more-btn"
+              className="btn ghost block"
               onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
             >
-              Show {Math.min(PAGE_SIZE, filtered.length - visibleCount)} more
-              <span style={{ color: 'var(--muted)', marginLeft: 6, fontWeight: 500 }}>
-                ({filtered.length - visibleCount} remaining)
-              </span>
+              Show more
             </button>
           ) : null}
         </div>
 
         <div>
-          <div className="section-label">
-            <span>Category budgets</span>
-            <span className="action" style={{ cursor: 'default', opacity: 0.7 }}>
-              Tap Edit to adjust
-            </span>
+          <div className="sec">
+            <span className="lbl">By category</span>
           </div>
-          <div className="card card-pad">
-            <CategoryBudgetsPanel rows={budgetRows} onSetLimit={setLimit} />
+          <div className="card">
+            <div className="cats">
+              {cats.map((c) => (
+                <div className="cat" key={c.name}>
+                  <div className="top">
+                    <span className="name">{c.name}</span>
+                    <span className="val">${c.val}</span>
+                  </div>
+                  <div className={`bar ${c.tone}`.trim()}>
+                    <div className="fill" style={{ width: `${c.pct}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

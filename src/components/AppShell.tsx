@@ -20,14 +20,14 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   if (!user) {
     return (
-      <div style={{ minHeight: '100dvh', display: 'grid', placeItems: 'center', background: '#f6f6fa' }}>
+      <div style={{ minHeight: '100dvh', display: 'grid', placeItems: 'center', background: 'var(--bg)' }}>
         <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>Loading…</p>
       </div>
     )
   }
 
   return (
-    <div className="app">
+    <div className="shell">
       <AppSidebar active={pathname} />
       <main className="main">
         <div className="main-inner">{children}</div>
