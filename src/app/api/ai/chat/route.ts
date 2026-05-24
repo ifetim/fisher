@@ -74,7 +74,7 @@ export async function POST(request: Request) {
           .map((t) => `${t.date} ${t.merchant} (${t.category}) ${t.amount.toFixed(2)}`)
           .join('\n') || '(no recent transactions)'
 
-      const prompt = `You are ClearMint, a calm money coach for students. Answer the user's question using ONLY the data below. Be concrete with numbers, never preachy. Reply in 2-4 short sentences.
+      const prompt = `You are Student Saver, a calm money coach for students. Answer the user's question using ONLY the data below. Be concrete with numbers, never preachy. Reply in 2-4 short sentences.
 
 User question: "${message}"
 

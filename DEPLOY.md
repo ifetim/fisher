@@ -1,6 +1,6 @@
-# Deploy ClearMint to Vercel
+# Deploy Student Saver to Vercel
 
-Step-by-step guide for shipping ClearMint with working Plaid sessions in production.
+Step-by-step guide for shipping Student Saver with working Plaid sessions in production.
 
 ## Prerequisites
 

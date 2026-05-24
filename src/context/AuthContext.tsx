@@ -12,7 +12,7 @@ import {
 import { users } from '../data'
 import type { User } from '../types'
 
-const STORAGE_KEY = 'clearmint-user-id'
+const STORAGE_KEY = 'student-saver-user-id'
 
 type AuthContextValue = {
   user: User | null

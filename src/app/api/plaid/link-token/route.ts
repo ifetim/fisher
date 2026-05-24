@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
     const response = await getPlaidClient().linkTokenCreate({
       user: { client_user_id: userId },
-      client_name: 'ClearMint',
+      client_name: 'Student Saver',
       products: plaidProducts,
       country_codes: plaidCountryCodes,
       language: 'en',

@@ -7,7 +7,7 @@ import { useFinance } from '@/context/FinanceContext'
 import { ObPlaidStep } from '@/components/v3/ObPlaidStep'
 import { V3Icons } from '@/components/v3/V3Icons'
 
-const ONBOARDING_KEY = 'clearmint-onboarded'
+const ONBOARDING_KEY = 'student-saver-onboarded'
 
 const REASONS = [
   {
@@ -57,7 +57,7 @@ function StepLeftPane({ step }: { step: number }) {
     ),
   }
   const blurbs: Record<number, string> = {
-    1: 'Pick the goal that fits — ClearMint adapts so the advice you see is actually for you.',
+    1: 'Pick the goal that fits — Student Saver adapts so the advice you see is actually for you.',
     2: 'Plaid-secured, read-only access. We never see your password and never move money.',
     3: 'Everything is set up. You can adjust anything later from Settings.',
   }
@@ -66,7 +66,7 @@ function StepLeftPane({ step }: { step: number }) {
     <div className="auth-brand">
       <div className="auth-logo">
         <div className="icon">$</div>
-        <div className="wordmark">ClearMint</div>
+        <div className="wordmark">Student Saver</div>
       </div>
 
       <div>
@@ -115,7 +115,7 @@ export function OnboardingPage() {
   function finish() {
     if (typeof window !== 'undefined') {
       localStorage.setItem(ONBOARDING_KEY, '1')
-      if (reason) localStorage.setItem('clearmint-reason', reason)
+      if (reason) localStorage.setItem('student-saver-reason', reason)
     }
     router.replace('/dashboard')
   }
@@ -136,7 +136,7 @@ export function OnboardingPage() {
               <p className="ob-step-label">Step 1 of 3</p>
               <h2 className="auth-heading">Why are you here?</h2>
               <p className="auth-sub">
-                Pick the one that fits best — it shapes how ClearMint guides you.
+                Pick the one that fits best — it shapes how Student Saver guides you.
               </p>
 
               <div className="ob-reasons">

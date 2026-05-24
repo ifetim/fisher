@@ -1,4 +1,4 @@
-# ClearMint — Project Plan
+# Student Saver — Project Plan
 
 > Personal finance dashboard for a hackathon. **Plan only** — build one screen at a time.
 
@@ -227,7 +227,7 @@ After each screen works on its branch, merge to `main`.
 
 ## Cursor kickoff (copy when starting code)
 
-> We are building ClearMint with **Next.js + React + TypeScript + CSS**. API routes in Next handle Plaid and Gemini (no secrets in the browser). Demo data: users.json, accounts.json, transactions.json, savingsPlans.json. Five screens: Login, Dashboard, Spending, Savings, Advice. Balances hidden by default (eye icon). Clean, minimal, calm. Build one screen at a time starting with Login.
+> We are building Student Saver with **Next.js + React + TypeScript + CSS**. API routes in Next handle Plaid and Gemini (no secrets in the browser). Demo data: users.json, accounts.json, transactions.json, savingsPlans.json. Five screens: Login, Dashboard, Spending, Savings, Advice. Balances hidden by default (eye icon). Clean, minimal, calm. Build one screen at a time starting with Login.
 
 Then: **“Screen 1 is done. Now build Screen 2.”**
 

@@ -32,7 +32,7 @@ export function LoginPage() {
     }
     setNavigating(true)
     const onboarded =
-      typeof window !== 'undefined' && localStorage.getItem('clearmint-onboarded')
+      typeof window !== 'undefined' && localStorage.getItem('student-saver-onboarded')
     router.replace(onboarded ? '/dashboard' : '/onboarding')
   }
 
@@ -74,7 +74,7 @@ export function LoginPage() {
           ) : null}
 
           <h2 className="auth-heading">Sign in</h2>
-          <p className="auth-sub">Use your ClearMint account to continue.</p>
+          <p className="auth-sub">Use your Student Saver account to continue.</p>
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="field">

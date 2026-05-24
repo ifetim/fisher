@@ -16,7 +16,7 @@ export async function GET() {
   try {
     await getPlaidClient().linkTokenCreate({
       user: { client_user_id: 'config-check' },
-      client_name: 'ClearMint',
+      client_name: 'Student Saver',
       products: plaidProducts,
       country_codes: plaidCountryCodes,
       language: 'en',

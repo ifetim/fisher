@@ -53,7 +53,7 @@ export function SignupPage() {
             Money, <span className="accent">finally clear.</span>
           </>
         }
-        blurb="ClearMint gives you the full picture — what's coming in, what's going out, what's actually left. Without the guilt trip."
+        blurb="Student Saver gives you the full picture — what's coming in, what's going out, what's actually left. Without the guilt trip."
         features={[
           'No shame, no guilt — just clarity',
           'Plaid-secured bank connections',

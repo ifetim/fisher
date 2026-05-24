@@ -19,9 +19,9 @@ const fraunces = Fraunces({
 })
 
 export const metadata: Metadata = {
-  title: 'ClearMint — Your spending, finally clear',
+  title: 'Student Saver — Your spending, finally clear',
   description:
-    'Campus-friendly personal finance: track spending, save smarter, connect your bank with Plaid.',
+    'Campus-friendly personal finance for students: track spending, save smarter, connect your bank with Plaid.',
 }
 
 export default function RootLayout({

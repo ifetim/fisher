@@ -25,11 +25,11 @@ import {
 } from '@/lib/plaidApi'
 import { useAuth } from './AuthContext'
 
-const GOALS_KEY = 'clearmint-extra-goals'
+const GOALS_KEY = 'student-saver-extra-goals'
 
 // Per-user keys so each demo profile keeps its own Plaid data
-function plaidTxKey(userId: number)       { return `clearmint-plaid-txs-${userId}` }
-function plaidSnapKey(userId: number)     { return `clearmint-plaid-snapshot-${userId}` }
+function plaidTxKey(userId: number)       { return `student-saver-plaid-txs-${userId}` }
+function plaidSnapKey(userId: number)     { return `student-saver-plaid-snapshot-${userId}` }
 
 type FinanceContextValue = {
   transactions: Transaction[]

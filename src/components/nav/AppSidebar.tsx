@@ -22,7 +22,7 @@ export function AppSidebar({ active }: { active: string }) {
     <aside className="sidebar">
       <div className="sidebar-brand">
         <div className="logo">$</div>
-        <div className="name">ClearMint</div>
+        <div className="name">Student Saver</div>
       </div>
 
       {navLinks.map((link) => {

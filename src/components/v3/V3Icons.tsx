@@ -1,4 +1,4 @@
-/** Shared SVG icons for ClearMint v3 (Navy Hero theme). */
+/** Shared SVG icons for Student Saver v3 (Navy Hero theme). */
 
 import type { ReactNode } from 'react'
 
@@ -209,7 +209,7 @@ export function BrandPane({
     <div className="auth-brand">
       <div className="auth-logo">
         <div className="icon">$</div>
-        <div className="wordmark">ClearMint</div>
+        <div className="wordmark">Student Saver</div>
       </div>
 
       <div>

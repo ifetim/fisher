@@ -42,7 +42,7 @@ export function DashboardPage() {
     budgetLimit > 0 ? Math.min(100, Math.round((budgetSpent / budgetLimit) * 100)) : 0
 
   // ── Onboarding reason personalisation ────────────────────────────────────
-  const reason = typeof window !== 'undefined' ? localStorage.getItem('clearmint-reason') : null
+  const reason = typeof window !== 'undefined' ? localStorage.getItem('student-saver-reason') : null
 
   const greetSubtitle: Record<string, string> = {
     overspend: "Here's where your money went this month",

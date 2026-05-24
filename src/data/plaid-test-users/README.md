@@ -1,6 +1,6 @@
 # Plaid Sandbox Test Users
 
-Three realistic student/young-adult personas for testing ClearMint.
+Three realistic student/young-adult personas for testing Student Saver.
 
 ## How to load them
 
@@ -61,5 +61,8 @@ Always use **First Platypus Bank** — it's non-OAuth and works reliably with cu
 ### Known gotchas
 
 - **`many_accounts` had a line of credit** — Plaid Sandbox crashes on `subtype: "line of credit"`. Fixed: now uses a **student loan** instead.
-- **Custom users return 0 transactions at first** — the app now triggers a refresh after connect; wait ~5s or tap **Refresh sync**.
-- **Disconnect and re-link** if you connected before these fixes.
+- **`solid_foundation` + `401k`** — often fails on First Platypus Bank with **Invalid credentials** after Link. Use **`brokerage`** instead (see `solid-foundation.json`).
+- **Paste only** `{ "override_accounts": [...] }` — no `_username` or `_story` fields in the Plaid Dashboard config box.
+- **Username must match exactly:** `solid_foundation` (underscores, not hyphens).
+- **Custom users return 0 transactions at first** — wait ~5s or tap **Refresh sync**.
+- **Disconnect and re-link** after changing the JSON in the dashboard.

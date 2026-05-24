@@ -1,10 +1,10 @@
-# ClearMint
+# Student Saver
 
 A personal finance app for **students** who want to understand their money — not another spreadsheet or guilt-trip budget app.
 
 **The pain.** Managing money in school is hard. Paycheques and OSAP land, rent and subscriptions go out, and by mid-month you're wondering where it all went. A lot of us don't have a clear picture of *how* we spent or *where* the money actually went — and most finance apps either dump raw numbers on you or make you feel worse. That's a pain point all three of us on this team could relate to.
 
-**The fix.** ClearMint connects your accounts (Plaid), groups spending by what you actually bought, surfaces recurring subscriptions, shows how much you have left per day until payday, and lets you **ask questions in plain English** ("Can I afford this concert?") against your real data. Balances stay hidden until you choose to look. Advice is opt-in. The tone is a calm coach — clarity, not shame.
+**The fix.** Student Saver connects your accounts (Plaid), groups spending by what you actually bought, surfaces recurring subscriptions, shows how much you have left per day until payday, and lets you **ask questions in plain English** ("Can I afford this concert?") against your real data. Balances stay hidden until you choose to look. Advice is opt-in. The tone is a calm coach — clarity, not shame.
 
 ---
 
@@ -23,8 +23,8 @@ These are the choices we made on purpose, against the grain of every other finan
 ## Try it in 2 minutes
 
 ```bash
-git clone https://github.com/ifetim/fisher.git clearmint
-cd clearmint
+git clone https://github.com/ifetim/fisher.git student-saver
+cd student-saver
 npm install
 cp .env.example .env.local   # add Plaid sandbox + OpenAI keys (both optional)
 npm run dev

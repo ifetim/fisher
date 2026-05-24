@@ -11,4 +11,4 @@ export const DEFAULT_CATEGORY_BUDGETS: Record<string, number> = {
   Other: 100,
 }
 
-export const BUDGET_STORAGE_KEY = 'clearmint-category-budgets'
+export const BUDGET_STORAGE_KEY = 'student-saver-category-budgets'

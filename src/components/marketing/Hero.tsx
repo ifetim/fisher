@@ -12,10 +12,11 @@ export default function Hero() {
           </svg>
         </span>
         <h1 className="hero-title">
-          CLEAR<span className="dollar-badge">$</span>MINT
+          <span className="hero-title-line">STUDENT</span>
+          <span className="hero-title-line hero-title-accent">SAVER</span>
         </h1>
       </div>
-      <p className="hero-subtitle">Your spending, decoded — calm and clear.</p>
+      <p className="hero-subtitle">Save smarter. Spend with clarity.</p>
 
       <div className="scroll-hint">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
