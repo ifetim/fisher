@@ -146,7 +146,7 @@ export default function CampusMap({ transactions }: CampusMapProps) {
 
       for (const tx of transactions) {
         // Main (expensive) location
-        const mainCoords = coordsFor(tx.campus) ?? coordsFor(tx.location ?? '')
+        const mainCoords = coordsFor(tx.campus)
         if (mainCoords) {
           L.marker(mainCoords, { icon: navyIcon })
             .bindPopup(`
