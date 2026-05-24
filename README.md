@@ -30,7 +30,14 @@ These are the choices we made on purpose, against the grain of every other finan
 
 **Demo login:** `test@gmail.com`, `alex@gmail.com`, or `jordan@gmail.com` — password `password123`
 
-**Plaid sandbox (after Connect):** username `user_good` · password `pass_good`
+**Plaid sandbox (First Platypus Bank):** password `pass_good` for all users below
+
+| Username | Persona |
+|---|---|
+| `user_good` | Default Plaid test user |
+| `custom_richhistory` | Fe — steady paycheck, 3 accounts, 12 mo history |
+| `custom_brokestudent` | Alex — broke student, tight budget, delivery-heavy |
+| `custom_manyacc` | Sam — many accounts across banks |
 
 **Best demo flow for judges:** landing page → sign in → **Dashboard** → **Ask AI** → *"Can I afford a $200 concert?"* → switch personas in the sidebar.
 

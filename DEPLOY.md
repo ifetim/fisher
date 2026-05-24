@@ -49,7 +49,7 @@ Without Redis, the app falls back to `.plaid-sessions.json` on disk — fine loc
 
 1. In Vercel → your Redis database → copy env vars to `.env.local`.
 2. Restart dev server: `npm run dev`.
-3. Connect a sandbox bank (`user_good` / `pass_good`).
+3. Connect **First Platypus Bank** in Plaid Link — username `user_good` or a custom user (`custom_richhistory`, `custom_brokestudent`, `custom_manyacc`); password `pass_good` for all.
 4. Refresh the page — connection should persist.
 5. In Upstash/Vercel data browser, look for keys like `plaid:session:<userId>`.
 

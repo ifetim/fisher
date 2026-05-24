@@ -1,68 +1,35 @@
 # Plaid Sandbox Test Users
 
-Three realistic student/young-adult personas for testing Student Saver.
+Custom personas for **Student Saver** demos. JSON configs live in this folder.
 
-## How to load them
+## Login (Plaid Link)
 
-### Option A — Plaid Dashboard (recommended)
-1. Go to dashboard.plaid.com → Developers → Sandbox → Test Users
-2. Click "Add user"
-3. Set the username (see each file)
-4. Paste the JSON from the file as the config
-5. Any non-empty password will work
+1. Institution: **First Platypus Bank** (non-OAuth — most reliable for custom users)
+2. **Password for every user:** `pass_good`
 
-### Option B — user_custom login (no dashboard needed)
-In Plaid Link, type:
-- Username: `user_custom`
-- Password: paste the entire JSON object
+| Username | Config file | Story |
+|---|---|---|
+| `user_good` | *(built-in Plaid)* | Default sandbox user |
+| `custom_richhistory` | `rich-history.json` | Working professional (Fe) — 3 accounts, ~12 mo txs |
+| `custom_brokestudent` | `broke-student.json` | Broke student (Alex) — $47 chequing, CC maxed |
+| `custom_manyacc` | `many-accounts-student.json` | Co-op student (Sam) — 7 accounts |
 
-### Institution to use
-Always use **First Platypus Bank** — it's non-OAuth and works reliably with custom users.
+## Load custom users in Plaid Dashboard
 
----
+1. [dashboard.plaid.com](https://dashboard.plaid.com) → **Developers** → **Sandbox** → **Test Users** → **Add user**
+2. Set **username** exactly as in the table (e.g. `custom_brokestudent`)
+3. Set **password** to `pass_good`
+4. Paste the matching JSON file as config — **only** the `{ "override_accounts": [...] }` object (no extra fields)
 
-## Personas
+## Link in the app
 
-| Username | File | Story | Accounts | Transactions |
-|---|---|---|---|---|
-| `rich_history` | `rich-history.json` | Working professional (Fe) | 3 | ~200 txs, 12 mo |
-| **`broke_student`** | **`broke-student.json`** | **Broke student — $47 chequing, CC maxed, delivery habit** | **3** | **~190 txs, 12 mo** |
-| **`many_accounts`** | **`many-accounts-student.json`** | **Co-op student — 7 accounts, money everywhere** | **7** | **~221 txs, 12 mo** |
-| `tight_month` | `tight-month.json` | Thin auto-generated history | 3 | Auto (thin) |
-| `getting_there` | `getting-there.json` | Recent grad | 4 | Auto (thin) |
-| `solid_foundation` | `solid-foundation.json` | Early career | 5 | Auto (thin) |
+- Go to **Spending** → **Connect** (or onboarding Plaid step)
+- Pick **First Platypus Bank**
+- Enter username + `pass_good`
 
-### Student demos (paste into Plaid)
+## Known gotchas
 
-**Broke student** — username `broke_student`
-- Alex Chen, TD chequing at **$47**, savings **$85**, Visa at **$3,872**
-- Part-time payroll + OSAP, heavy DoorDash/Uber Eats on credit, minimum payments, NSF fee
-
-**Many accounts** — username `many_accounts`
-- Sam Okonkwo, **7 accounts** across RBC/TD/BMO/EQ + 2 credit cards + student LOC
-- Co-op salary in one account, spending split everywhere, internal transfers
-
-### Paste into Plaid Dashboard
-
-1. **Developers → Sandbox → Test Users → Add user**
-2. Set the **username exactly** (underscores matter — not hyphens):
-   - `broke_student`
-   - `many_accounts`
-   - `rich_history`
-3. Password: anything (e.g. `password123`)
-4. Config JSON: paste the **entire file** — valid Plaid schema is only `{ "override_accounts": [...] }`
-
-### Link in the app
-
-- Institution: **First Platypus Bank** (not OAuth banks)
-- Username: must match dashboard exactly
-- Password: whatever you set in dashboard
-
-### Known gotchas
-
-- **`many_accounts` had a line of credit** — Plaid Sandbox crashes on `subtype: "line of credit"`. Fixed: now uses a **student loan** instead.
-- **`solid_foundation` + `401k`** — often fails on First Platypus Bank with **Invalid credentials** after Link. Use **`brokerage`** instead (see `solid-foundation.json`).
-- **Paste only** `{ "override_accounts": [...] }` — no `_username` or `_story` fields in the Plaid Dashboard config box.
-- **Username must match exactly:** `solid_foundation` (underscores, not hyphens).
-- **Custom users return 0 transactions at first** — wait ~5s or tap **Refresh sync**.
-- **Disconnect and re-link** after changing the JSON in the dashboard.
+- **0 transactions right after link** — wait ~5s; the app retries sync. Custom users often need a refresh on first connect.
+- **`many_accounts` line of credit** — Plaid sandbox can crash on some subtypes; our config uses student loan instead.
+- **Disconnect and re-link** after changing JSON in the Plaid dashboard.
+- **Username must match dashboard exactly** — underscores, no hyphens.
