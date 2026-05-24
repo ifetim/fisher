@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
 export async function POST(request: Request) {
   try {
@@ -9,12 +10,53 @@ export async function POST(request: Request) {
     }
 
     const goal = body.goal ?? 'your goal'
-    const top = body.merchants?.[0] ?? 'dining out'
-    const needed = body.monthlyNeeded ?? 250
+    const merchants = body.merchants ?? []
+    const monthlyNeeded = body.monthlyNeeded ?? 250
 
+    const apiKey = process.env.GEMINI_API_KEY
+    if (apiKey) {
+      const genAI = new GoogleGenerativeAI(apiKey)
+      const model = genAI.getGenerativeModel({
+        model: 'gemini-1.5-flash',
+        generationConfig: { responseMimeType: 'application/json' },
+      })
+
+      const merchantList = merchants.length
+        ? merchants.slice(0, 5).join(', ')
+        : 'various merchants'
+
+      const prompt = `You are a practical savings coach. A user is saving toward "${goal}" and needs $${monthlyNeeded}/month to stay on track.
+
+Their top spending merchants are: ${merchantList}.
+
+Return a JSON object with this exact shape:
+{
+  "suggestions": [
+    "suggestion one",
+    "suggestion two",
+    "suggestion three"
+  ]
+}
+
+Rules:
+- Exactly 3 suggestions
+- Each is 1 sentence, specific to their actual merchants and goal
+- Mention actual merchant names or categories from the list
+- Include a dollar figure in at least 2 of the 3 suggestions
+- No generic advice — tie each tip directly to their data
+- Tone: practical, not preachy`
+
+      const result = await model.generateContent(prompt)
+      const raw = result.response.text()
+      const parsed = JSON.parse(raw) as { suggestions: string[] }
+
+      return NextResponse.json({ suggestions: parsed.suggestions })
+    }
+
+    const top = merchants[0] ?? 'dining out'
     const suggestions = [
       `Cutting back on ${top} by ~$40/month could free up cash toward ${goal}.`,
-      `You need about $${needed}/month to stay on track — try moving that on payday.`,
+      `You need about $${monthlyNeeded}/month to stay on track — try moving that on payday.`,
       `Round up small purchases to savings once a week for a painless boost.`,
     ]
 

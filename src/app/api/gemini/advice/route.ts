@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
 export async function POST(request: Request) {
   try {
@@ -8,6 +9,46 @@ export async function POST(request: Request) {
     }
 
     const score = body.score ?? 50
+    const factors = body.factors ?? []
+
+    const apiKey = process.env.GEMINI_API_KEY
+    if (apiKey) {
+      const genAI = new GoogleGenerativeAI(apiKey)
+      const model = genAI.getGenerativeModel({
+        model: 'gemini-1.5-flash',
+        generationConfig: { responseMimeType: 'application/json' },
+      })
+
+      const factorLines = factors.length
+        ? factors.map((f) => `- ${f.label}: ${f.detail}`).join('\n')
+        : '(no specific factors provided)'
+
+      const prompt = `You are a friendly personal finance advisor. A user has a spending health score of ${score}/100.
+
+Their key financial factors are:
+${factorLines}
+
+Return a JSON object with this exact shape:
+{
+  "cards": [
+    { "title": "short title (3-5 words)", "body": "2-3 sentence actionable tip" }
+  ]
+}
+
+Rules:
+- Return exactly 4 cards
+- Be specific to their factors, not generic
+- Tone: warm, direct, non-judgmental
+- Each tip should be immediately actionable
+- Reference actual numbers or categories from their factors where relevant
+- Last card must always summarize their score with what it means and one priority action`
+
+      const result = await model.generateContent(prompt)
+      const raw = result.response.text()
+      const parsed = JSON.parse(raw) as { cards: { title: string; body: string }[] }
+
+      return NextResponse.json({ cards: parsed.cards })
+    }
 
     const cards = [
       {
@@ -19,13 +60,11 @@ export async function POST(request: Request) {
       },
       {
         title: 'Emergency fund',
-        body:
-          'Aim for 1–3 months of essential expenses in savings. Even $25/week builds the habit.',
+        body: 'Aim for 1–3 months of essential expenses in savings. Even $25/week builds the habit.',
       },
       {
         title: 'Credit payoff',
-        body:
-          'Pay more than the minimum on your highest-rate balance first — that saves the most interest.',
+        body: 'Pay more than the minimum on your highest-rate balance first — that saves the most interest.',
       },
       {
         title: 'Your health score',
