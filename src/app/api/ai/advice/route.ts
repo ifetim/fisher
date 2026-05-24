@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { completeJson, hasOpenAIKey } from '@/lib/openai/client'
 
 export async function POST(request: Request) {
   try {
@@ -11,14 +11,7 @@ export async function POST(request: Request) {
     const score = body.score ?? 50
     const factors = body.factors ?? []
 
-    const apiKey = process.env.GEMINI_API_KEY
-    if (apiKey) {
-      const genAI = new GoogleGenerativeAI(apiKey)
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
-        generationConfig: { responseMimeType: 'application/json' },
-      })
-
+    if (hasOpenAIKey()) {
       const factorLines = factors.length
         ? factors.map((f) => `- ${f.label}: ${f.detail}`).join('\n')
         : '(no specific factors provided)'
@@ -43,11 +36,13 @@ Rules:
 - Reference actual numbers or categories from their factors where relevant
 - Last card must always summarize their score with what it means and one priority action`
 
-      const result = await model.generateContent(prompt)
-      const raw = result.response.text()
-      const parsed = JSON.parse(raw) as { cards: { title: string; body: string }[] }
+      const parsed = await completeJson<{ cards: { title: string; body: string }[] }>(prompt, {
+        maxTokens: 550,
+      })
 
-      return NextResponse.json({ cards: parsed.cards })
+      if (parsed?.cards?.length) {
+        return NextResponse.json({ cards: parsed.cards })
+      }
     }
 
     const cards = [

@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation'
 import { useDashboard } from '@/hooks/useDashboard'
 import { formatCurrency } from '@/lib/format'
 import { AccountGroupTile } from '@/components/dashboard/AccountGroupTile'
+import { DashboardCategoryBudgets } from '@/components/dashboard/DashboardCategoryBudgets'
+import { useCategoryBudgets } from '@/hooks/useCategoryBudgets'
 import { groupTotal } from '@/lib/accountGrouping'
 
 const ACCOUNT_COLORS: Record<string, string> = {
@@ -25,8 +27,29 @@ export function DashboardPage() {
     balancesVisible,
     toggleBalances,
   } = useDashboard()
+  const { rows: budgetRows, totalSpent: budgetSpent, totalLimit: budgetLimit } = useCategoryBudgets()
 
   if (!greeting || !accounts) return null
+
+  // ── Survive until payday ──────────────────────────────────────────────────
+  const chequingBalance = accounts.find((a) => a.type === 'chequing')?.balance ?? 0
+  const today = new Date()
+  const daysElapsed = today.getDate()
+  const avgDailySpend =
+    daysElapsed > 0 && spendingThisMonth
+      ? Math.abs(spendingThisMonth) / daysElapsed
+      : 0
+  const daysLeft = avgDailySpend > 0 ? Math.floor(chequingBalance / avgDailySpend) : null
+  // Next payday: 15th of current month, or 1st of next month
+  const daysToPayday =
+    today.getDate() < 15
+      ? 15 - today.getDate()
+      : Math.ceil(
+          (new Date(today.getFullYear(), today.getMonth() + 1, 1).getTime() - today.getTime()) /
+            86_400_000,
+        )
+  const paydayOk = daysLeft !== null && daysLeft >= daysToPayday
+  // ─────────────────────────────────────────────────────────────────────────
 
   const firstName = greeting.replace(/^Good \w+, /, '')
   const timeOfDay = greeting.split(',')[0] ?? 'Good day'
@@ -36,9 +59,6 @@ export function DashboardPage() {
     { icon: '⚡', bg: 'rgba(245,158,11,0.12)' },
     { icon: '🎯', bg: 'rgba(134,59,255,0.12)' },
   ]
-
-  const budget = 2500
-  const pct = Math.min(100, Math.round((Math.abs(spendingThisMonth ?? 0) / budget) * 100))
 
   return (
     <div>
@@ -91,6 +111,30 @@ export function DashboardPage() {
               ) : null}
             </div>
           </div>
+
+          {/* Survive until payday */}
+          {daysLeft !== null && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              background: paydayOk ? 'rgba(34,197,94,0.08)' : daysLeft >= daysToPayday * 0.7 ? 'rgba(245,158,11,0.08)' : 'rgba(239,68,68,0.08)',
+              border: `1.5px solid ${paydayOk ? 'rgba(34,197,94,0.2)' : daysLeft >= daysToPayday * 0.7 ? 'rgba(245,158,11,0.2)' : 'rgba(239,68,68,0.22)'}`,
+              borderRadius: 12, padding: '11px 14px', marginTop: 12,
+            }}>
+              <span style={{ fontSize: 22, lineHeight: 1 }}>
+                {paydayOk ? '✅' : daysLeft >= daysToPayday * 0.7 ? '⚠️' : '🚨'}
+              </span>
+              <div>
+                <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>
+                  {balancesVisible ? `${daysLeft} days of spending left` : '•• days of spending left'}
+                </p>
+                <p style={{ margin: '2px 0 0', fontSize: 11, color: 'var(--muted)' }}>
+                  {paydayOk
+                    ? `On track — payday in ${daysToPayday}d`
+                    : `Payday in ${daysToPayday}d — watch your spending`}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Primary accounts — chequing / savings / credit card individually */}
           <div>
@@ -146,28 +190,18 @@ export function DashboardPage() {
             ) : null}
           </div>
 
-          {/* Spending this month */}
+          {/* Category budgets this month */}
           <div style={{ marginTop: 16 }}>
             <div className="section-label">
-              <span>Spending this month</span>
+              <span>Category budgets</span>
             </div>
             <div className="card card-pad">
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, flexWrap: 'wrap', gap: 12 }}>
-                <div>
-                  <p style={{ margin: 0, fontSize: 13, color: 'var(--muted)', fontWeight: 500 }}>You&apos;ve spent</p>
-                  <p style={{ margin: '2px 0 0', fontSize: 28, fontWeight: 700, letterSpacing: '-0.5px' }}>
-                    {balancesVisible ? formatCurrency(Math.abs(spendingThisMonth ?? 0)) : '••••••'}
-                    <span style={{ fontSize: 14, color: 'var(--muted)', fontWeight: 500, marginLeft: 6 }}>/ {formatCurrency(budget)} budget</span>
-                  </p>
-                </div>
-                <div className="tx-icon" style={{ background: 'var(--red-light)' }}>💸</div>
-              </div>
-              <div className="goal-bar" style={{ background: '#fde2df', height: 8 }}>
-                <div className="goal-bar-fill" style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #ef4444, #f87171)' }} />
-              </div>
-              <p style={{ margin: '10px 0 0', fontSize: 12, color: 'var(--muted)' }}>
-                {pct}% of budget used
-              </p>
+              <DashboardCategoryBudgets
+                rows={budgetRows}
+                totalSpent={budgetSpent}
+                totalLimit={budgetLimit}
+                balancesVisible={balancesVisible}
+              />
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { completeJson, hasOpenAIKey } from '@/lib/openai/client'
 
 export async function POST(request: Request) {
   try {
@@ -13,14 +13,7 @@ export async function POST(request: Request) {
     const merchants = body.merchants ?? []
     const monthlyNeeded = body.monthlyNeeded ?? 250
 
-    const apiKey = process.env.GEMINI_API_KEY
-    if (apiKey) {
-      const genAI = new GoogleGenerativeAI(apiKey)
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
-        generationConfig: { responseMimeType: 'application/json' },
-      })
-
+    if (hasOpenAIKey()) {
       const merchantList = merchants.length
         ? merchants.slice(0, 5).join(', ')
         : 'various merchants'
@@ -46,11 +39,11 @@ Rules:
 - No generic advice — tie each tip directly to their data
 - Tone: practical, not preachy`
 
-      const result = await model.generateContent(prompt)
-      const raw = result.response.text()
-      const parsed = JSON.parse(raw) as { suggestions: string[] }
+      const parsed = await completeJson<{ suggestions: string[] }>(prompt, { maxTokens: 280 })
 
-      return NextResponse.json({ suggestions: parsed.suggestions })
+      if (parsed?.suggestions?.length) {
+        return NextResponse.json({ suggestions: parsed.suggestions })
+      }
     }
 
     const top = merchants[0] ?? 'dining out'

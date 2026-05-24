@@ -1,7 +1,41 @@
 import { NextResponse } from 'next/server'
+import type { Transaction as PlaidTransaction } from 'plaid'
 import { getPlaidClient } from '@/lib/plaid/plaidClient'
 import { normalizePlaidTransaction } from '@/lib/plaid/normalizeTransaction'
-import { getSession, updateCursor } from '@/lib/plaid/sessionStore'
+import {
+  getSession,
+  getSessionTransactions,
+  mergeSessionTransactions,
+  updateCursor,
+} from '@/lib/plaid/sessionStore'
+
+async function syncPlaidTransactions(
+  accessToken: string,
+  startCursor?: string,
+): Promise<{ incoming: ReturnType<typeof normalizePlaidTransaction>[]; removed: string[]; nextCursor: string | null }> {
+  const collected: PlaidTransaction[] = []
+  const removed: string[] = []
+  let cursor = startCursor
+  let hasMore = true
+
+  while (hasMore) {
+    const response = await getPlaidClient().transactionsSync({
+      access_token: accessToken,
+      cursor,
+    })
+
+    collected.push(...response.data.added, ...response.data.modified)
+    removed.push(...response.data.removed.map((tx) => tx.transaction_id))
+    cursor = response.data.next_cursor
+    hasMore = response.data.has_more
+  }
+
+  return {
+    incoming: collected.map((tx) => normalizePlaidTransaction(tx)),
+    removed,
+    nextCursor: cursor ?? null,
+  }
+}
 
 export async function GET(request: Request) {
   try {
@@ -18,26 +52,27 @@ export async function GET(request: Request) {
       )
     }
 
-    const collected = []
-    let cursor = session.cursor ?? undefined
-    let hasMore = true
+    let { incoming, removed, nextCursor } = await syncPlaidTransactions(
+      session.accessToken,
+      session.cursor ?? undefined,
+    )
 
-    while (hasMore) {
-      const response = await getPlaidClient().transactionsSync({
-        access_token: session.accessToken,
-        cursor,
-      })
+    updateCursor(userId, nextCursor)
 
-      collected.push(...response.data.added, ...response.data.modified)
-      cursor = response.data.next_cursor
-      hasMore = response.data.has_more
+    let transactions = mergeSessionTransactions(userId, incoming, removed)
+
+    // Existing sessions may have a cursor but no cached txs yet — bootstrap once.
+    if (transactions.length === 0 && incoming.length === 0 && session.cursor) {
+      updateCursor(userId, null)
+      const bootstrap = await syncPlaidTransactions(session.accessToken, undefined)
+      updateCursor(userId, bootstrap.nextCursor)
+      transactions = mergeSessionTransactions(userId, bootstrap.incoming, bootstrap.removed)
     }
 
-    updateCursor(userId, cursor ?? null)
-
-    const transactions = collected
-      .map((tx) => normalizePlaidTransaction(tx))
-      .sort((a, b) => b.date.localeCompare(a.date))
+    // Prefer cached history if incremental sync returned nothing new.
+    if (transactions.length === 0) {
+      transactions = getSessionTransactions(userId)
+    }
 
     return NextResponse.json({ transactions, count: transactions.length })
   } catch (error) {

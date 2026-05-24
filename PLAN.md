@@ -33,7 +33,7 @@ A simple, clean personal finance dashboard that helps everyday people understand
 
 **Dev:** `npm run dev` (single server on port 3000).
 
-**Secrets:** `.env.local` at repo root (`PLAID_*`, `GEMINI_API_KEY`).
+**Secrets:** `.env.local` at repo root (`PLAID_*`, `OPENAI_API_KEY`).
 
 **Not in v1:** Real auth, production database, hosted deploy polish.
 

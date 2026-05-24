@@ -8,7 +8,7 @@ See **[PLAN.md](./PLAN.md)** for full scope and schemas.
 
 ## Stack
 
-Next.js (App Router) · React · TypeScript · CSS · Recharts · Gemini API (on user action) · Plaid sandbox (optional)
+Next.js (App Router) · React · TypeScript · CSS · Recharts · OpenAI (on user action) · Plaid sandbox (optional)
 
 ## Quick start
 
@@ -38,11 +38,11 @@ npm run dev
 | Variable | Purpose |
 |----------|---------|
 | `PLAID_CLIENT_ID`, `PLAID_SECRET`, `PLAID_ENV` | Live bank connect (sandbox) |
-| `GEMINI_API_KEY` | Real statement parse + advice (stubs work without it) |
+| `OPENAI_API_KEY` | AI advice + savings tips via gpt-4o-mini (stubs work without it) |
 
 ## AI usage (fair play)
 
-Gemini is called **only** when the user taps a button (upload, spending alert, savings tips, advice). The **health score is computed in code** — AI explains it, never invents the number.
+OpenAI is called **only** when the user taps a button (spending alert, savings tips, advice). The **health score is computed in code** — AI explains it, never invents the number.
 
 ## Submission checklist (hackathon)
 

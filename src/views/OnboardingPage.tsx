@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
+import { useFinance } from '@/context/FinanceContext'
 import { PlaidConnect } from '@/components/plaid/PlaidConnect'
 import './OnboardingPage.css'
 
@@ -40,9 +41,14 @@ type ReasonId = (typeof REASONS)[number]['id']
 export function OnboardingPage() {
   const router = useRouter()
   const { user, ready } = useAuth()
+  const { plaidConnected } = useFinance()
   const [step, setStep] = useState(1)
   const [reason, setReason] = useState<ReasonId | null>(null)
   const [bankDone, setBankDone] = useState(false)
+
+  useEffect(() => {
+    if (plaidConnected) setBankDone(true)
+  }, [plaidConnected])
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -143,9 +149,7 @@ export function OnboardingPage() {
               </p>
 
               <div className="ob-plaid-wrap">
-                <PlaidConnect
-                  onTransactions={() => setBankDone(true)}
-                />
+                <PlaidConnect />
               </div>
 
               <button

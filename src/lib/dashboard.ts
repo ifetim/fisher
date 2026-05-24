@@ -1,4 +1,5 @@
 import type { Account, Transaction } from '../types'
+import { mapToBudgetCategory } from './mapBudgetCategory'
 
 export function getTimeGreeting(firstName: string): string {
   const hour = new Date().getHours()
@@ -40,7 +41,7 @@ function categorySpend(
       (t) =>
         isInMonth(t.date, year, month) &&
         t.amount < 0 &&
-        t.category === category,
+        mapToBudgetCategory(t.category) === category,
     )
     .reduce((sum, t) => sum + Math.abs(t.amount), 0)
 }
@@ -55,7 +56,9 @@ function topSpendingCategory(
     if (!isInMonth(t.date, year, month) || t.amount >= 0 || t.category === 'Income') {
       continue
     }
-    totals.set(t.category, (totals.get(t.category) ?? 0) + Math.abs(t.amount))
+    const budgetCat = mapToBudgetCategory(t.category)
+    if (!budgetCat) continue
+    totals.set(budgetCat, (totals.get(budgetCat) ?? 0) + Math.abs(t.amount))
   }
   let best: { category: string; total: number } | null = null
   for (const [category, total] of totals) {

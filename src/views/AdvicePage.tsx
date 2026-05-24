@@ -29,7 +29,7 @@ export function AdvicePage() {
   async function loadAiAdvice() {
     setLoading(true)
     try {
-      const res = await fetch('/api/gemini/advice', {
+      const res = await fetch('/api/ai/advice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ score: health.score, factors: health.factors.map((f) => ({ label: f.label, detail: f.detail })) }),

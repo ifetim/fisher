@@ -10,9 +10,9 @@ alwaysApply: true
 ## Stack
 
 - **Next.js** App Router + React + TypeScript + CSS
-- API routes in `src/app/api/` (Plaid, Gemini)
+- API routes in `src/app/api/` (Plaid, OpenAI)
 - Screen components in `src/views/` (not `src/pages` — reserved by Next.js)
-- Recharts; Gemini on user action only
+- Recharts; OpenAI on user action only
 - Demo JSON in `src/data/`; Plaid via API routes
 - Secrets in `.env.local` at repo root — never commit
 

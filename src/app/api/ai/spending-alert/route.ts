@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { completeJson, hasOpenAIKey } from '@/lib/openai/client'
 
 export async function POST(request: Request) {
   try {
@@ -15,14 +15,7 @@ export async function POST(request: Request) {
     const current = body.current
     const previous = body.previous
 
-    const apiKey = process.env.GEMINI_API_KEY
-    if (apiKey) {
-      const genAI = new GoogleGenerativeAI(apiKey)
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
-        generationConfig: { responseMimeType: 'application/json' },
-      })
-
+    if (hasOpenAIKey()) {
       const amountContext =
         current !== undefined && previous !== undefined
           ? `They spent $${previous.toFixed(2)} last month and $${current.toFixed(2)} this month.`
@@ -44,11 +37,11 @@ Rules:
 - Do not start with "I" or "Great news"
 - Tone: direct, friendly coach`
 
-      const result = await model.generateContent(prompt)
-      const raw = result.response.text()
-      const parsed = JSON.parse(raw) as { message: string }
+      const parsed = await completeJson<{ message: string }>(prompt, { maxTokens: 120 })
 
-      return NextResponse.json({ category, pctChange: pct, message: parsed.message })
+      if (parsed?.message) {
+        return NextResponse.json({ category, pctChange: pct, message: parsed.message })
+      }
     }
 
     let message: string
