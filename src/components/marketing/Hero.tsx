@@ -12,8 +12,7 @@ export default function Hero() {
           </svg>
         </span>
         <h1 className="hero-title">
-          <span className="hero-title-line">STUDENT</span>
-          <span className="hero-title-line hero-title-accent">SAVER</span>
+          STUDENT<span className="dollar-badge">$</span>SAVER
         </h1>
       </div>
       <p className="hero-subtitle">Save smarter. Spend with clarity.</p>
