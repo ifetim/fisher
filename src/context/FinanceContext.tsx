@@ -15,7 +15,7 @@ import {
 } from '../data'
 import type { SavingsPlan, Transaction } from '../types'
 import type { NormalizedTransaction } from '@/lib/plaid/normalizeTransaction'
-import { fetchPlaidStatus, fetchPlaidTransactions } from '@/lib/plaidApi'
+import { disconnectPlaid, fetchPlaidStatus, fetchPlaidTransactions } from '@/lib/plaidApi'
 import { useAuth } from './AuthContext'
 
 const UPLOADED_KEY = 'clearmint-uploaded-txs'
@@ -29,6 +29,7 @@ type FinanceContextValue = {
   plaidConnected: boolean
   plaidSyncing: boolean
   syncPlaid: () => Promise<void>
+  disconnectPlaidAccount: () => Promise<void>
   savingsPlans: SavingsPlan[]
   addSavingsGoal: (goal: Omit<SavingsPlan, 'id' | 'userId'>) => void
 }
@@ -170,6 +171,21 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     setPlaidRaw(txs)
   }, [])
 
+  const disconnectPlaidAccount = useCallback(async () => {
+    if (!user) return
+    const userId = String(user.id)
+    try {
+      await disconnectPlaid(userId)
+    } catch (err) {
+      console.error('Disconnect failed:', err)
+    }
+    setPlaidRaw([])
+    setPlaidConnected(false)
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(PLAID_KEY)
+    }
+  }, [user])
+
   const addSavingsGoal = useCallback(
     (goal: Omit<SavingsPlan, 'id' | 'userId'>) => {
       if (!user) return
@@ -191,10 +207,11 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       plaidConnected,
       plaidSyncing,
       syncPlaid,
+      disconnectPlaidAccount,
       savingsPlans,
       addSavingsGoal,
     }),
-    [transactions, addUploadedTransactions, addPlaidTransactions, plaidConnected, plaidSyncing, syncPlaid, savingsPlans, addSavingsGoal],
+    [transactions, addUploadedTransactions, addPlaidTransactions, plaidConnected, plaidSyncing, syncPlaid, disconnectPlaidAccount, savingsPlans, addSavingsGoal],
   )
 
   return (

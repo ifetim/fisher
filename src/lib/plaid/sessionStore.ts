@@ -49,3 +49,9 @@ export function updateCursor(userId: string, cursor: string | null) {
 export function hasSession(userId: string): boolean {
   return Boolean(readFile()[userId])
 }
+
+export function deleteSession(userId: string) {
+  const sessions = readFile()
+  delete sessions[userId]
+  writeFile(sessions)
+}

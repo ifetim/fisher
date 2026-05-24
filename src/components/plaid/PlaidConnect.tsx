@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { usePlaidLink } from 'react-plaid-link'
 import { useAuth } from '../../context/AuthContext'
 import { useFinance } from '../../context/FinanceContext'
-import { createLinkToken, exchangePublicToken } from '@/lib/plaidApi'
+import { createLinkToken, disconnectPlaid, exchangePublicToken } from '@/lib/plaidApi'
 import './PlaidConnect.css'
 
 export const TEST_USER_ID = 'plaid-test-user'
@@ -16,20 +16,19 @@ type PlaidConnectProps = {
 
 export function PlaidConnect({ userId: userIdOverride }: PlaidConnectProps) {
   const { user } = useAuth()
-  const { plaidConnected, plaidSyncing, syncPlaid } = useFinance()
+  const { plaidConnected, plaidSyncing, syncPlaid, disconnectPlaidAccount } = useFinance()
 
-  // Test mode: userId prop differs from logged-in user (or no user at all)
   const isTestMode = !!userIdOverride
   const userId = userIdOverride ?? (user ? String(user.id) : '')
 
-  // In test mode we track local connected state; normal mode reads from context
   const [testConnected, setTestConnected] = useState(false)
   const connected = isTestMode ? testConnected : plaidConnected
   const syncing   = isTestMode ? false        : plaidSyncing
 
-  const [linkToken, setLinkToken] = useState<string | null>(null)
-  const [loading,   setLoading]   = useState(false)
-  const [error,     setError]     = useState('')
+  const [linkToken,   setLinkToken]   = useState<string | null>(null)
+  const [loading,     setLoading]     = useState(false)
+  const [error,       setError]       = useState('')
+  const [txCount,     setTxCount]     = useState<number | null>(null)
 
   // Fetch a link token whenever we know the userId and aren't already connected
   useEffect(() => {
@@ -61,7 +60,6 @@ export function PlaidConnect({ userId: userIdOverride }: PlaidConnectProps) {
         if (isTestMode) {
           setTestConnected(true)
         } else {
-          // Sync transactions into FinanceContext — Dashboard + Spending update automatically
           await syncPlaid()
         }
       } catch (err) {
@@ -101,9 +99,53 @@ export function PlaidConnect({ userId: userIdOverride }: PlaidConnectProps) {
           ) : null}
         </>
       ) : (
-        <p className="plaid-connect__status">
-          {syncing ? 'Syncing transactions…' : 'Bank connected ✓'}
-        </p>
+        <div className="plaid-connect__connected-row">
+          <p className="plaid-connect__status">
+            {syncing ? 'Syncing…' : `Bank connected ✓${txCount !== null ? ` · ${txCount} transactions` : ''}`}
+          </p>
+          <div className="plaid-connect__actions">
+            <button
+              type="button"
+              className="plaid-connect__btn plaid-connect__btn--secondary"
+              disabled={syncing}
+              onClick={async () => {
+                setLoading(true)
+                try {
+                  if (isTestMode) {
+                    // Re-fetch count for display
+                    const { fetchPlaidTransactions: fetchTx } = await import('@/lib/plaidApi')
+                    const txs = await fetchTx(userId)
+                    setTxCount(txs.length)
+                  } else {
+                    await syncPlaid()
+                  }
+                } catch { /* silent */ } finally {
+                  setLoading(false)
+                }
+              }}
+            >
+              {loading ? 'Refreshing…' : 'Refresh sync'}
+            </button>
+            <button
+              type="button"
+              className="plaid-connect__btn plaid-connect__btn--danger"
+              onClick={async () => {
+                try {
+                  if (isTestMode) {
+                    await disconnectPlaid(userId)
+                    setTestConnected(false)
+                    setTxCount(null)
+                  } else {
+                    await disconnectPlaidAccount()
+                  }
+                  setLinkToken(null)
+                } catch { /* silent */ }
+              }}
+            >
+              Disconnect
+            </button>
+          </div>
+        </div>
       )}
 
       {error ? <p className="plaid-connect__error">{error}</p> : null}

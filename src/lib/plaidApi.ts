@@ -63,6 +63,17 @@ export async function fetchPlaidStatus(userId: string): Promise<boolean> {
   return data.connected
 }
 
+export async function disconnectPlaid(userId: string): Promise<void> {
+  const res = await fetch('/api/plaid/disconnect', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId }),
+  })
+  if (!res.ok) {
+    throw new Error(await readApiError(res, 'Failed to disconnect Plaid'))
+  }
+}
+
 export async function fetchPlaidTransactions(
   userId: string,
 ): Promise<NormalizedTransaction[]> {
