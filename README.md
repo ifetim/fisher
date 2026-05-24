@@ -2,7 +2,7 @@
 
 A personal finance app for **students** who want to understand their money — not another spreadsheet or guilt-trip budget app.
 
-**Live site:** [student-saver.vercel.app](https://student-saver.vercel.app)
+**Live site:** [student-saver-sand.vercel.app](https://student-saver-sand.vercel.app)
 
 **The pain.** Managing money in school is hard. Paycheques and OSAP land, rent and subscriptions go out, and by mid-month you're wondering where it all went. A lot of us don't have a clear picture of *how* we spent or *where* the money actually went — and most finance apps either dump raw numbers on you or make you feel worse. That's a pain point all three of us on this team could relate to.
 
@@ -24,7 +24,7 @@ These are the choices we made on purpose, against the grain of every other finan
 
 ## Try it live
 
-1. Open **[student-saver.vercel.app](https://student-saver.vercel.app)** — marketing landing page with hero, student stats, and savings calculator
+1. Open **[student-saver-sand.vercel.app](https://student-saver-sand.vercel.app)** — marketing landing page with hero, student stats, and savings calculator
 2. **Sign up** or **Log in** from the nav
 3. Use demo credentials below, or connect a Plaid sandbox bank on Spending
 
