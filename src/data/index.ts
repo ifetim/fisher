@@ -212,10 +212,15 @@ export function getSavingsPlansForUser(userId: number): SavingsPlan[] {
   return savingsPlans.filter((p) => p.userId === userId)
 }
 
-/** All users available for demo switching */
+/** All users available for demo switching — student-focused personas */
 export const demoProfiles = users.map((u) => ({
   id: u.id,
   name: u.name,
   avatar: u.avatar,
-  tag: u.id === 1 ? 'Mid-income' : u.id === 2 ? 'Student' : 'High earner',
+  tag:
+    u.id === 1
+      ? 'Recent grad · steady paycheck'
+      : u.id === 2
+      ? 'Broke student · part-time job'
+      : 'Tech intern · big spender',
 }))

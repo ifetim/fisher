@@ -166,6 +166,11 @@ export const V3Icons = {
       <line x1="21" y1="12" x2="9" y2="12" />
     </svg>
   ),
+  chat: (
+    <svg viewBox="0 0 24 24" {...stroke}>
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  ),
 }
 
 export function V3StatusBar() {

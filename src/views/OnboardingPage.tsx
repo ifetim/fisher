@@ -115,6 +115,7 @@ export function OnboardingPage() {
   function finish() {
     if (typeof window !== 'undefined') {
       localStorage.setItem(ONBOARDING_KEY, '1')
+      if (reason) localStorage.setItem('clearmint-reason', reason)
     }
     router.replace('/dashboard')
   }

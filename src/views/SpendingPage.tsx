@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import { useAuth } from '@/context/AuthContext'
 import { useFinance } from '@/context/FinanceContext'
 import {
@@ -15,6 +16,8 @@ import { PlaidBanner } from '@/components/v3/PlaidBanner'
 import { txV3Icon, categoryBarTone } from '@/lib/txV3Icon'
 import { currentMonthLabel, priorMonthName, spendingVsPriorMonth } from '@/lib/v3MonthStats'
 import './SpendingPage.css'
+
+const CAT_COLORS = ['#d4922a', '#2a9d8f', '#c9472a', '#1c2b6b', '#6b7387', '#e8a83a', '#4a7c59', '#8b5cf6']
 
 const PAGE_SIZE = 20
 
@@ -192,24 +195,27 @@ export function SpendingPage() {
         </div>
       </div>
 
-      <div className="stats">
-        <div className="stat rose">
-          <p className="lbl">Spent</p>
-          <p className="num">${formatAmountWhole(totalSpent)}</p>
+      <div className="hero">
+        <div className="label-row">
+          <span className="label">Total Spent · {headerSubtitle}</span>
         </div>
-        <div className="stat mint">
-          <p className="lbl">Income</p>
-          <p className="num">${formatAmountWhole(totalIncome)}</p>
+        <div className="amount">
+          ${formatAmountWhole(totalSpent)}
+          <span className="cents">.00</span>
         </div>
-        <div className="stat orange">
-          <p className="lbl">Net</p>
-          <p className="num">
-            {net >= 0 ? '+' : '−'}${formatAmountWhole(Math.abs(net))}
-          </p>
-        </div>
-        <div className="stat">
-          <p className="lbl">vs {priorMonthName()}</p>
-          <p className="num">{vsPrior === null ? '—' : `${vsPrior > 0 ? '+' : ''}${vsPrior}%`}</p>
+        <div>
+          <span className="delta">
+            {V3Icons.up} +${formatAmountWhole(totalIncome)} income
+          </span>
+          <span className="delta">
+            {net >= 0 ? V3Icons.up : V3Icons.down}{' '}
+            {net >= 0 ? '+' : '−'}${formatAmountWhole(Math.abs(net))} net
+          </span>
+          {vsPrior !== null && (
+            <span className="delta">
+              {vsPrior <= 0 ? V3Icons.up : V3Icons.down} {Math.abs(vsPrior)}% vs {priorMonthName()}
+            </span>
+          )}
         </div>
       </div>
 
@@ -270,23 +276,67 @@ export function SpendingPage() {
           <div className="sec">
             <span className="lbl">By category</span>
           </div>
-          <div className="card">
-            <div className="cats">
-              {cats.length === 0 ? (
-                <p className="spending-page__empty">No spending in this period.</p>
-              ) : null}
-              {cats.map((c) => (
-                <div className="cat" key={c.name}>
-                  <div className="top">
-                    <span className="name">{c.name}</span>
-                    <span className="val">${c.val}</span>
-                  </div>
-                  <div className={`bar ${c.tone}`.trim()}>
-                    <div className="fill" style={{ width: `${c.pct}%` }} />
+          <div className="card pad">
+            {cats.length === 0 ? (
+              <p className="spending-page__empty" style={{ padding: '2rem 0' }}>No spending in this period.</p>
+            ) : (
+              <>
+                {/* Donut chart */}
+                <div style={{ position: 'relative', width: '100%', height: 200 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={cats}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={58}
+                        outerRadius={88}
+                        paddingAngle={2}
+                        dataKey="val"
+                        strokeWidth={0}
+                      >
+                        {cats.map((_, i) => (
+                          <Cell key={i} fill={CAT_COLORS[i % CAT_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(val: number) => [`$${formatAmountWhole(val)}`, '']}
+                        contentStyle={{ borderRadius: 12, border: '1px solid rgba(28,43,107,0.1)', fontSize: 12, fontWeight: 600 }}
+                        itemStyle={{ color: 'var(--text)' }}
+                        labelStyle={{ display: 'none' }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  {/* Centre label */}
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+                    <span style={{ fontFamily: 'var(--display)', fontSize: 22, fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text)' }}>
+                      ${formatAmountWhole(totalSpent)}
+                    </span>
+                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted)', marginTop: 2 }}>
+                      spent
+                    </span>
                   </div>
                 </div>
-              ))}
-            </div>
+
+                {/* Legend bars */}
+                <div className="cats" style={{ padding: '12px 0 0' }}>
+                  {cats.map((c, i) => (
+                    <div className="cat" key={c.name}>
+                      <div className="top">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                          <span style={{ width: 10, height: 10, borderRadius: '50%', background: CAT_COLORS[i % CAT_COLORS.length], flexShrink: 0, display: 'inline-block' }} />
+                          <span className="name">{c.name}</span>
+                        </div>
+                        <span className="val">${c.val}</span>
+                      </div>
+                      <div className={`bar ${c.tone}`.trim()} style={{ background: `${CAT_COLORS[i % CAT_COLORS.length]}22` }}>
+                        <div className="fill" style={{ width: `${c.pct}%`, background: CAT_COLORS[i % CAT_COLORS.length] }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
